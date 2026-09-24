@@ -1,0 +1,338 @@
+{
+  "experiments": [
+    {
+      "label": "Trial A",
+      "fields": [
+        {
+          "key": "pollutant",
+          "value": "acetaminophen",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "water_matrix",
+          "value": "synthetic water",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "initial_concentration",
+          "value": "10",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "process",
+          "value": "UV/H2O2",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "dose",
+          "value": "H2O2: 20",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "supplement:p1",
+              "quote": "Trial A: H2O2 dose was 20 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "ph",
+          "value": "7.0",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "reaction_time",
+          "value": "30",
+          "unit": "min",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "removal_efficiency",
+          "value": "85",
+          "unit": "%",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%."
+            }
+          ]
+        },
+        {
+          "key": "mineralization_efficiency",
+          "value": "TOC removal: 20",
+          "unit": "%",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Trial B",
+      "fields": [
+        {
+          "key": "pollutant",
+          "value": "acetaminophen",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "water_matrix",
+          "value": "synthetic water",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "initial_concentration",
+          "value": "10",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "process",
+          "value": "H2O2 in the dark",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "dose",
+          "value": "H2O2: 20",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "supplement:p1",
+              "quote": "Trial B: H2O2 dose was 20 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "ph",
+          "value": "7.0",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "reaction_time",
+          "value": "30",
+          "unit": "min",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+            }
+          ]
+        },
+        {
+          "key": "removal_efficiency",
+          "value": "12",
+          "unit": "%",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%."
+            }
+          ]
+        },
+        {
+          "key": "mineralization_efficiency",
+          "value": "TOC removal: 2",
+          "unit": "%",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p2",
+              "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Trial C",
+      "fields": [
+        {
+          "key": "pollutant",
+          "value": "sulfamethoxazole",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "water_matrix",
+          "value": "real wastewater",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "initial_concentration",
+          "value": "5",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "process",
+          "value": "UV/H2O2",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+            }
+          ]
+        },
+        {
+          "key": "dose",
+          "value": "H2O2: 15",
+          "unit": "mg/L",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C: H2O2 dose was 15 mg/L."
+            }
+          ]
+        },
+        {
+          "key": "ph",
+          "value": "6.5",
+          "unit": null,
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+            }
+          ]
+        },
+        {
+          "key": "reaction_time",
+          "value": "60",
+          "unit": "min",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+            }
+          ]
+        },
+        {
+          "key": "removal_efficiency",
+          "value": "64",
+          "unit": "%",
+          "status": "found",
+          "sources": [
+            {
+              "block_id": "main:p3",
+              "quote": "Trial C: sulfamethoxazole removal was 64%."
+            }
+          ]
+        },
+        {
+          "key": "mineralization_efficiency",
+          "value": null,
+          "unit": null,
+          "status": "not_found",
+          "sources": []
+        }
+      ]
+    }
+  ]
+}

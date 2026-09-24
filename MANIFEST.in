@@ -1,0 +1,8 @@
+include README.en.md LICENSE CHANGELOG.md THIRD_PARTY_NOTICES.md requirements-lock.txt app.py .gitignore .gitattributes .env.example
+recursive-include docs *.md *.png
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include .github *.yml
+include .streamlit/config.toml
+exclude .env .streamlit/secrets.toml
+global-exclude __pycache__ *.py[cod]

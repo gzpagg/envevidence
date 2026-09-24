@@ -1,0 +1,29 @@
+name: Extraction or software issue / 问题反馈
+description: Report an incorrect field, source mapping, or application error.
+body:
+  - type: textarea
+    attributes:
+      label: What happened? / 发生了什么？
+      description: Include the workflow step, field, expected result, and actual result.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction / 复现步骤
+      description: Prefer the synthetic demo or a minimal example you can redistribute. Do not include API keys, private papers, or unpublished data.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Environment / 环境
+      placeholder: OS, Python, EnvEvidence version, provider/model (no keys)
+  - type: dropdown
+    attributes:
+      label: Issue type / 问题类型
+      options:
+        - PDF parsing
+        - Wrong experiment association
+        - Wrong value or unit
+        - Wrong source mapping
+        - API or application error
+

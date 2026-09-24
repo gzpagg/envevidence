@@ -1,0 +1,22 @@
+{
+  "kind": "synthetic_expected_results",
+  "experiments": 3,
+  "values": {
+    "Trial A": {
+      "removal_efficiency": "85",
+      "mineralization_efficiency": "TOC removal: 20"
+    },
+    "Trial B": {
+      "removal_efficiency": "12",
+      "mineralization_efficiency": "TOC removal: 2"
+    },
+    "Trial C": {
+      "removal_efficiency": "64",
+      "mineralization_efficiency": null
+    }
+  },
+  "supplement_required_fields": [
+    "Trial A.dose",
+    "Trial B.dose"
+  ]
+}
