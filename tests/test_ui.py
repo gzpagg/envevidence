@@ -9,7 +9,9 @@ def test_offline_demo_review_save_and_reload(tmp_path, monkeypatch):
         str(Path(__file__).resolve().parents[1] / "app.py"), default_timeout=30
     ).run()
     assert not app.exception
-    next(b for b in app.button if b.label == "载入离线演示").click().run()
+    app.selectbox(key="locale").select("zh").run()
+    app.button(key="nav_evidence").click().run()
+    app.button(key="evidence_demo").click().run()
     assert not app.exception
     assert [m.value for m in app.metric] == ["1", "3", "27", "0"]
     next(s for s in app.selectbox if s.label == "核验状态").select("verified")

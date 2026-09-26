@@ -18,7 +18,7 @@ def test_source_zip_excludes_local_data_and_streamlit_secrets(tmp_path):
     (tmp_path / ".env").write_text("SECRET", encoding="utf-8")
     (tmp_path / "data" / "paper.json").write_text("PRIVATE", encoding="utf-8")
     module.main()
-    with ZipFile(tmp_path / "dist" / "envevidence-0.1.0-source.zip") as archive:
+    with ZipFile(tmp_path / "dist" / "envevidence-0.2.0-source.zip") as archive:
         assert not any(
             "secrets.toml" in p or "/data/" in p or p.endswith("/.env") for p in archive.namelist()
         )
