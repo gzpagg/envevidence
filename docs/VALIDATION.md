@@ -1,16 +1,20 @@
-# 验证状态
+# Validation status
 
-此文件区分软件测试和科研提取能力验证，避免把合成演示当作真实模型性能。
+## v0.2.0 — 2026-09-26
 
-## 已完成的本地检查
+Local automated tests cover:
 
-- Windows，Python 3.13.6；通过项目独立虚拟环境安装，完整版本记录在 `requirements-lock.txt`。
-- 自动化测试覆盖实际 PDF 解析、证据定位、分条件结果、补充材料、字段缺失/重复、单位遗漏、模型原值保留、修订持久化、API 中断恢复、表格公式注入防护、长单元格以及发布包排除密钥配置。
-- OpenAI Responses 与 Anthropic Messages 的请求结构、响应解析、错误消息脱敏、拒绝和截断处理通过模拟 HTTP 测试。
-- Streamlit 应用测试覆盖载入演示、人工确认、保存、离开项目、重新打开项目及计数保持。
-- 实际浏览器已检查窄窗口及桌面双栏布局；载入合成案例、保存人工核验后显示 1 条确认和修订历史，Excel 下载事件成功。
-- 实际浏览器导入自制主文献并建立项目成功；缺少 API 密钥和文本发送确认时，提取按钮保持禁用。
-- 已构建 Python wheel、源码分发包及仅含项目文件的源码 ZIP。
-- 离线命令行流程生成 3 个实验、27 个字段、CSV、五工作表 Excel 和项目 JSON。
+- Separate experimental conditions and pollutant/TOC endpoints, supplement provenance, fabricated quotes, missing units and human revision history.
+- Mocked OpenAI/Anthropic HTTP contracts, refusal/truncation handling and interruption recovery. No live API key was used.
+- Learning-step progress and edits; dated-task completion, reopening, overdue and archive rules; note editing, pinning, colors, archive and restore.
+- Atomic workspace save, simulated write failure, corrupt-file preservation, restart persistence and idempotent demo seeding.
+- English/Chinese switching, captured widget-label language, module visibility/order/reset, palette persistence and color contrast.
+- Source-package exclusions and spreadsheet formula injection protection.
 
-首轮界面测试发现“修改了控件持有的字段副本，未更新项目”的问题；现改为用稳定 ID 查找并更新项目原始对象，并由持久化回归测试覆盖。
+Browser acceptance uses 1440px desktop and 390px narrow viewports, English and Chinese, all four presets and a dark custom-background stress check. Published screenshots are captured from the running app with synthetic records.
+
+CI runs Ruff, pytest, the offline CLI demo and package builds on Windows/Linux with Python 3.11/3.13. See the repository Actions page for the result of each exact commit; configured CI is not itself proof of a successful run.
+
+## Not yet verified
+
+Live model extraction, scientific accuracy on real papers, independent colleague installation, OCR, complex table reconstruction and multi-user editing. Automated source matching does not validate scientific interpretation. The software does not claim official OpenAI or Anthropic endorsement.

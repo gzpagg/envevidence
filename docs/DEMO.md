@@ -1,27 +1,20 @@
-# 演示：从原文到可核验表格
+# Reproducible demo
 
-所有资料与数值均为自制合成案例，不对应真实论文。离线结果来自预录 JSON，不是模型现场生成。
+Start the app as described in the README. A fresh data directory starts in English with all four modules enabled and the Forest palette.
 
-1. 启动应用，点击左侧 **载入离线演示**。
-2. “资料与提取”显示一份三页主文献与一份一页补充材料，可下载查看。
-3. 点击 **02 证据核验**，应看到三个实验条件、27 个字段，人工确认数为 0。
-4. 选择 Trial A 的污染物去除率：应为 85%，来自主文献 PDF 第 2 页。同一页 TOC 去除率为 20%，是另一个字段。
-5. 切换到 Trial B，污染物去除率为 12%，TOC 去除率为 2%，不能与 Trial A 拼接。
-6. Trial A 和 B 的 H2O2 剂量均为 20 mg/L，出处应为补充材料第 1 页。
-7. Trial C 的污染物去除率为 64%，TOC 字段为未找到，不得填成 0 或复制其他实验。
-8. 在一个字段中选择 **人工确认**，填写核验人及说明，保存。计数应增加；模型原值保持不变。
-9. 测试修订：将当前值标成“不采纳”并写明测试说明；历史应保留两次记录。不要把演示修订用于科研结论。
-10. 在“导出与记录”下载 Excel、CSV、JSON。Excel 应有五个工作表。重新打开本地项目，核验记录仍在。
+1. Click **Load workspace demo**. It appends invented goals, dated tasks, a pinned note and a synthetic evidence project. Existing data is preserved; the workspace seed is only applied once.
+2. Open **Learning goals**. Complete a step: one of three becomes two of three. Rename it and confirm the completion state remains. Archive the goal, switch on **Show archived**, then restore it.
+3. Open **Daily tasks**. Change a task from To do to Done, then reopen it. Overdue tasks keep their original dates and do not affect today's denominator.
+4. Open **Sticky notes**. Edit, pin, choose a color, save, archive and restore a note.
+5. Open **Literature evidence** and open the synthetic project. Select **Evidence review**. Trial A has 85% pollutant removal and 20% TOC removal; Trial B has 12% and 2%; Trial C has 64% removal with TOC not found. A/B reagent doses are in the supplement.
+6. Review one field against its source, provide a reviewer and reason, save, then export. Source matching alone is not scientific verification.
+7. Open **Appearance & modules**. Preview a palette, save it, hide a module, reorder another and restart. Restore the layout and confirm hidden data returns.
+8. Switch to Chinese and back. Application labels change; notes, quotations and saved audit records remain intact.
 
-预期关键数值保存在 `envevidence/assets/expected.json`，记录 fixture 在同目录的 `recorded_extraction.json`。PDF 可用 `python scripts/build_demo.py` 重新生成（需要开发依赖）。
+The PDFs and recorded extraction are invented, MIT-licensed fixtures. Their hashes are checked by the demo provider. No live model is called. Screenshots use isolated synthetic data, never personal research records.
 
-## 同行试用记录模板
+CLI compatibility check:
 
-- 操作系统、Python 版本与安装步骤是否成功。
-- 能否独立找到 Trial A 的 85%、20% 与补充材料剂量。
-- 能否分清原句定位和科学核验。
-- 能否完成一次修订、导出并重新打开项目。
-- 耗时、失败步骤、错误信息和改进建议。
-
-真实 API 评估请复制本案例创建真实提取项目并选择 API 服务，不要把离线结果称为模型准确率。真实论文评估需另外建立人工核验的参考表。
-
+```bash
+python -m envevidence demo --output data/demo
+```
