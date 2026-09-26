@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "envevidence"
-version = "0.1.0"
-description = "Source-linked environmental research evidence extraction and human review"
+version = "0.2.0"
+description = "Bilingual local research workspace with source-linked evidence, learning goals, tasks and notes"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
