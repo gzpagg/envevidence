@@ -103,7 +103,6 @@ public class WorkspaceTest {
             assertTrue("Alarm delivered with activity in background",context.getSharedPreferences(LabAlarms.PREFS,0).getStringSet("delivered",java.util.Collections.emptySet()).contains(timerId+":0"));
             assertTrue("System notification posted",context.getSystemService(android.app.NotificationManager.class).getActiveNotifications().length>0);
             s.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);ready(s,"L.elapsed(state.lab.timers[0],labClock())>=4000");
-            s.onActivity(a->a.setIntent(new android.content.Intent(a,MainActivity.class).putExtra("openTimers",true)));s.recreate();ready(s,"page==='timers' && !!document.querySelector('nav')");
             AtomicReference<Exception> error = new AtomicReference<>();
             s.onActivity(a -> {
                 try {
@@ -116,5 +115,11 @@ public class WorkspaceTest {
             });
             if(error.get()!=null)throw error.get();
         }
+        // Launch with the notification extra through ActivityScenario itself. Replacing
+        // an active scenario's Intent would discard its lifecycle-monitoring metadata.
+        try(ActivityScenario<MainActivity> notification=ActivityScenario.launch(new android.content.Intent(context,MainActivity.class).putExtra("openTimers",true))) {
+            ready(notification,"page==='timers' && !!document.querySelector('nav')");
+        }
     }
 }
+
