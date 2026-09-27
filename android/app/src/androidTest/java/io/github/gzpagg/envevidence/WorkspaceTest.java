@@ -30,9 +30,22 @@ public class WorkspaceTest {
         for (int i=0;i<100;i++) { if ("true".equals(js(s, condition))) return; Thread.sleep(100); }
         fail("UI condition not reached: "+condition);
     }
-    private void shot(String name) throws Exception {
+    private void shot(ActivityScenario<MainActivity> s, String name) throws Exception {
+        ready(s, "getComputedStyle(document.querySelector('#notice')).display==='none'");
+        CountDownLatch painted = new CountDownLatch(1);
+        s.onActivity(activity -> {
+            ViewGroup root = activity.findViewById(android.R.id.content);
+            WebView web = (WebView) ((ViewGroup) root.getChildAt(0)).getChildAt(0);
+            web.postVisualStateCallback(System.nanoTime(), new WebView.VisualStateCallback() {
+                @Override public void onComplete(long requestId) {
+                    web.postOnAnimation(() -> web.postOnAnimation(painted::countDown));
+                    web.invalidate();
+                }
+            });
+        });
+        assertTrue("WebView has presented the requested page", painted.await(15, TimeUnit.SECONDS));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Thread.sleep(250); // Allow the WebView compositor to present the changed page.
+        Thread.sleep(500); // Let SurfaceFlinger present the already synchronized frame.
         // Gradle uninstalls the tested app after the run. Preserve synthetic screenshots
         // outside its private directory using the test runner's shell identity only.
         // executeShellCommand runs a program directly; shell operators are not interpreted.
@@ -54,7 +67,7 @@ public class WorkspaceTest {
             js(s,"document.querySelector('[data-to=settings]').click()");
             js(s,"document.querySelector('[data-action=demo]').click()");
             ready(s,"state.workspace.demo_loaded && state.projects.length===1");
-            js(s,"navigate('home')"); shot("home-en");
+            js(s,"navigate('home')"); shot(s,"home-en");
             js(s,"navigate('learning'); document.querySelector('[data-action=step]').click()");
             ready(s,"state.workspace.goals[0].steps[0].done===false");
             js(s,"navigate('tasks'); document.querySelector('select[data-action=taskStatus]').value='todo'; document.querySelector('select[data-action=taskStatus]').dispatchEvent(new Event('change',{bubbles:true}))");
@@ -63,21 +76,21 @@ public class WorkspaceTest {
             ready(s,"state.workspace.notes[0].archived===true");
             js(s,"document.querySelector('[data-value=archived]').click(); document.querySelector('[data-action=archive]').click()");
             ready(s,"state.workspace.notes[0].archived===false");
-            js(s,"navigate('settings')"); shot("settings-en");
+            js(s,"navigate('settings')"); shot(s,"settings-en");
             js(s,"document.querySelector('[name=language]').value='zh'; document.querySelector('#settings-form').requestSubmit()");
             ready(s,"state.workspace.preferences.language==='zh'");
-            shot("settings-zh");
-            js(s,"navigate('home')"); shot("home-zh");
+            shot(s,"settings-zh");
+            js(s,"navigate('home')"); shot(s,"home-zh");
             s.recreate(); ready(s,"!!document.querySelector('nav') && state.workspace.preferences.language==='zh'");
             assertEquals("true",js(s,"state.workspace.goals[0].steps[0].done===false && state.workspace.tasks[0].status==='todo' && state.workspace.notes[0].archived===false"));
             js(s,"projectId=state.projects[0].id; navigate('evidence'); review(state.projects[0].experiments[0].id,state.projects[0].experiments[0].fields[0].id)");
-            ready(s,"!!document.querySelector('dialog[open]')"); shot("review-zh");
+            ready(s,"!!document.querySelector('dialog[open]')"); shot(s,"review-zh");
             js(s,"document.querySelector('[name=reviewer]').value='Synthetic reviewer'; document.querySelector('[name=reason]').value='Checked against the synthetic original'; document.querySelector('[name=status]').value='verified'; document.querySelector('dialog form').requestSubmit()");
             ready(s,"state.projects[0].experiments[0].fields[0].revisions.length===1");
             assertEquals("true",js(s,"state.projects[0].experiments[0].fields[0].revisions[0].status==='verified'"));
             js(s,"navigate('settings'); document.querySelector('[name=language]').value='en'; document.querySelector('#settings-form').requestSubmit()");
             ready(s,"state.workspace.preferences.language==='en'");
-            js(s,"navigate('evidence'); review(state.projects[0].experiments[0].id,state.projects[0].experiments[0].fields[0].id)"); shot("review-en");
+            js(s,"navigate('evidence'); review(state.projects[0].experiments[0].id,state.projects[0].experiments[0].fields[0].id)"); shot(s,"review-en");
             AtomicReference<Exception> error = new AtomicReference<>();
             s.onActivity(a -> {
                 try {
