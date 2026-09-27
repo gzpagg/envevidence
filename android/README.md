@@ -1,36 +1,44 @@
-# EnvEvidence for Android · 0.3.0 preview
+# EnvEvidence Lab for Android · 0.4.0 preview
 
-[简体中文](README.zh-CN.md) · [Desktop app](../README.md)
+[简体中文](README.zh-CN.md) · [Desktop literature tools](../README.md) · [Screenshots and validation](../docs/ANDROID.md)
 
-A standalone, offline-first research workspace. No server, Streamlit installation or new account is needed on your phone. English and Chinese, four palettes and custom colors, configurable module order, learning checklists, dated tasks and sticky notes are included.
+An offline companion for the laboratory bench: keep several processes timed, count actions, photograph changes and record observations in context. The main tabs are **Experiments, Timers, Records and My space**. Appearance and settings live under My space; learning goals, daily tasks and sticky notes remain available as additional tools.
 
-## Install and use
+## Install
 
-Download the [signed preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.3.0-android-preview.1), transfer it to your Android phone and open it. Allow installation from that file source if Android asks. Requires Android 8.0+ with an up-to-date Android System WebView. This preview is distributed directly; it is not a Google Play listing.
+Download the [signed preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) and open it on Android 8.0+ with an up-to-date Android System WebView. It uses the same application ID and signing identity as 0.3.0, so install it as an update. Export a backup before uninstalling; uninstalling removes app data.
 
-1. Open **Settings → Load synthetic demo** for an offline example.
-2. Create goals and steps, change task status, or write and pin notes. Changes save locally; archive/restore is available in each module.
-3. In **Evidence**, create a project and select a text PDF with Android's file picker. Attach supplements to the correct paper. Inspect parsed pages before extracting.
-4. Choose OpenAI or Anthropic, enter a supported structured-output model ID and your own API key, and explicitly confirm sending text. Keep the app open until the run finishes.
-5. Review each condition/field against the parsed page and original paper. Record reviewer, reason, value, unit and quotes. Original model output is retained.
-6. Export a project as JSON or CSV using Android's save dialog. Use **Settings → Export full backup** regularly.
+No account, Python installation or server is needed. **My space → Load lab demo** adds invented examples without replacing your own records. The mobile experiment features make no API calls.
 
-Planning, PDF parsing, quote location checks and data saving work locally. Only an explicit extraction sends page text and field definitions to the selected provider's official API. API keys are held in memory for that run only and excluded from backups. There is no analytics, remote web UI, account sync or background notification. Provider fees and data policies apply; OpenAI requests set `store=false`, which is not a zero-retention guarantee.
+## At the bench
 
-## Data and compatibility
+1. Start an experiment with a name. Sample labels and descriptions are optional.
+2. Add stopwatches or countdowns, name/color them, and start or pause a group. There is no fixed timer-count cap; practical capacity depends on device memory and storage. Laps, finishes and resets retain their history. Expired countdowns show overtime until handled.
+3. Add a sampling plan in minutes after the experiment starts. Mark **Sample taken** to record the actual time separately from the planned point. Pausing a sampling reminder does not move its original target; resuming catches up to the original experiment clock.
+4. Use counters with +1, undo and separate rounds. Resetting keeps prior events.
+5. Tap **Take photo** or **Add observation** inside an experiment. Observations keep their creation time, experiment elapsed time, sample label and earlier text revisions. Photos also have their own time of addition; this is not a claim about the original camera shutter time.
+6. Review the combined timeline. Export CSV, an individual experiment ZIP, or a full backup including original photos.
 
-- Private app storage uses Android `AtomicFile` writes. Uninstalling removes it. Cloud backup is disabled; export your own backup first.
-- Import accepts desktop project JSON, desktop workspace JSON or a full Android backup. New IDs are merged; existing IDs and current preferences are kept. This is additive import, not bidirectional sync.
-- Exported project JSON retains the desktop schema, source pages and revision history. Desktop CLI and Python version remain 0.2.0.
-- Completed papers are checkpointed and skipped on retry. An interrupted unfinished request may still have been billed by the provider.
-- Main/supplement inputs are locked after the first run begins; create a new project to change extraction inputs.
-- Text PDFs only, at most 30 MB / 250 pages, with a 1,000,000-character local parse cap and 160,000-character request cap per paper plus supplements. No silent truncation, OCR or chart reading.
-- CSV and JSON export are available on Android. Excel export remains in the desktop app.
-- A quote found on a page is **not** scientific verification. Check experiment identity, time, units and endpoint yourself. Pollutant removal and mineralization remain separate fields.
+## Timer alerts
 
-## Build and validation
+Open **My space → Enable timer alerts** and allow Android notifications and alarms. The UI shows when these permissions are incomplete. A system alarm handles the next due countdown; multiple due timers are grouped in one notification. Notification taps open Timers. There is no continuously running background service.
 
-Open this directory in Android Studio, or use JDK 17+, Gradle 8.13 and Android SDK 36 / build-tools 35.0.0:
+Within one device boot, elapsed time uses Android's monotonic clock and survives activity/process recreation. After reboot or transfer to another device, recovery falls back to saved wall-clock times. Changing the system clock across a reboot can therefore affect recovery. Imported running timers are paused to avoid unexpectedly rearming old reminders.
+
+Force-stop, muted notification channels and manufacturer power-management policies can suppress alerts. Android 15 emulator checks cover a background notification; physical-device camera behavior, long-duration/reboot scenarios and vendor battery policies still need testing. This is a preview, not a calibrated timing instrument or a Google Play listing.
+
+## Photos, backups and compatibility
+
+- Camera and gallery use Android's own apps/picker. JPEG, PNG and WebP images up to 30 MB each are supported. Originals and their metadata are retained; smaller previews are used only for display.
+- Data and photos live in private app storage. Cloud/device backup is disabled. Photos and observations are never uploaded by these features.
+- Full ZIP backups include workspace JSON, original photos and display previews. Single-experiment ZIPs include only that experiment and its associated records; unrelated learning items and literature projects are excluded.
+- ZIP export/restore supports up to 512 MB of uncompressed content per archive. Larger notebooks can be exported as separate experiments. Existing IDs are kept when importing; conflicting photo bytes are rejected.
+- Existing 0.3.0 evidence and planning data are preserved during migration. Literature extraction/review now belongs in the desktop app; old evidence projects remain in full backups. Desktop project/workspace JSON can still be imported.
+- No OCR, photo interpretation, speech recognition, accounts, cloud sync or AI service is used by the experiment workflow.
+
+## Build and checks
+
+Use JDK 17+, Android SDK 36 and build-tools 35.0.0. The official Gradle 8.13 wrapper is included.
 
 ```sh
 cd android
@@ -39,14 +47,10 @@ cd ..
 node --test android/tests/*.test.cjs
 ```
 
-Start the commands above from the repository root; on Windows use `gradlew.bat` instead of `./gradlew`. The official Gradle 8.13 wrapper is included with a distribution checksum. The [Android workflow](../.github/workflows/android.yml) builds both a debug APK and an unsigned release APK, runs domain checks and an Android 15 emulator test. GitHub Releases provides a release APK signed locally with a stable private key. The Actions debug APK is only for testing; different runners can use different debug certificates.
+On Windows use `gradlew.bat`. The [Android workflow](../.github/workflows/android.yml) builds debug/unsigned-release APKs and runs domain checks plus Android 15 emulator checks. Released APKs are signed locally with a stable private key. Keep the signing identity backed up privately; future updates require it. It is never included in Git or the APK.
 
-For maintainers, `tools/SignApk.java` signs and verifies an unsigned release using Google's `com.android.tools.build:apksig:8.13.2`, a PKCS12 keystore with alias `envevidence` and `ENVEVIDENCE_SIGNING_PASSWORD`. Keep an offline backup of your signing key; future updates require the same identity. Signing material never goes into source control or the APK.
+The app uses bundled HTML/CSS/JavaScript through WebViewAssetLoader. Java handles private atomic storage, monotonic clocks, system alarms, notifications, camera/file access and ZIP/photo preservation. No remote webpage is loaded into the app. The localhost browser preview supports interface checks; camera and background alarms require Android.
 
-The UI is bundled HTML/CSS/JavaScript, displayed through `WebViewAssetLoader`; Java handles private storage, Android's file picker, PDFBox parsing and HTTPS. External resources and WebView navigation are blocked. Resource links open in the system browser. The browser preview is for interface QA only; native PDF/API features require the APK.
+See [recorded validation](../docs/ANDROID.md) for tested behavior and remaining limits. The warm-paper/terracotta presentation follows the requested visual direction, with original EnvEvidence branding and controls. Interaction references: [Time Timer](https://support.timetimer.com/hc/en-us/articles/29258432418203-Time-Timer-App-Free-vs-Paid-Premium-Features), [LabArchives entries](https://help.labarchives.com/hc/en-us/articles/11729082137364-Adding-and-Editing-Entries), and [Claude Android](https://claude.com/blog/android-app). No affiliation is implied.
 
-Live API calls, real-paper extraction accuracy and physical-device compatibility are not yet validated. Tests use invented redistributable PDFs and recorded output. See the workflow for actual build/device results rather than treating available test code as a pass.
-
-## Licenses
-
-App code and synthetic fixtures: MIT. AndroidX WebKit and PDFBox-Android: Apache-2.0. The PDFs under `app/src/main/assets` are copies of this repository's original synthetic examples. See [third-party notices](../THIRD_PARTY_NOTICES.md).
+Code and invented fixtures: MIT. See [third-party notices](../THIRD_PARTY_NOTICES.md).

@@ -1,5 +1,15 @@
 # Changelog
 
+## Android 0.4.0 preview — 2026-09-27
+
+- Refocus mobile navigation on Experiments, Timers, Records and My space. Move settings and retained learning/task/note tools into My space.
+- Add simultaneous stopwatches/countdowns, lap history, overtime, group controls, fixed sampling targets and counters with undo/round history.
+- Add native camera/gallery observations, original-photo preservation, note revisions, experiment timelines and CSV/ZIP export/import.
+- Use native monotonic clock anchors, permission-aware system alarms, grouped notifications and notification links to the timer page.
+- Adopt a consistent warm-paper/terracotta interface with English/Chinese support and existing/custom color preferences.
+- Preserve 0.3.0 evidence and planning data on upgrade. Physical-device camera/power-management validation remains open.
+
+
 ## Android 0.3.0 preview — 2026-09-27
 
 - Add a standalone Android app with an offline bilingual workspace, learning checklists, dated tasks and notes.

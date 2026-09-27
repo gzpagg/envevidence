@@ -3,6 +3,11 @@ package io.github.gzpagg.envevidence;
 import androidx.activity.ComponentActivity;
 import androidx.activity.OnBackPressedCallback;
 import android.content.Intent;
+import android.content.ClipData;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import androidx.core.content.FileProvider;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,11 +51,14 @@ public class MainActivity extends ComponentActivity {
     private String pendingId, pendingMethod;
     private JSONObject pendingPayload;
     private boolean unreadable;
+    private boolean openTimers;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
+        openTimers=getIntent().getBooleanExtra("openTimers",false);
         PDFBoxResourceLoader.init(getApplicationContext());
         storage = new AtomicFile(new File(getFilesDir(), "workspace.json"));
+        if(saved!=null&&saved.containsKey("photoMethod"))try{pendingId=saved.getString("photoRequest");pendingMethod=saved.getString("photoMethod");pendingPayload=new JSONObject(saved.getString("photoPayload"));}catch(Exception ignored){pendingId=null;}
         FrameLayout root = new FrameLayout(this);
         web = new WebView(this);
         root.addView(web, new FrameLayout.LayoutParams(-1, -1));
@@ -74,7 +82,11 @@ public class MainActivity extends ComponentActivity {
         web.setSaveEnabled(false);
         WebView.setWebContentsDebuggingEnabled(false);
         final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
-            .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
+            .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
+            .addPathHandler("/photos/", path -> {
+                try{return new WebResourceResponse(path.endsWith(".png")?"image/png":path.endsWith(".webp")?"image/webp":"image/jpeg",null,new java.io.FileInputStream(LabPhotos.file(this,path)));}
+                catch(Exception e){return null;}
+            }).build();
         web.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView v, WebResourceRequest r) {
                 WebResourceResponse response = loader.shouldInterceptRequest(r.getUrl());
@@ -120,6 +132,7 @@ public class MainActivity extends ComponentActivity {
                     JSONObject p = new JSONObject(raw);
                     switch (method) {
                         case "load":
+                            recoverCamera();
                             if (!storage.getBaseFile().exists() && !new File(storage.getBaseFile()+".bak").exists()) { reply(id, null, null); break; }
                             try { reply(id, new JSONObject(new String(read(storage.openRead(), LIMIT), StandardCharsets.UTF_8)), null); }
                             catch (Exception e) { unreadable = true; reply(id, null, "loadFailed"); }
@@ -130,10 +143,16 @@ public class MainActivity extends ComponentActivity {
                             if (!state.getString("format").equals("envevidence-android") || state.getInt("schema_version") != 1) throw new Exception("invalid");
                             byte[] bytes = state.toString().getBytes(StandardCharsets.UTF_8);
                             if (bytes.length > LIMIT) throw new Exception("tooLarge");
-                            FileOutputStream out = null;
-                            try { out = storage.startWrite(); out.write(bytes); storage.finishWrite(out); }
-                            catch (Exception e) { if (out != null) storage.failWrite(out); throw new Exception("saveFailed"); }
+                            LabStore.save(MainActivity.this,state);
+                            LabAlarms.sync(MainActivity.this);
                             reply(id, true, null); break;
+                        case "clock":
+                            JSONObject clock=LabStore.clock(MainActivity.this).put("exact",LabAlarms.exact(MainActivity.this)).put("notifications",LabAlarms.notifications(MainActivity.this)).put("openTimers",openTimers);
+                            openTimers=false;
+                            reply(id,clock,null);break;
+                        case "checkAlarms":reply(id,LabAlarms.fireDue(MainActivity.this),null);break;
+                        case "enableAlerts":runOnUiThread(()->{enableAlerts();reply(id,true,null);});break;
+                        case "capturePhoto": case "pickPhoto": case "backupLab": case "importLab":
                         case "pickPdf": case "import": case "export":
                             runOnUiThread(() -> choose(id, method, p)); break;
                         case "extract": reply(id, extract(p), null); break;
@@ -148,7 +167,7 @@ public class MainActivity extends ComponentActivity {
                     }
                 } catch (Exception e) {
                     String code = e.getMessage();
-                    if (code == null || !code.matches("(invalid|tooLarge|tooManyPages|encrypted|noText|file|saveFailed|loadFailed|network|http[0-9]{3})")) code = method.equals("extract") ? "network" : "file";
+                    if (code == null || !code.matches("(invalid|tooLarge|tooManyPages|encrypted|noText|file|saveFailed|loadFailed|network|photoConflict|missingPhoto|imageFormat|http[0-9]{3})")) code = method.equals("extract") ? "network" : "file";
                     reply(id, null, code);
                 }
             });
@@ -158,14 +177,24 @@ public class MainActivity extends ComponentActivity {
     private void choose(String id, String method, JSONObject p) {
         if (pendingId != null) { reply(id, null, "busy"); return; }
         Intent intent;
-        if (method.equals("export")) {
+        if(method.equals("capturePhoto")){
+            try{
+                String photoId=UUID.randomUUID().toString().replace("-","");p.put("photoId",photoId);
+                File f=LabPhotos.file(this,photoId+".jpg");Uri uri=FileProvider.getUriForFile(this,getPackageName()+".photos",f);
+                intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT,uri).addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setClipData(ClipData.newRawUri("photo",uri));
+                getSharedPreferences("lab-camera",0).edit().putString("pending",p.toString()).commit();
+            }catch(Exception e){reply(id,null,"file");return;}
+        }else if(method.equals("backupLab")){
+            intent=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/zip").putExtra(Intent.EXTRA_TITLE,"envevidence-lab-backup.zip");intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }else if (method.equals("export")) {
             intent = new Intent(Intent.ACTION_CREATE_DOCUMENT).setType(p.optString("mime", "application/json"));
             intent.putExtra(Intent.EXTRA_TITLE, p.optString("name", "envevidence.json").replaceAll("[^a-zA-Z0-9._-]", "_"));
-        } else intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType(method.equals("pickPdf") ? "application/pdf" : "*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        } else intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType(method.equals("pickPdf") ? "application/pdf" : method.equals("pickPhoto")?"image/*":"*/*");
+        if(!method.equals("capturePhoto"))intent.addCategory(Intent.CATEGORY_OPENABLE);
         pendingId = id; pendingMethod = method; pendingPayload = p;
         try { startActivityForResult(intent, 1); }
-        catch (Exception e) { pendingId = null; pendingPayload = null; reply(id, null, "file"); }
+        catch (Exception e) { pendingId = null; pendingPayload = null; getSharedPreferences("lab-camera",0).edit().remove("pending").apply();reply(id, null, "file"); }
     }
 
     @Override public void onActivityResult(int request, int result, Intent data) {
@@ -173,11 +202,19 @@ public class MainActivity extends ComponentActivity {
         if (request != 1 || pendingId == null) return;
         String id = pendingId, method = pendingMethod; JSONObject payload = pendingPayload;
         pendingId = null; pendingPayload = null;
-        if (result != RESULT_OK || data == null || data.getData() == null) { reply(id, null, "cancelled"); return; }
-        Uri uri = data.getData();
+        if (result != RESULT_OK || (!method.equals("capturePhoto")&&(data == null || data.getData() == null))) { if(method.equals("capturePhoto"))getSharedPreferences("lab-camera",0).edit().remove("pending").apply();reply(id, null, "cancelled"); return; }
+        Uri uri = data==null?null:data.getData();
         worker.execute(() -> {
             try {
-                if (method.equals("export")) {
+                if(method.equals("capturePhoto")||method.equals("pickPhoto")){
+                    JSONObject photo;
+                    if(method.equals("capturePhoto")){String photoId=payload.getString("photoId");photo=LabPhotos.ingest(this,read(new java.io.FileInputStream(LabPhotos.file(this,photoId+".jpg")),LIMIT),"camera.jpg",photoId);}
+                    else photo=LabPhotos.ingest(this,read(getContentResolver().openInputStream(uri),LIMIT),filename(uri),null);
+                    JSONObject updated=LabPhotos.attach(this,payload.getString("recordId"),photo);getSharedPreferences("lab-camera",0).edit().remove("pending").apply();reply(id,updated,null);
+                    runOnUiThread(()->web.evaluateJavascript("window.labReload && window.labReload()",null));
+                }else if(method.equals("backupLab")){LabPhotos.backup(this,uri,payload.optString("experimentId",null));reply(id,true,null);}
+                else if(method.equals("importLab")){reply(id,LabPhotos.restore(this,uri),null);}
+                else if (method.equals("export")) {
                     try (OutputStream out = getContentResolver().openOutputStream(uri, "wt")) {
                         if (out == null) throw new Exception("file");
                         out.write(payload.getString("text").getBytes(StandardCharsets.UTF_8));
@@ -190,10 +227,27 @@ public class MainActivity extends ComponentActivity {
                 }
             } catch (Exception e) {
                 String message = e.getMessage();
-                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText") ? message : "file");
+                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText|photoConflict|missingPhoto|imageFormat|invalid|backupLimit") ? message : "file");
             }
         });
     }
+
+    private void recoverCamera() throws Exception {
+        String pending=getSharedPreferences("lab-camera",0).getString("pending",null);if(pending==null||"capturePhoto".equals(pendingMethod))return;
+        JSONObject p=new JSONObject(pending);File f=LabPhotos.file(this,p.getString("photoId")+".jpg");
+        if(f.exists()&&f.length()>0){JSONObject photo=LabPhotos.ingest(this,LabStore.read(new java.io.FileInputStream(f),LIMIT),"camera.jpg",p.getString("photoId"));LabPhotos.attach(this,p.getString("recordId"),photo);getSharedPreferences("lab-camera",0).edit().remove("pending").commit();}
+    }
+    private void enableAlerts(){
+        if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},40);return;}
+        if(android.os.Build.VERSION.SDK_INT>=31&&!LabAlarms.exact(this)){startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,Uri.parse("package:"+getPackageName())));return;}
+        if(!LabAlarms.notifications(this))startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName()));
+        LabAlarms.sync(this);
+    }
+    @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] grants){super.onRequestPermissionsResult(request,permissions,grants);if(request==40&&grants.length>0&&grants[0]==PackageManager.PERMISSION_GRANTED)enableAlerts();}
+    @Override public void onSaveInstanceState(Bundle out){if(pendingId!=null&&("capturePhoto".equals(pendingMethod)||"pickPhoto".equals(pendingMethod))){out.putString("photoRequest",pendingId);out.putString("photoMethod",pendingMethod);out.putString("photoPayload",pendingPayload.toString());}super.onSaveInstanceState(out);}
+    @Override protected void onResume(){super.onResume();worker.execute(()->LabAlarms.sync(this));if(web!=null){web.onResume();web.evaluateJavascript("window.labResume && window.labResume()",null);}}
+    @Override protected void onPause(){if(web!=null)web.onPause();super.onPause();}
+    @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(web!=null)web.evaluateJavascript("window.labOpenTimers && window.labOpenTimers()",null);}
 
     private String filename(Uri uri) {
         try (Cursor c = getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {

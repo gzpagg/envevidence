@@ -28,7 +28,7 @@ function errorText(e){const k=e.message;return strings[k]?t(k):/^http\d{3}$/.tes
 let noticeTimer;
 function notice(message,error=false){const n=$('#notice');n.textContent=message;n.className=error?'error':'';n.style.display='block';clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>n.style.display='none',error?9000:3000);}
 let saveChain=Promise.resolve();
-function commit(fn){const op=saveChain.then(async()=>{const next=D.clone(state);fn(next);next.workspace.updated_at=D.now();D.validateState(next);await bridge('save',{state:next});state=next;});saveChain=op.catch(()=>{});return op;}
+function commit(fn){const op=saveChain.then(async()=>{const next=D.clone(state);fn(next);next.workspace.updated_at=D.now();D.validateState(next);if(window.Lab&&next.lab)Lab.validate(next.lab);await bridge('save',{state:next});state=next;});saveChain=op.catch(()=>{});return op;}
 const button=(action,label,extra='',cls='')=>`<button type="button" data-action="${action}" ${extra} class="${cls}">${label}</button>`;
 const input=(name,label,value='',type='text',extra='')=>`<label>${esc(label)}<input name="${name}" type="${type}" value="${esc(value)}" ${extra}></label>`;
 const area=(name,label,value='',extra='')=>`<label>${esc(label)}<textarea name="${name}" ${extra}>${esc(value)}</textarea></label>`;
@@ -136,4 +136,4 @@ document.addEventListener('change',async event=>{const el=event.target;if(busy||
 }catch(e){render();notice(errorText(e),true);}});
 async function withBusy(fn){busy=true;const b=document.createElement('div');b.className='busy';b.innerHTML=`<p role="status">${t('loading')}</p>`;document.body.append(b);try{return await fn();}finally{busy=false;b.remove();}}
 document.addEventListener('submit',async event=>{if(!['settings-form','extract-form'].includes(event.target.id))return;event.preventDefault();if(busy||fatal)return;try{if(event.target.id==='settings-form'){const data=new FormData(event.target);await commit(s=>{for(const k of ['language','palette','accent','background'])s.workspace.preferences[k]=data.get(k);});render();notice(t('saved'));}else await withBusy(()=>runExtraction(event.target));}catch(e){render();notice(errorText(e),true);}});
-(async()=>{try{const data=await bridge('load');if(data){state=D.validateState(data);const recovered=D.recover(D.clone(state));if(JSON.stringify(recovered)!==JSON.stringify(state)){await bridge('save',{state:recovered});state=recovered;}}render();}catch(e){fatal=true;$('#app').innerHTML=`<main><h1>EnvEvidence</h1><p class="error">${t('loadFailed')}</p></main>`;}})();
+// The lab entry point owns startup and migration. Legacy editors remain auxiliary tools.
