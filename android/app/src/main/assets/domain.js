@@ -41,7 +41,7 @@
     assert(p && p.schema_version === 1 && title(p.id) && title(p.name));
     assert(['demo','openai','anthropic'].includes(p.provider) && text(p.model,200));
     assert(array(p.fields,50) && p.fields.length && unique(p.fields.map(x=>x.key)));
-    for (const f of p.fields) assert(/^[a-z][a-z0-9_]{0,49}$/.test(f.key) && title(f.label) && text(f.description,1000) && typeof f.requires_unit === 'boolean');
+    for (const f of p.fields) assert(/^[a-z][a-z0-9_]{0,49}$/.test(f.key) && title(f.label) && f.label.length<=100 && text(f.description,1000) && f.description.length>0 && typeof f.requires_unit === 'boolean');
     assert(array(p.studies,100) && unique(p.studies.map(x=>x.id)) && array(p.experiments) && array(p.runs));
     const blockIds = [], docIds = [];
     for (const s of p.studies) {
@@ -113,10 +113,10 @@
   function merge(state,input) {
     const out=clone(state); let added=0;
     if (input.format==='envevidence-android') { validateState(input); for (const p of input.projects) if (!out.projects.some(x=>x.id===p.id)) {out.projects.push(clone(p)); added++;} input=input.workspace; }
-    else if (input.studies) { validateProject(input); assert(!out.projects.some(x=>x.id===input.id),'duplicate'); out.projects.push(clone(input)); return {state:validateState(out),added:1}; }
+    else if (input.studies) { validateProject(input); assert(!out.projects.some(x=>x.id===input.id),'duplicate'); out.projects.push(clone(input)); return {state:recover(validateState(out)),added:1}; }
     validWorkspace(input);
     for (const k of ['goals','tasks','notes']) for (const item of input[k]) if (!out.workspace[k].some(x=>x.id===item.id)) {out.workspace[k].push(clone(item));added++;}
-    out.workspace.updated_at=now(); return {state:validateState(out),added};
+    out.workspace.updated_at=now(); return {state:recover(validateState(out)),added};
   }
   function recover(state) { for(const p of state.projects) for(const r of p.runs) if(r.status==='running'){r.status='failed';r.error='Interrupted. Completed studies are preserved.';r.finished_at=now();} return state; }
   function textColor(hex) { const c=hex.slice(1).match(/../g).map(h=>parseInt(h,16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]>.179?'#000000':'#FFFFFF'; }
