@@ -6,7 +6,7 @@ A standalone, offline-first research workspace. No server, Streamlit installatio
 
 ## Install and use
 
-Download the APK provided with this version, transfer it to your Android phone and open it. Allow installation from that file source if Android asks. Requires Android 8.0+ with an up-to-date Android System WebView. This preview is distributed directly; it is not a Google Play listing.
+Download the [signed preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.3.0-android-preview.1), transfer it to your Android phone and open it. Allow installation from that file source if Android asks. Requires Android 8.0+ with an up-to-date Android System WebView. This preview is distributed directly; it is not a Google Play listing.
 
 1. Open **Settings → Load synthetic demo** for an offline example.
 2. Create goals and steps, change task status, or write and pin notes. Changes save locally; archive/restore is available in each module.
@@ -33,11 +33,15 @@ Planning, PDF parsing, quote location checks and data saving work locally. Only 
 Open this directory in Android Studio, or use JDK 17+, Gradle 8.13 and Android SDK 36 / build-tools 35.0.0:
 
 ```sh
-gradle -p android lintDebug testDebugUnitTest assembleDebug assembleRelease
+cd android
+./gradlew lintDebug testDebugUnitTest assembleDebug assembleRelease
+cd ..
 node --test android/tests/*.test.cjs
 ```
 
-Commands above run from the repository root. The [Android workflow](../.github/workflows/android.yml) builds both an installable debug APK and an unsigned release APK, runs domain checks and an Android 15 emulator test. Debug artifacts are for testing; builds from different runners may use different debug certificates. Keep backups and use a stable private release signing key for updateable distribution. Never commit signing keys or API credentials.
+Start the commands above from the repository root; on Windows use `gradlew.bat` instead of `./gradlew`. The official Gradle 8.13 wrapper is included with a distribution checksum. The [Android workflow](../.github/workflows/android.yml) builds both a debug APK and an unsigned release APK, runs domain checks and an Android 15 emulator test. GitHub Releases provides a release APK signed locally with a stable private key. The Actions debug APK is only for testing; different runners can use different debug certificates.
+
+For maintainers, `tools/SignApk.java` signs and verifies an unsigned release using Google's `com.android.tools.build:apksig:8.13.2`, a PKCS12 keystore with alias `envevidence` and `ENVEVIDENCE_SIGNING_PASSWORD`. Keep an offline backup of your signing key; future updates require the same identity. Signing material never goes into source control or the APK.
 
 The UI is bundled HTML/CSS/JavaScript, displayed through `WebViewAssetLoader`; Java handles private storage, Android's file picker, PDFBox parsing and HTTPS. External resources and WebView navigation are blocked. Resource links open in the system browser. The browser preview is for interface QA only; native PDF/API features require the APK.
 

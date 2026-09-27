@@ -118,9 +118,9 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
     if(a==='archive')await commit(s=>{const item=s.workspace[k].find(x=>x.id===id);item.archived=!item.archived;});
     if(a==='pin')await commit(s=>{const item=s.workspace.notes.find(x=>x.id===id);item.pinned=!item.pinned;});
     if(a==='link'){await bridge('openLink',{url:el.dataset.url});return;}
-    if(a==='backup'){await exportFile(`envevidence-backup-${D.day()}.json`,JSON.stringify(state,null,2));return;}
-    if(a==='exportProject'||a==='exportCsv'){const p=state.projects.find(p=>p.id===projectId);await exportFile(`envevidence-${p.id}.${a==='exportCsv'?'csv':'json'}`,a==='exportCsv'?D.csv(p):JSON.stringify(p,null,2),a==='exportCsv'?'text/csv':'application/json');return;}
-    if(a==='import'){const input=await bridge('import'),result=D.merge(state,input);await bridge('save',{state:result.state});state=result.state;render();notice(`${t('imported')}: ${result.added}`);return;}
+    if(a==='backup'){await saveChain;await exportFile(`envevidence-backup-${D.day()}.json`,JSON.stringify(state,null,2));return;}
+    if(a==='exportProject'||a==='exportCsv'){await saveChain;const p=state.projects.find(p=>p.id===projectId);await exportFile(`envevidence-${p.id}.${a==='exportCsv'?'csv':'json'}`,a==='exportCsv'?D.csv(p):JSON.stringify(p,null,2),a==='exportCsv'?'text/csv':'application/json');return;}
+    if(a==='import'){const input=await bridge('import');let added=0;await commit(s=>{const result=D.merge(s,input);added=result.added;Object.assign(s,result.state);});render();notice(`${t('imported')}: ${added}`);return;}
     if(a==='demo'){await loadDemo();return;}
     if(a==='supplement'||a==='addStudy'){await withBusy(async()=>{const doc=await bridge('pickPdf',{role:a==='supplement'?'supplement':'main'});await commit(s=>{const p=s.projects.find(p=>p.id===projectId);D.assert(!p.runs.length);if(a==='supplement'){const study=p.studies.find(s=>s.id===el.dataset.study);D.assert(!study.documents.some(d=>d.sha256===doc.sha256),'duplicate');study.documents.push(doc);}else p.studies.push({id:D.uid(),name:doc.filename,documents:[doc]});});});}
     render();

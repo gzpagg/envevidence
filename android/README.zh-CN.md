@@ -6,7 +6,7 @@
 
 ## 安装与使用
 
-将本版本提供的 APK 传到安卓手机并打开；系统询问时，允许从该文件来源安装。需要 Android 8.0 或以上及较新的 Android System WebView。当前直接提供安装包，尚未上架 Google Play。
+下载[已签名的预览版 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.3.0-android-preview.1)，传到安卓手机并打开；系统询问时，允许从该文件来源安装。需要 Android 8.0 或以上及较新的 Android System WebView。当前直接提供安装包，尚未上架 Google Play。
 
 1. 在“设置 → 载入自制演示”体验离线示例。
 2. 创建学习目标、增删与勾选步骤，修改任务状态，编辑与置顶便签。各模块可归档和恢复。
@@ -33,11 +33,15 @@
 使用 Android Studio 打开此目录，或配置 JDK 17+、Gradle 8.13、Android SDK 36 / build-tools 35.0.0。在仓库根目录执行：
 
 ```sh
-gradle -p android lintDebug testDebugUnitTest assembleDebug assembleRelease
+cd android
+./gradlew lintDebug testDebugUnitTest assembleDebug assembleRelease
+cd ..
 node --test android/tests/*.test.cjs
 ```
 
-[自动检查](../.github/workflows/android.yml)会构建可安装的 debug APK 和未签名 release APK，运行数据规则测试及 Android 15 模拟器测试。debug 包用于试用，不同构建机的证书可能不同；可持续升级的正式分发应使用稳定的私有签名密钥。签名密钥与 API 密钥均不得提交到仓库。
+Windows 将 `./gradlew` 替换为 `gradlew.bat`。仓库已包含官方 Gradle 8.13 Wrapper 及分发校验值。[自动检查](../.github/workflows/android.yml)构建 debug APK 和未签名 release APK，运行数据规则测试及 Android 15 模拟器测试。GitHub Releases 提供使用本机固定私有密钥签名的 release APK；Actions 的 debug 包仅用于测试，不同构建机的证书可能不同。
+
+维护者可使用 `tools/SignApk.java`、Google 官方 `com.android.tools.build:apksig:8.13.2`、别名为 `envevidence` 的 PKCS12 密钥库和环境变量 `ENVEVIDENCE_SIGNING_PASSWORD` 签名、核验 release APK。请离线备份签名密钥，以后升级必须使用同一身份。签名材料不进入源码仓库或 APK。
 
 界面随 APK 打包，使用 WebView 展示；Java 负责本地存储、文件选择、PDFBox 解析和 HTTPS。外部资源和 WebView 导航被禁止，学习链接使用系统浏览器打开。浏览器预览仅用于界面检查，原生 PDF / API 功能须在 APK 中使用。
 

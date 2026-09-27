@@ -51,7 +51,7 @@ jobs:
           disable-animations: true
           script: |
             gradle -p android --no-daemon connectedDebugAndroidTest
-            adb pull /sdcard/Android/data/io.github.gzpagg.envevidence/files/screenshots android/device-screenshots
+            adb pull /sdcard/Download/envevidence-screenshots android/device-screenshots
       - uses: actions/upload-artifact@v4
         if: always()
         with:
