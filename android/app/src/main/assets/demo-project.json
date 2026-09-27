@@ -1,0 +1,923 @@
+{
+  "schema_version": 1,
+  "id": "9d13bf8191214cdf8f66b2200c28080c",
+  "name": "Synthetic water-treatment evidence",
+  "created_at": "2026-09-27T06:44:33.789560+00:00",
+  "updated_at": "2026-09-27T06:44:33.804126+00:00",
+  "provider": "demo",
+  "model": "recorded-fixture-v1",
+  "fields": [
+    {
+      "key": "pollutant",
+      "label": "污染物",
+      "description": "Target pollutant; preserve chemical identity.",
+      "requires_unit": false
+    },
+    {
+      "key": "water_matrix",
+      "label": "水体类型",
+      "description": "Synthetic water, real wastewater, surface water, etc.",
+      "requires_unit": false
+    },
+    {
+      "key": "initial_concentration",
+      "label": "初始浓度",
+      "description": "Initial target pollutant concentration.",
+      "requires_unit": true
+    },
+    {
+      "key": "process",
+      "label": "处理工艺",
+      "description": "Treatment process applied to this experimental condition.",
+      "requires_unit": false
+    },
+    {
+      "key": "dose",
+      "label": "投加剂量",
+      "description": "Reagent-specific doses; name each reagent and keep original units.",
+      "requires_unit": true
+    },
+    {
+      "key": "ph",
+      "label": "pH",
+      "description": "Initial or controlled pH; distinguish if both are provided.",
+      "requires_unit": false
+    },
+    {
+      "key": "reaction_time",
+      "label": "反应时间",
+      "description": "Duration associated with the reported result.",
+      "requires_unit": true
+    },
+    {
+      "key": "removal_efficiency",
+      "label": "污染物去除率",
+      "description": "Target pollutant removal, NOT TOC removal/mineralization.",
+      "requires_unit": true
+    },
+    {
+      "key": "mineralization_efficiency",
+      "label": "矿化率 / TOC 去除率",
+      "description": "Mineralization or TOC removal; retain the exact endpoint name in value. Never substitute pollutant removal.",
+      "requires_unit": true
+    }
+  ],
+  "studies": [
+    {
+      "id": "bf589be5f47d4aa88c661bea2763df82",
+      "name": "Synthetic water-treatment study",
+      "documents": [
+        {
+          "id": "bf3ad05742ff57622b03",
+          "filename": "synthetic_main.pdf",
+          "sha256": "bf3ad05742ff57622b038114aa5af16e2c6c726ed8f6c8dfc643274b0f4761b3",
+          "role": "main",
+          "page_count": 3,
+          "blocks": [
+            {
+              "id": "bf3ad05742ff57622b03:p1",
+              "page": 1,
+              "text": "EnvEvidence | Synthetic research fixture\nNOT A REAL PUBLICATION. Invented values for software testing only.\nThis original example is distributed under the repository MIT license.\nStudy: water treatment using three distinct experimental conditions.\nReported removal refers to the target pollutant. TOC removal is a separate endpoint.\nReagent doses for Trials A and B are reported in the accompanying supplement.\nDo not use these invented values for research conclusions or method recommendations.\nSynthetic fixture | PDF page 1\n"
+            },
+            {
+              "id": "bf3ad05742ff57622b03:p2",
+              "page": 2,
+              "text": "Results | Trials A and B\nTrial A: acetaminophen in synthetic water, initial concentration 10 mg/L.\nTrial A used UV/H2O2 at pH 7.0 for 30 min.\nTrial A: acetaminophen removal was 85%; TOC removal was 20%.\nTrial B: acetaminophen in synthetic water, initial concentration 10 mg/L.\nTrial B used H2O2 in the dark at pH 7.0 for 30 min.\nTrial B: acetaminophen removal was 12%; TOC removal was 2%.\nThese results belong to separate treatment arms and must not be merged.\nSynthetic fixture | PDF page 2\n"
+            },
+            {
+              "id": "bf3ad05742ff57622b03:p3",
+              "page": 3,
+              "text": "Results | Trial C\nTrial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L.\nTrial C used UV/H2O2 at pH 6.5 for 60 min.\nTrial C: H2O2 dose was 15 mg/L.\nTrial C: sulfamethoxazole removal was 64%.\nThe fixture provides no TOC endpoint for Trial C.\nSynthetic fixture | PDF page 3\n"
+            }
+          ],
+          "warnings": [],
+          "parser": "pypdf"
+        },
+        {
+          "id": "a67be887c1212fd0bea7",
+          "filename": "synthetic_supplement.pdf",
+          "sha256": "a67be887c1212fd0bea7fba05ccbb3f98699bd9aae2328f51c31ebfeea571c33",
+          "role": "supplement",
+          "page_count": 1,
+          "blocks": [
+            {
+              "id": "a67be887c1212fd0bea7:p1",
+              "page": 1,
+              "text": "Supplement | Reagent doses\nSynthetic fixture, linked to the main synthetic study.\nTrial A: H2O2 dose was 20 mg/L.\nTrial B: H2O2 dose was 20 mg/L.\nSynthetic fixture | PDF page 1\n"
+            }
+          ],
+          "warnings": [],
+          "parser": "pypdf"
+        }
+      ]
+    }
+  ],
+  "experiments": [
+    {
+      "id": "a3e0fdaab32b45c085f0feeab5d67674",
+      "study_id": "bf589be5f47d4aa88c661bea2763df82",
+      "label": "Trial A",
+      "fields": [
+        {
+          "id": "99ecbe9eeae34fd59b24a65f22c94ada",
+          "key": "pollutant",
+          "label": "污染物",
+          "original": {
+            "key": "pollutant",
+            "value": "acetaminophen",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "b521759ad58d4febaea2b3c5d5298b65",
+          "key": "water_matrix",
+          "label": "水体类型",
+          "original": {
+            "key": "water_matrix",
+            "value": "synthetic water",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "ad133c016161403d8a2011d2a8de89ef",
+          "key": "initial_concentration",
+          "label": "初始浓度",
+          "original": {
+            "key": "initial_concentration",
+            "value": "10",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "7d722d7ad9094cb29dde09b1c9c3bf91",
+          "key": "process",
+          "label": "处理工艺",
+          "original": {
+            "key": "process",
+            "value": "UV/H2O2",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "d502888df0a446a3837fb5c10b477d82",
+          "key": "dose",
+          "label": "投加剂量",
+          "original": {
+            "key": "dose",
+            "value": "H2O2: 20",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "a67be887c1212fd0bea7:p1",
+                "quote": "Trial A: H2O2 dose was 20 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "a67be887c1212fd0bea7:p1",
+              "quote": "Trial A: H2O2 dose was 20 mg/L.",
+              "document_id": "a67be887c1212fd0bea7",
+              "filename": "synthetic_supplement.pdf",
+              "page": 1,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "d2d420b4948c48abbf2ea2af8dbdfa52",
+          "key": "ph",
+          "label": "pH",
+          "original": {
+            "key": "ph",
+            "value": "7.0",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "8eb810cf271c482fad52ff2f0aa3f290",
+          "key": "reaction_time",
+          "label": "反应时间",
+          "original": {
+            "key": "reaction_time",
+            "value": "30",
+            "unit": "min",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A used UV/H2O2 at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "3e44c953fcca4b03ae20de26350e93f3",
+          "key": "removal_efficiency",
+          "label": "污染物去除率",
+          "original": {
+            "key": "removal_efficiency",
+            "value": "85",
+            "unit": "%",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "bcb94738e1fa4ee1bd1c401b9df5f275",
+          "key": "mineralization_efficiency",
+          "label": "矿化率 / TOC 去除率",
+          "original": {
+            "key": "mineralization_efficiency",
+            "value": "TOC removal: 20",
+            "unit": "%",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial A: acetaminophen removal was 85%; TOC removal was 20%.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        }
+      ]
+    },
+    {
+      "id": "57222f8327ee42babc0abe6b085ae26b",
+      "study_id": "bf589be5f47d4aa88c661bea2763df82",
+      "label": "Trial B",
+      "fields": [
+        {
+          "id": "ad59821b328c46bb9318588b22fffb66",
+          "key": "pollutant",
+          "label": "污染物",
+          "original": {
+            "key": "pollutant",
+            "value": "acetaminophen",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "ceec74a4869f497c8d970d3d50564a89",
+          "key": "water_matrix",
+          "label": "水体类型",
+          "original": {
+            "key": "water_matrix",
+            "value": "synthetic water",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "2dd4c08157a9461c97629d3d137ddfd8",
+          "key": "initial_concentration",
+          "label": "初始浓度",
+          "original": {
+            "key": "initial_concentration",
+            "value": "10",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B: acetaminophen in synthetic water, initial concentration 10 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "460909f8a7ce43ee9ea89d9f728f8375",
+          "key": "process",
+          "label": "处理工艺",
+          "original": {
+            "key": "process",
+            "value": "H2O2 in the dark",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "f16605b9431b4e78afdda91ea9ba4667",
+          "key": "dose",
+          "label": "投加剂量",
+          "original": {
+            "key": "dose",
+            "value": "H2O2: 20",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "a67be887c1212fd0bea7:p1",
+                "quote": "Trial B: H2O2 dose was 20 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "a67be887c1212fd0bea7:p1",
+              "quote": "Trial B: H2O2 dose was 20 mg/L.",
+              "document_id": "a67be887c1212fd0bea7",
+              "filename": "synthetic_supplement.pdf",
+              "page": 1,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "cafe631b383443eaa5e72cd84f887bb1",
+          "key": "ph",
+          "label": "pH",
+          "original": {
+            "key": "ph",
+            "value": "7.0",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "2fb66c01aacb46bbbc8a8a19050d685d",
+          "key": "reaction_time",
+          "label": "反应时间",
+          "original": {
+            "key": "reaction_time",
+            "value": "30",
+            "unit": "min",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B used H2O2 in the dark at pH 7.0 for 30 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "e14da817c7304db281fc56e3e24dd592",
+          "key": "removal_efficiency",
+          "label": "污染物去除率",
+          "original": {
+            "key": "removal_efficiency",
+            "value": "12",
+            "unit": "%",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "a12e4120e23248799c21e271a2b13c82",
+          "key": "mineralization_efficiency",
+          "label": "矿化率 / TOC 去除率",
+          "original": {
+            "key": "mineralization_efficiency",
+            "value": "TOC removal: 2",
+            "unit": "%",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p2",
+                "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p2",
+              "quote": "Trial B: acetaminophen removal was 12%; TOC removal was 2%.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 2,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        }
+      ]
+    },
+    {
+      "id": "b48e3af10551424b9e44f1c75cfd7df4",
+      "study_id": "bf589be5f47d4aa88c661bea2763df82",
+      "label": "Trial C",
+      "fields": [
+        {
+          "id": "baf447087aba41299eae5c2c6574a56c",
+          "key": "pollutant",
+          "label": "污染物",
+          "original": {
+            "key": "pollutant",
+            "value": "sulfamethoxazole",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "fb12189aecbc4b5ba52270420c10c1f9",
+          "key": "water_matrix",
+          "label": "水体类型",
+          "original": {
+            "key": "water_matrix",
+            "value": "real wastewater",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "fec87fc1474249c0a46eb4a9de7e03d8",
+          "key": "initial_concentration",
+          "label": "初始浓度",
+          "original": {
+            "key": "initial_concentration",
+            "value": "5",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C: sulfamethoxazole in real wastewater, initial concentration 5 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "52bc75ad23d84fc19af2fe6fef58695d",
+          "key": "process",
+          "label": "处理工艺",
+          "original": {
+            "key": "process",
+            "value": "UV/H2O2",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "2680e7f7902440ce971a386fbbc59a0b",
+          "key": "dose",
+          "label": "投加剂量",
+          "original": {
+            "key": "dose",
+            "value": "H2O2: 15",
+            "unit": "mg/L",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C: H2O2 dose was 15 mg/L."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C: H2O2 dose was 15 mg/L.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "3925bc5c39894b64a08cb5b444a70c2f",
+          "key": "ph",
+          "label": "pH",
+          "original": {
+            "key": "ph",
+            "value": "6.5",
+            "unit": null,
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "eadd7b574f7b404f97f4d3ef51d2121e",
+          "key": "reaction_time",
+          "label": "反应时间",
+          "original": {
+            "key": "reaction_time",
+            "value": "60",
+            "unit": "min",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C used UV/H2O2 at pH 6.5 for 60 min.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "fcc407b9060b49c2895c921f54dc7a82",
+          "key": "removal_efficiency",
+          "label": "污染物去除率",
+          "original": {
+            "key": "removal_efficiency",
+            "value": "64",
+            "unit": "%",
+            "status": "found",
+            "sources": [
+              {
+                "block_id": "bf3ad05742ff57622b03:p3",
+                "quote": "Trial C: sulfamethoxazole removal was 64%."
+              }
+            ]
+          },
+          "sources": [
+            {
+              "block_id": "bf3ad05742ff57622b03:p3",
+              "quote": "Trial C: sulfamethoxazole removal was 64%.",
+              "document_id": "bf3ad05742ff57622b03",
+              "filename": "synthetic_main.pdf",
+              "page": 3,
+              "matched": true
+            }
+          ],
+          "issues": [],
+          "revisions": []
+        },
+        {
+          "id": "441989fb586a424f923c13be6d08733f",
+          "key": "mineralization_efficiency",
+          "label": "矿化率 / TOC 去除率",
+          "original": {
+            "key": "mineralization_efficiency",
+            "value": null,
+            "unit": null,
+            "status": "not_found",
+            "sources": []
+          },
+          "sources": [],
+          "issues": [
+            "在已导入且成功解析的资料中未找到；不代表论文没有报告。"
+          ],
+          "revisions": []
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "study_id": "bf589be5f47d4aa88c661bea2763df82",
+      "status": "completed",
+      "started_at": "2026-09-27T06:44:33.793460+00:00",
+      "finished_at": "2026-09-27T06:44:33.804100+00:00",
+      "error": null,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      }
+    }
+  ],
+  "prompt_version": "1.0"
+}

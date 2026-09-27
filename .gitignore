@@ -13,4 +13,12 @@ data/
 .streamlit/secrets.toml
 *.log
 test-results/
-
+.android-tools/
+android/.gradle/
+android/local.properties
+*.keystore
+*.jks
+*.p12
+*.class
+signing.properties
+android/device-screenshots/

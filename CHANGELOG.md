@@ -1,5 +1,15 @@
 # Changelog
 
+## Android 0.3.0 preview — 2026-09-27
+
+- Add a standalone Android app with an offline bilingual workspace, learning checklists, dated tasks and notes.
+- Add four palettes, custom colors, module visibility/order, archive/restore and private atomic storage.
+- Parse text PDFs locally, attach supplements, call OpenAI/Anthropic with a run-only user key, and checkpoint completed papers.
+- Preserve source quotes, page metadata, original values and append-only human review; export CSV/project JSON/full backups.
+- Import desktop project/workspace JSON and additive Android backups without overwriting existing IDs.
+- Add domain tests, Android lint/build and Android 15 emulator workflow. Desktop Python/CLI stays at 0.2.0.
+- This preview has not been validated against live model APIs, real research papers or physical Android devices.
+
 ## 0.2.0 — 2026-09-26
 
 - Add a configurable research workspace with learning checklists, dated tasks and colored sticky notes.
