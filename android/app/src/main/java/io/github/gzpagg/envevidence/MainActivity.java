@@ -51,9 +51,11 @@ public class MainActivity extends ComponentActivity {
     private String pendingId, pendingMethod;
     private JSONObject pendingPayload;
     private boolean unreadable;
+    private boolean openTimers;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
+        openTimers=getIntent().getBooleanExtra("openTimers",false);
         PDFBoxResourceLoader.init(getApplicationContext());
         storage = new AtomicFile(new File(getFilesDir(), "workspace.json"));
         if(saved!=null&&saved.containsKey("photoMethod"))try{pendingId=saved.getString("photoRequest");pendingMethod=saved.getString("photoMethod");pendingPayload=new JSONObject(saved.getString("photoPayload"));}catch(Exception ignored){pendingId=null;}
@@ -145,7 +147,8 @@ public class MainActivity extends ComponentActivity {
                             LabAlarms.sync(MainActivity.this);
                             reply(id, true, null); break;
                         case "clock":
-                            JSONObject clock=LabStore.clock(MainActivity.this).put("exact",LabAlarms.exact(MainActivity.this)).put("notifications",LabAlarms.notifications(MainActivity.this));
+                            JSONObject clock=LabStore.clock(MainActivity.this).put("exact",LabAlarms.exact(MainActivity.this)).put("notifications",LabAlarms.notifications(MainActivity.this)).put("openTimers",openTimers);
+                            openTimers=false;
                             reply(id,clock,null);break;
                         case "checkAlarms":reply(id,LabAlarms.fireDue(MainActivity.this),null);break;
                         case "enableAlerts":runOnUiThread(()->{enableAlerts();reply(id,true,null);});break;
@@ -209,7 +212,7 @@ public class MainActivity extends ComponentActivity {
                     else photo=LabPhotos.ingest(this,read(getContentResolver().openInputStream(uri),LIMIT),filename(uri),null);
                     JSONObject updated=LabPhotos.attach(this,payload.getString("recordId"),photo);getSharedPreferences("lab-camera",0).edit().remove("pending").apply();reply(id,updated,null);
                     runOnUiThread(()->web.evaluateJavascript("window.labReload && window.labReload()",null));
-                }else if(method.equals("backupLab")){LabPhotos.backup(this,uri);reply(id,true,null);}
+                }else if(method.equals("backupLab")){LabPhotos.backup(this,uri,payload.optString("experimentId",null));reply(id,true,null);}
                 else if(method.equals("importLab")){reply(id,LabPhotos.restore(this,uri),null);}
                 else if (method.equals("export")) {
                     try (OutputStream out = getContentResolver().openOutputStream(uri, "wt")) {
@@ -224,7 +227,7 @@ public class MainActivity extends ComponentActivity {
                 }
             } catch (Exception e) {
                 String message = e.getMessage();
-                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText|photoConflict|missingPhoto|imageFormat|invalid") ? message : "file");
+                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText|photoConflict|missingPhoto|imageFormat|invalid|backupLimit") ? message : "file");
             }
         });
     }

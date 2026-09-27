@@ -88,6 +88,9 @@ public class WorkspaceTest {
             java.io.File archive=new java.io.File(context.getCacheDir(),"lab-backup.zip");LabPhotos.backup(context,android.net.Uri.fromFile(archive));
             try(java.util.zip.ZipFile z=new java.util.zip.ZipFile(archive)){assertArrayEquals(bytes.toByteArray(),z.getInputStream(z.getEntry("photos/"+photo.getString("id")+".png")).readAllBytes());assertNotNull(z.getEntry("workspace.json"));}
             JSONObject restored=LabPhotos.restore(context,android.net.Uri.fromFile(archive));assertEquals(recordId,restored.getJSONObject("lab").getJSONArray("records").getJSONObject(0).getString("id"));
+            assertTrue(restored.getJSONObject("lab").getJSONArray("records").getJSONObject(0).getJSONArray("photos").getJSONObject(0).has("recorded_at"));
+            java.io.File single=new java.io.File(context.getCacheDir(),"single-experiment.zip");LabPhotos.backup(context,android.net.Uri.fromFile(single),restored.getJSONObject("lab").getJSONArray("experiments").getJSONObject(0).getString("id"));
+            JSONObject singleState=LabPhotos.restore(context,android.net.Uri.fromFile(single));assertEquals(0,singleState.getJSONArray("projects").length());assertEquals(0,singleState.getJSONObject("workspace").getJSONArray("notes").length());assertEquals(1,singleState.getJSONObject("lab").getJSONArray("records").getJSONObject(0).getJSONArray("photos").length());
             js(s,"navigate('my')");shot(s,"lab-my-en");
             js(s,"navigate('appearance'); document.querySelector('[name=language]').value='zh'; document.querySelector('#settings-form').requestSubmit()");ready(s,"state.workspace.preferences.language==='zh'");
             js(s,"navigate('experiments')");shot(s,"lab-home-zh");js(s,"navigate('timers')");shot(s,"lab-timers-zh");js(s,"navigate('records')");ready(s,"Array.from(document.querySelectorAll('.photo-grid img')).every(i=>i.complete&&i.naturalWidth>0)");shot(s,"lab-records-zh");js(s,"navigate('my')");shot(s,"lab-my-zh");
@@ -100,6 +103,7 @@ public class WorkspaceTest {
             assertTrue("Alarm delivered with activity in background",context.getSharedPreferences(LabAlarms.PREFS,0).getStringSet("delivered",java.util.Collections.emptySet()).contains(timerId+":0"));
             assertTrue("System notification posted",context.getSystemService(android.app.NotificationManager.class).getActiveNotifications().length>0);
             s.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);ready(s,"L.elapsed(state.lab.timers[0],labClock())>=4000");
+            s.onActivity(a->a.setIntent(new android.content.Intent(a,MainActivity.class).putExtra("openTimers",true)));s.recreate();ready(s,"page==='timers' && !!document.querySelector('nav')");
             AtomicReference<Exception> error = new AtomicReference<>();
             s.onActivity(a -> {
                 try {

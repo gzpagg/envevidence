@@ -1,10 +1,10 @@
 # EnvEvidence
 
-**新增独立安卓应用：**[下载签名 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.3.0-android-preview.1) · [安装与使用](android/README.zh-CN.md) · [界面截图与验证](docs/ANDROID.md)。学习、任务和便签离线运行，手机本地解析 PDF，文献提取使用自己的 API 密钥。支持 Android 8.0+，手机无需安装 Python 或运行服务器。
+**安卓版 0.4 已改为实验现场助手：**[下载 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) · [安装与使用](android/README.zh-CN.md) · [截图与验证](docs/ANDROID.md)。支持多秒表/倒计时、取样时间点、计次、照片与现象记录、实验时间线；设置统一放在“我的”。Android 8.0+，无需账号或服务器。
 
-<img src="docs/images/android-home-zh.png" alt="Android 15 模拟器中实际运行的中文科研工作台" width="320">
+<img src="docs/images/lab-home-zh.png" alt="暖白陶土色的中文安卓实验手记" width="320">
 
-安卓版为 0.3.0 预览版，下方电脑版仍为 0.2.0。
+下方电脑版文献工作台仍为 0.2.0。从安卓 0.3.0 升级时，原有学习、任务、便签和证据数据均保留。
 
 ## 电脑版科研工作台
 

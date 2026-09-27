@@ -12,8 +12,10 @@ final class LabStore {
     static final Object LOCK = new Object();
     static final int LIMIT = 30 * 1024 * 1024;
     static JSONObject clock(Context c) throws Exception {
+        android.content.SharedPreferences prefs=c.getSharedPreferences("lab-clock",0);
+        String instance=prefs.getString("instance",null);if(instance==null){instance=java.util.UUID.randomUUID().toString();prefs.edit().putString("instance",instance).commit();}
         return new JSONObject().put("wall",System.currentTimeMillis()).put("mono",SystemClock.elapsedRealtime())
-            .put("boot",String.valueOf(Settings.Global.getInt(c.getContentResolver(),Settings.Global.BOOT_COUNT,0)));
+            .put("boot",instance+":"+Settings.Global.getInt(c.getContentResolver(),Settings.Global.BOOT_COUNT,0));
     }
     static long elapsed(JSONObject timer, JSONObject now) {
         long value=timer.optLong("elapsed_ms");

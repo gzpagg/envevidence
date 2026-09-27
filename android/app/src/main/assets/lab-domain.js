@@ -29,10 +29,10 @@
   function event(l,experiment_id,kind,label,c,extra={}){const e=l.experiments.find(x=>x.id===experiment_id);const v={id:id(),experiment_id,kind,label,at:clone(c),elapsed_ms:experimentElapsed(e,c),...extra};l.events.push(v);return v;}
   function experiment(l,title,description,sample,c){assert(name(title)&&stamp(c));const e={id:id(),title:title.trim(),description,sample,started:clone(c),ended:null,archived:false};l.experiments.unshift(e);event(l,e.id,'experiment_start',e.title,c);return e;}
   function timer(l,{title,kind='stopwatch',duration_ms=0,experiment_id=null,color='#A65338',purpose='timer'},c){assert(name(title)&&['stopwatch','countdown'].includes(kind)&&number(duration_ms)&&(kind!=='countdown'||duration_ms>0));if(experiment_id)assert(l.experiments.some(e=>e.id===experiment_id&&!e.ended&&!e.archived));const t={id:id(),title:title.trim(),kind,duration_ms,experiment_id,color,purpose,status:'idle',elapsed_ms:0,anchor:null,cycle:0,archived:false};l.timers.unshift(t);event(l,experiment_id,'timer_create',t.title,c,{timer_id:t.id});return t;}
-  function operate(l,t,action,c){const before=elapsed(t,c);assert(stamp(c));if(action==='start'){assert(!t.archived&&['idle','paused'].includes(t.status));t.anchor=clone(c);t.status='running';}
+  function operate(l,t,action,c){const before=elapsed(t,c);assert(stamp(c));if(action==='start'){const e=l.experiments.find(e=>e.id===t.experiment_id);assert(!t.archived&&(!e||(!e.ended&&!e.archived))&&['idle','paused'].includes(t.status));t.anchor=clone(t.purpose==='sample'&&e?e.started:c);if(t.purpose==='sample')t.elapsed_ms=0;t.status='running';}
     else if(action==='pause'){assert(t.status==='running');t.elapsed_ms=before;t.anchor=null;t.status='paused';}
     else if(action==='finish'){assert(t.status==='running'||t.status==='paused');t.elapsed_ms=before;t.anchor=null;t.status='done';}
-    else if(action==='reset'){t.elapsed_ms=0;t.anchor=null;t.status='idle';t.cycle++;}
+    else if(action==='reset'){assert(t.purpose!=='sample');t.elapsed_ms=0;t.anchor=null;t.status='idle';t.cycle++;}
     else if(action==='lap'){assert(t.status==='running'||t.status==='paused');}
     else throw new Error('invalid');
     return event(l,t.experiment_id,t.purpose==='sample'&&action==='finish'?'sample_taken':'timer_'+action,t.title,c,{timer_id:t.id,cycle:t.cycle,timer_elapsed_ms:before,planned_ms:t.purpose==='sample'?t.duration_ms:null});
