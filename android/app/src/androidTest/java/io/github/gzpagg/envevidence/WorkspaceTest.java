@@ -1,6 +1,5 @@
 package io.github.gzpagg.envevidence;
 
-import android.graphics.Bitmap;
 import android.webkit.WebView;
 import android.view.ViewGroup;
 import androidx.test.core.app.ActivityScenario;
@@ -9,9 +8,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,16 +33,20 @@ public class WorkspaceTest {
     private void shot(String name) throws Exception {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Thread.sleep(250); // Allow the WebView compositor to present the changed page.
-        File dir = new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getExternalFilesDir(null), "screenshots");
-        assertTrue(dir.isDirectory() || dir.mkdirs());
-        Bitmap image = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
-        try (FileOutputStream out = new FileOutputStream(new File(dir, name+".png"))) { image.compress(Bitmap.CompressFormat.PNG,100,out); }
         // Gradle uninstalls the tested app after the run. Preserve synthetic screenshots
         // outside its private directory using the test runner's shell identity only.
-        String command = "mkdir -p /sdcard/Download/envevidence-screenshots && cp "
-            + new File(dir,name+".png").getAbsolutePath() + " /sdcard/Download/envevidence-screenshots/"+name+".png";
-        try (android.os.ParcelFileDescriptor pipe = InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command);
-             FileInputStream in = new FileInputStream(pipe.getFileDescriptor())) { in.readAllBytes(); }
+        // executeShellCommand runs a program directly; shell operators are not interpreted.
+        shell("mkdir -p /sdcard/Download/envevidence-screenshots");
+        String path = "/sdcard/Download/envevidence-screenshots/"+name+".png";
+        shell("screencap -p "+path);
+        String size = shell("wc -c "+path).trim().split("\\s+")[0];
+        assertTrue("Screenshot must contain image bytes", Long.parseLong(size)>1000);
+    }
+    private String shell(String command) throws Exception {
+        android.os.ParcelFileDescriptor pipe = InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command);
+        try (java.io.InputStream in = new android.os.ParcelFileDescriptor.AutoCloseInputStream(pipe)) {
+            return new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        }
     }
     @Test public void offlineWorkspacePersistsAndEvidenceStaysTraceable() throws Exception {
         try (ActivityScenario<MainActivity> s = ActivityScenario.launch(MainActivity.class)) {
