@@ -178,7 +178,8 @@ public class MainActivity extends ComponentActivity {
             try{
                 String photoId=UUID.randomUUID().toString().replace("-","");p.put("photoId",photoId);
                 File f=LabPhotos.file(this,photoId+".jpg");Uri uri=FileProvider.getUriForFile(this,getPackageName()+".photos",f);
-                intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT,uri).setClipData(ClipData.newRawUri("photo",uri)).addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT,uri).addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setClipData(ClipData.newRawUri("photo",uri));
                 getSharedPreferences("lab-camera",0).edit().putString("pending",p.toString()).commit();
             }catch(Exception e){reply(id,null,"file");return;}
         }else if(method.equals("backupLab")){
@@ -241,7 +242,8 @@ public class MainActivity extends ComponentActivity {
     }
     @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] grants){super.onRequestPermissionsResult(request,permissions,grants);if(request==40&&grants.length>0&&grants[0]==PackageManager.PERMISSION_GRANTED)enableAlerts();}
     @Override public void onSaveInstanceState(Bundle out){if(pendingId!=null&&("capturePhoto".equals(pendingMethod)||"pickPhoto".equals(pendingMethod))){out.putString("photoRequest",pendingId);out.putString("photoMethod",pendingMethod);out.putString("photoPayload",pendingPayload.toString());}super.onSaveInstanceState(out);}
-    @Override protected void onResume(){super.onResume();LabAlarms.sync(this);if(web!=null)web.evaluateJavascript("window.labResume && window.labResume()",null);}
+    @Override protected void onResume(){super.onResume();worker.execute(()->LabAlarms.sync(this));if(web!=null){web.onResume();web.evaluateJavascript("window.labResume && window.labResume()",null);}}
+    @Override protected void onPause(){if(web!=null)web.onPause();super.onPause();}
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(web!=null)web.evaluateJavascript("window.labOpenTimers && window.labOpenTimers()",null);}
 
     private String filename(Uri uri) {
