@@ -18,5 +18,7 @@ android/.gradle/
 android/local.properties
 *.keystore
 *.jks
+*.p12
+*.class
 signing.properties
 android/device-screenshots/

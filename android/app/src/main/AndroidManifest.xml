@@ -3,6 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application android:label="EnvEvidence" android:icon="@drawable/ic_leaf"
         android:allowBackup="false" android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:usesCleartextTraffic="false" android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" android:exported="true"
