@@ -1,5 +1,7 @@
 # EnvEvidence
 
+**Android preview is now available:** [standalone APK guide](android/README.md) · [Android builds](https://github.com/gzpagg/envevidence/actions/workflows/android.yml). Offline learning, tasks and notes, plus on-device PDF parsing and evidence extraction with your own API key. Android is version 0.3.0; the desktop app below remains version 0.2.0.
+
 **A local research workspace for learning, daily plans, notes, and source-linked evidence.**
 
 [简体中文](README.zh-CN.md) · [Demo](docs/DEMO.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md)

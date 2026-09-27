@@ -1,6 +1,7 @@
 package io.github.gzpagg.envevidence;
 
-import android.app.Activity;
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,7 +37,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /** All files stay in private app storage; only an explicit extract call uses the network. */
-public class MainActivity extends Activity {
+public class MainActivity extends ComponentActivity {
     private static final String HOME = "https://appassets.androidplatform.net/assets/index.html";
     private static final int LIMIT = 30 * 1024 * 1024;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
@@ -85,11 +86,12 @@ public class MainActivity extends Activity {
         });
         web.addJavascriptInterface(new Bridge(), "Android");
         web.loadUrl(HOME);
-        if (android.os.Build.VERSION.SDK_INT >= 33) getOnBackInvokedDispatcher().registerOnBackInvokedCallback(0, this::goBack);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { goBack(); }
+        });
     }
 
     private void goBack() { web.evaluateJavascript("window.goBack ? window.goBack() : false", value -> { if (!"true".equals(value)) finish(); }); }
-    @Override public void onBackPressed() { goBack(); }
 
     private void reply(String id, Object data, String error) {
         runOnUiThread(() -> {
@@ -226,7 +228,7 @@ public class MainActivity extends Activity {
 
     private JSONObject extract(JSONObject p) throws Exception {
         String provider = p.getString("provider"), key = p.getString("key");
-        if (!(provider.equals("openai") || provider.equals("anthropic")) || key.isBlank() || key.contains("\n") || key.contains("\r")) throw new Exception("invalid");
+        if (!(provider.equals("openai") || provider.equals("anthropic")) || key.trim().isEmpty() || key.contains("\n") || key.contains("\r")) throw new Exception("invalid");
         String endpoint = provider.equals("openai") ? "https://api.openai.com/v1/responses" : "https://api.anthropic.com/v1/messages";
         HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
         try {

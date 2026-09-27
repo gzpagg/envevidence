@@ -119,7 +119,7 @@
     out.workspace.updated_at=now(); return {state:validateState(out),added};
   }
   function recover(state) { for(const p of state.projects) for(const r of p.runs) if(r.status==='running'){r.status='failed';r.error='Interrupted. Completed studies are preserved.';r.finished_at=now();} return state; }
-  function textColor(hex) { const c=hex.slice(1).match(/../g).map(h=>parseInt(h,16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]>.179?'#162321':'#FFFFFF'; }
+  function textColor(hex) { const c=hex.slice(1).match(/../g).map(h=>parseInt(h,16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]>.179?'#000000':'#FFFFFF'; }
   function csv(p) {
     const headers=['project_id','study_id','experiment_id','experiment','field','original_value','original_unit','value','unit','extraction_status','review_status','sources','revision_count'];
     const safe=x=>{let s=String(x??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"';};

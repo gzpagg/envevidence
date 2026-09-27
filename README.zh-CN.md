@@ -1,5 +1,7 @@
 # EnvEvidence
 
+**新增独立安卓应用：**[APK 安装与使用](android/README.zh-CN.md) · [安卓构建](https://github.com/gzpagg/envevidence/actions/workflows/android.yml)。学习、任务和便签离线运行，手机本地解析 PDF，文献提取使用自己的 API 密钥。安卓版为 0.3.0 预览版，下方电脑版仍为 0.2.0。
+
 **在本机管理学习、日常任务和便签，并将文献结果整理为可核验的证据表。**
 
 [English](README.md) · [演示](docs/DEMO.zh-CN.md) · [技术说明](docs/ARCHITECTURE.zh-CN.md) · [验证状态](docs/VALIDATION.zh-CN.md)

@@ -25,12 +25,14 @@ jobs:
       - run: node --test android/tests/*.test.cjs
       - run: gradle -p android --no-daemon lintDebug testDebugUnitTest assembleDebug assembleRelease
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: envevidence-android-0.3.0
           path: |
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/apk/release/*.apk
             android/app/build/reports/lint-results-debug.html
+            android/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
           if-no-files-found: error
       - name: Enable KVM
         run: |
