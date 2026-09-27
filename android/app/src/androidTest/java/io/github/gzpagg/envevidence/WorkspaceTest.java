@@ -61,36 +61,45 @@ public class WorkspaceTest {
             return new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         }
     }
-    @Test public void offlineWorkspacePersistsAndEvidenceStaysTraceable() throws Exception {
+    @Test public void labWorkspaceRetainsTimePhotosAndLegacyData() throws Exception {
+        android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
+        JSONObject old=new JSONObject("{\"format\":\"envevidence-android\",\"schema_version\":1,\"workspace\":{\"schema_version\":1,\"preferences\":{\"language\":\"en\",\"palette\":\"forest\",\"accent\":\"#147D73\",\"background\":\"#F6F8F7\",\"order\":[\"evidence\",\"learning\",\"tasks\",\"notes\"],\"hidden\":[]},\"goals\":[],\"tasks\":[],\"notes\":[{\"id\":\"legacy-note\",\"title\":\"Old note\",\"body\":\"Preserve me\",\"pinned\":true,\"archived\":false,\"color\":\"sage\"}]},\"projects\":[]}");
+        JSONObject evidence=new JSONObject(new String(context.getAssets().open("demo-project.json").readAllBytes(),java.nio.charset.StandardCharsets.UTF_8));
+        old.getJSONArray("projects").put(evidence);LabStore.save(context,old);
+        shell("pm grant io.github.gzpagg.envevidence android.permission.POST_NOTIFICATIONS");
+        shell("appops set io.github.gzpagg.envevidence SCHEDULE_EXACT_ALARM allow");
         try (ActivityScenario<MainActivity> s = ActivityScenario.launch(MainActivity.class)) {
-            ready(s, "!!document.querySelector('nav')");
-            js(s,"document.querySelector('[data-to=settings]').click()");
-            js(s,"document.querySelector('[data-action=demo]').click()");
-            ready(s,"state.workspace.demo_loaded && state.projects.length===1");
-            js(s,"navigate('home')"); shot(s,"home-en");
-            js(s,"navigate('learning'); document.querySelector('[data-action=step]').click()");
-            ready(s,"state.workspace.goals[0].steps[0].done===false");
-            js(s,"navigate('tasks'); document.querySelector('select[data-action=taskStatus]').value='todo'; document.querySelector('select[data-action=taskStatus]').dispatchEvent(new Event('change',{bubbles:true}))");
-            ready(s,"state.workspace.tasks[0].status==='todo'");
-            js(s,"navigate('notes'); document.querySelector('[data-action=archive]').click()");
-            ready(s,"state.workspace.notes[0].archived===true");
-            js(s,"document.querySelector('[data-value=archived]').click(); document.querySelector('[data-action=archive]').click()");
-            ready(s,"state.workspace.notes[0].archived===false");
-            js(s,"navigate('settings')"); shot(s,"settings-en");
-            js(s,"document.querySelector('[name=language]').value='zh'; document.querySelector('#settings-form').requestSubmit()");
-            ready(s,"state.workspace.preferences.language==='zh'");
-            shot(s,"settings-zh");
-            js(s,"navigate('home')"); shot(s,"home-zh");
-            s.recreate(); ready(s,"!!document.querySelector('nav') && state.workspace.preferences.language==='zh'");
-            assertEquals("true",js(s,"state.workspace.goals[0].steps[0].done===false && state.workspace.tasks[0].status==='todo' && state.workspace.notes[0].archived===false"));
-            js(s,"projectId=state.projects[0].id; navigate('evidence'); review(state.projects[0].experiments[0].id,state.projects[0].experiments[0].fields[0].id)");
-            ready(s,"!!document.querySelector('dialog[open]')"); shot(s,"review-zh");
-            js(s,"document.querySelector('[name=reviewer]').value='Synthetic reviewer'; document.querySelector('[name=reason]').value='Checked against the synthetic original'; document.querySelector('[name=status]').value='verified'; document.querySelector('dialog form').requestSubmit()");
-            ready(s,"state.projects[0].experiments[0].fields[0].revisions.length===1");
-            assertEquals("true",js(s,"state.projects[0].experiments[0].fields[0].revisions[0].status==='verified'"));
-            js(s,"navigate('settings'); document.querySelector('[name=language]').value='en'; document.querySelector('#settings-form').requestSubmit()");
-            ready(s,"state.workspace.preferences.language==='en'");
-            js(s,"navigate('evidence'); review(state.projects[0].experiments[0].id,state.projects[0].experiments[0].fields[0].id)"); shot(s,"review-en");
+            ready(s,"!!document.querySelector('nav') && !!state.lab");
+            assertEquals("true",js(s,"document.querySelectorAll('nav button').length===4 && !document.querySelector('header button') && state.workspace.notes[0].body==='Preserve me'"));
+            assertEquals(evidence.toString(),LabStore.load(context).getJSONArray("projects").getJSONObject(0).toString());
+            js(s,"navigate('my'); document.querySelector('[data-lab=labDemo]').click()");
+            ready(s,"state.lab.demo_loaded && state.lab.experiments.length===1");
+            js(s,"navigate('experiments')");shot(s,"lab-home-en");
+            js(s,"navigate('timers')");shot(s,"lab-timers-en");
+            js(s,"document.querySelector('[data-lab=addCount]').click()");ready(s,"state.lab.counters[0].value===3");
+            js(s,"document.querySelector('[data-lab=undoCount]').click()");ready(s,"state.lab.counters[0].value===2");
+            android.graphics.Bitmap fixture=android.graphics.Bitmap.createBitmap(700,420,android.graphics.Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas canvas=new android.graphics.Canvas(fixture);canvas.drawColor(android.graphics.Color.rgb(238,230,209));android.graphics.Paint paint=new android.graphics.Paint(3);paint.setColor(android.graphics.Color.rgb(168,131,64));canvas.drawCircle(230,200,90,paint);paint.setColor(android.graphics.Color.rgb(193,154,85));canvas.drawCircle(475,200,90,paint);paint.setColor(android.graphics.Color.rgb(69,60,42));paint.setTextSize(24);canvas.drawText("SYNTHETIC SAMPLE / NOT REAL DATA",90,370,paint);
+            java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();fixture.compress(android.graphics.Bitmap.CompressFormat.PNG,100,bytes);fixture.recycle();
+            JSONObject photo=LabPhotos.ingest(context,bytes.toByteArray(),"Synthetic sample.png",null);
+            JSONObject updated=LabStore.load(context);String recordId=updated.getJSONObject("lab").getJSONArray("records").getJSONObject(0).getString("id");LabPhotos.attach(context,recordId,photo);
+            js(s,"labReload()");ready(s,"state.lab.records[0].photos.length===1");
+            js(s,"navigate('records')");ready(s,"Array.from(document.querySelectorAll('.photo-grid img')).every(i=>i.complete&&i.naturalWidth>0)");shot(s,"lab-records-en");
+            java.io.File archive=new java.io.File(context.getCacheDir(),"lab-backup.zip");LabPhotos.backup(context,android.net.Uri.fromFile(archive));
+            try(java.util.zip.ZipFile z=new java.util.zip.ZipFile(archive)){assertArrayEquals(bytes.toByteArray(),z.getInputStream(z.getEntry("photos/"+photo.getString("id")+".png")).readAllBytes());assertNotNull(z.getEntry("workspace.json"));}
+            JSONObject restored=LabPhotos.restore(context,android.net.Uri.fromFile(archive));assertEquals(recordId,restored.getJSONObject("lab").getJSONArray("records").getJSONObject(0).getString("id"));
+            js(s,"navigate('my')");shot(s,"lab-my-en");
+            js(s,"navigate('appearance'); document.querySelector('[name=language]').value='zh'; document.querySelector('#settings-form').requestSubmit()");ready(s,"state.workspace.preferences.language==='zh'");
+            js(s,"navigate('experiments')");shot(s,"lab-home-zh");js(s,"navigate('timers')");shot(s,"lab-timers-zh");js(s,"navigate('records')");ready(s,"Array.from(document.querySelectorAll('.photo-grid img')).every(i=>i.complete&&i.naturalWidth>0)");shot(s,"lab-records-zh");js(s,"navigate('my')");shot(s,"lab-my-zh");
+            s.recreate();ready(s,"!!document.querySelector('nav') && state.workspace.preferences.language==='zh' && state.lab.records[0].photos.length===1");
+            assertEquals("true",js(s,"state.workspace.notes[0].body==='Preserve me' && state.lab.counters[0].value===2 && !document.querySelector('header button')"));
+            js(s,"(async()=>{await refreshClock();await commit(s=>{const t=L.timer(s.lab,{title:'Background alarm test',kind:'countdown',duration_ms:3000},labClock());L.operate(s.lab,t,'start',labClock());});window.alarmTestReady=true;})()");ready(s,"window.alarmTestReady===true");
+            String timerId=LabStore.load(context).getJSONObject("lab").getJSONArray("timers").getJSONObject(0).getString("id");
+            assertTrue("Exact alarms allowed in test device",LabAlarms.exact(context));
+            s.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);Thread.sleep(4500);
+            assertTrue("Alarm delivered with activity in background",context.getSharedPreferences(LabAlarms.PREFS,0).getStringSet("delivered",java.util.Collections.emptySet()).contains(timerId+":0"));
+            assertTrue("System notification posted",context.getSystemService(android.app.NotificationManager.class).getActiveNotifications().length>0);
+            s.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);ready(s,"L.elapsed(state.lab.timers[0],labClock())>=4000");
             AtomicReference<Exception> error = new AtomicReference<>();
             s.onActivity(a -> {
                 try {

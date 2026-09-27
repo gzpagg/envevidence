@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: envevidence-android-0.3.0
+          name: envevidence-android-0.4.0
           path: |
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/apk/release/*.apk
@@ -52,7 +52,7 @@ jobs:
           script: |
             gradle -p android --no-daemon connectedDebugAndroidTest
             adb pull /sdcard/Download/envevidence-screenshots android/device-screenshots
-            test "$(find android/device-screenshots -name '*.png' | wc -l)" -eq 6
+            test "$(find android/device-screenshots -name '*.png' | wc -l)" -eq 8
       - uses: actions/upload-artifact@v4
         if: always()
         with:

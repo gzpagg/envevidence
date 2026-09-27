@@ -6,7 +6,7 @@
 })(globalThis, function() {
   'use strict';
   const modules = ['evidence', 'learning', 'tasks', 'notes'];
-  const palettes = {forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
+  const palettes = {clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
   const uid = () => crypto.randomUUID().replaceAll('-', '');
   const now = () => new Date().toISOString();
   const clone = x => JSON.parse(JSON.stringify(x));
