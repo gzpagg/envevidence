@@ -32,6 +32,20 @@ public class WorkspaceTest {
     }
     private void shot(ActivityScenario<MainActivity> s, String name) throws Exception {
         ready(s, "getComputedStyle(document.querySelector('#notice')).display==='none'");
+        // The stock emulator launcher occasionally raises an ANR during cold boot.
+        // Close only that external launcher; never hide an ANR from the tested app.
+        android.view.accessibility.AccessibilityNodeInfo active=InstrumentationRegistry.getInstrumentation().getUiAutomation().getRootInActiveWindow();
+        if(active!=null&&!active.findAccessibilityNodeInfosByText("Quickstep isn't responding").isEmpty()) {
+            shell("am force-stop com.android.launcher3");
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        }
+        boolean foreground=false;
+        for(int i=0;i<30;i++) {
+            active=InstrumentationRegistry.getInstrumentation().getUiAutomation().getRootInActiveWindow();
+            if(active!=null&&"io.github.gzpagg.envevidence".contentEquals(active.getPackageName())) {foreground=true;break;}
+            Thread.sleep(100);
+        }
+        assertTrue("Screenshots must show the app without an external dialog",foreground);
         CountDownLatch painted = new CountDownLatch(1);
         s.onActivity(activity -> {
             ViewGroup root = activity.findViewById(android.R.id.content);
