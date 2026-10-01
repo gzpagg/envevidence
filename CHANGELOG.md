@@ -36,6 +36,13 @@ The Android app is now **EnvBench**, a bench companion for advanced-oxidation an
 - Add domain tests, Android lint/build and Android 15 emulator workflow. Desktop Python/CLI stays at 0.2.0.
 - This preview has not been validated against live model APIs, real research papers or physical Android devices.
 
+## 0.3.0 (desktop) · unreleased
+
+- Focus the desktop app on literature evidence. It opens on the evidence page; the sidebar has Literature evidence and Appearance only.
+- Remove learning goals, daily tasks, sticky notes, the module layout settings and the workspace demo from the interface. Existing items stay in `data/workspace/state.json` and are written back unchanged; the sidebar shows how many are kept.
+- Remove the planning helpers that only those screens used (`tasks_for_day`, `overdue_tasks`, `task_progress`, `add_demo`, `LearningGoal.progress`) and the note colors.
+- Replace the desktop screenshots. Evidence extraction, review, export, the project format and the CLI are unchanged.
+
 ## 0.2.0 — 2026-09-26
 
 - Add a configurable research workspace with learning checklists, dated tasks and colored sticky notes.

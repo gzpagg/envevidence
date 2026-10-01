@@ -4,30 +4,26 @@
 
 <img src="docs/images/envbench-run-en.png" alt="EnvBench run page with the next-sample countdown and sampling checkpoints" width="320">
 
-The desktop literature workspace below remains version 0.2.0. Existing mobile planning/evidence data are preserved when upgrading from 0.3.0.
+The desktop app below is EnvEvidence 0.3.0. It now covers literature evidence only. The planning tools from 0.2 are gone from the interface, and their data is kept.
 
-## Desktop workspace
+## Desktop literature evidence
 
-**A local research workspace for learning, daily plans, notes, and source-linked evidence.**
+**Turn water-treatment papers into source-checked evidence tables.**
 
 [简体中文](README.zh-CN.md) · [Demo](docs/DEMO.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md)
 
-Plan your day and organize learning alongside a literature evidence workflow. EnvEvidence v0.2 opens in English, offers a complete Chinese interface, and keeps your planning data on your computer. You only need an OpenAI or Anthropic API key when extracting evidence from your own papers.
+EnvEvidence imports text PDFs and their supplements, extracts experimental conditions with OpenAI or Anthropic, locates every quotation in the parsed pages, and keeps a reviewer's corrections next to the model's original values. It opens in English and has a complete Chinese interface. You need an API key only to extract from your own papers.
 
-![English research workspace](docs/images/workspace-en.png)
+![English literature evidence page](docs/images/workspace-en.png)
 
-## Four configurable modules
-
-| Module | What you can do |
+| Step | What you can do |
 |---|---|
-| Literature evidence | Import text PDFs and supplements, extract conditions, review quotations, correct values, export CSV/Excel/JSON. |
-| Learning goals | Create goals, descriptions and resource links; add, rename, remove and complete steps. Progress is completed steps divided by all steps. |
-| Daily tasks | Plan by date and priority; use To do / In progress / Done; view today, another date or overdue work. |
-| Sticky notes | Write, edit, pin, color, archive and restore notes. |
+| Import | Text PDFs and supplements, with explicit main/supplement links and page-coverage warnings. |
+| Extract | Water-treatment or custom fields, one record per experimental condition. |
+| Review | Check each value against its located quote; save corrections with reviewer, reason and time. |
+| Export | CSV, Excel and complete project JSON. |
 
-Goals and tasks can also be archived and restored. Archived items do not count toward current progress. No steps/tasks means an empty state, not a misleading completion percentage. Daily progress uses the selected planned date; overdue tasks keep their original dates. Dates follow the computer running the app.
-
-Choose **Appearance & modules** to hide modules or move them up/down. Hiding never deletes their data; Workspace and settings remain accessible, even when every module is hidden. Desktop cards use two columns and narrow screens use one.
+Version 0.3 removes the learning goals, daily tasks and sticky notes added in 0.2. They duplicated general-purpose apps and pulled the tool away from evidence. Nothing is deleted: existing items stay in `data/workspace/state.json`, and the sidebar shows how many are kept. Timed sampling, quench records and the water matrix of your own runs belong to the [EnvBench Android app](android/README.md).
 
 ## Install and run
 
@@ -53,11 +49,11 @@ macOS / Linux:
 .venv/bin/python -m envevidence serve
 ```
 
-Open <http://127.0.0.1:8501>. Select **Load workspace demo** to append invented examples once, without replacing your existing records. It makes no API calls. **Literature evidence → Load evidence demo** adds a separate synthetic evidence project whenever needed.
+Open <http://127.0.0.1:8501>. **Load evidence demo** on the evidence page adds a synthetic evidence project. It makes no API calls.
 
-The sidebar **Language / 语言** selector switches English and Chinese. Your language, module order, visibility and saved colors survive restarts. User notes, paper text, model output and revision records are not translated or rewritten.
+The sidebar **Language / 语言** selector switches English and Chinese. Your language and saved colors survive restarts. Paper text, model output and revision records are not translated or rewritten.
 
-## Make it your workspace
+## Appearance
 
 | Palette | Accent | Background |
 |---|---|---|
@@ -66,15 +62,15 @@ The sidebar **Language / 语言** selector switches English and Chinese. Your la
 | Sand | `#A84D18` | `#FAF7F2` |
 | Graphite | `#6D4ACF` | `#F7F5FB` |
 
-Choose **Custom** for your own accent and background. Text colors adapt; standard inputs and cards remain neutral for readability. Changes preview immediately; **Save appearance** makes them persistent. Restore colors and restore layout are separate actions.
+Choose **Custom** for your own accent and background. Text colors adapt; standard inputs and cards remain neutral for readability. Changes preview immediately; **Save appearance** makes them persistent.
 
-![English appearance and module settings](docs/images/settings-en.png)
+![English appearance settings](docs/images/settings-en.png)
 
 ## Storage and upgrading from v0.1
 
-Evidence projects retain their existing version-1 JSON format. Workspace settings, goals, tasks and notes live separately at `data/workspace/state.json`. Both stores use atomic writes. `ENVEVIDENCE_DATA_DIR` changes the data root; back up the entire directory while the app is stopped. A damaged workspace file is reported and preserved, never silently reset. Avoid editing the same data from multiple browser tabs or app processes.
+Evidence projects retain their existing version-1 JSON format. Language and color preferences, and any planning items kept from 0.2, live separately at `data/workspace/state.json`. Both stores use atomic writes. `ENVEVIDENCE_DATA_DIR` changes the data root; back up the entire directory while the app is stopped. A damaged workspace file is reported and preserved, never silently reset. Avoid editing the same data from multiple browser tabs or app processes.
 
-All planning features work locally without a model. The evidence module sends only the text you explicitly approve for extraction. Runtime data, virtual environments and credentials are excluded from Git and source packages. Export field keys and evidence audit history remain stable across language changes; historical/user-authored labels are preserved.
+The app sends only the text you explicitly approve for extraction. Runtime data, virtual environments and credentials are excluded from Git and source packages. Export field keys and evidence audit history remain stable across language changes; historical/user-authored labels are preserved.
 
 ![English evidence review](docs/images/review-en.png)
 
@@ -118,4 +114,4 @@ python -m build
 
 Tests use invented, redistributable examples, not real scientific findings. API contracts are tested with mocked HTTP; see [validation status](docs/VALIDATION.md) for what has and has not been verified. Report problems through the issue template without credentials, private papers, or unpublished data.
 
-Code and original synthetic fixtures are [MIT licensed](LICENSE). Dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). OCR, cross-paper comparability analysis, and MCP integration are future work, not v0.2 features.
+Code and original synthetic fixtures are [MIT licensed](LICENSE). Dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). OCR, cross-paper comparability analysis, and MCP integration are future work, not v0.3 features.

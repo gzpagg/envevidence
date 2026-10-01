@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 
 import pytest
 from pydantic import ValidationError
@@ -13,42 +13,38 @@ from envevidence.workspace import (
     Step,
     Workspace,
     WorkspaceStore,
-    add_demo,
-    overdue_tasks,
-    task_progress,
-    tasks_for_day,
 )
 
 
-def test_goal_progress_and_resource_validation():
-    goal = LearningGoal(title="Science")
-    assert goal.progress is None
-    goal.steps = [Step(title="A", done=True), Step(title="B")]
-    assert goal.progress == 0.5
-    goal.steps.pop()
-    assert goal.progress == 1
+def test_version_02_planning_data_loads_and_saves_unchanged(tmp_path):
+    store = WorkspaceStore(tmp_path)
+    earlier = Workspace(
+        goals=[
+            LearningGoal(
+                title="Science",
+                resources=["https://example.org"],
+                steps=[Step(title="A", done=True)],
+            )
+        ],
+        tasks=[
+            DailyTask(
+                title="Prior", planned_date=date(2026, 9, 25), status="doing", priority="high"
+            )
+        ],
+        notes=[Note(title="Mine", body="Private", pinned=True, color="lavender")],
+        demo_loaded=True,
+    )
+    store.save(earlier)
+    loaded = store.load()
+    loaded.preferences.language = "zh"
+    store.save(loaded)
+    again = store.load()
+    assert (again.goals, again.tasks, again.notes) == (earlier.goals, earlier.tasks, earlier.notes)
+    assert again.demo_loaded and again.preferences.language == "zh"
     with pytest.raises(ValidationError):
         LearningGoal(title="  ")
     with pytest.raises(ValidationError):
         LearningGoal(title="Bad link", resources=["javascript:alert(1)"])
-
-
-def test_task_dates_overdue_reopen_and_archive():
-    today = date(2026, 9, 26)
-    current = DailyTask(title="Today", planned_date=today, status="done")
-    prior = DailyTask(title="Prior", planned_date=today - timedelta(days=1))
-    future = DailyTask(title="Future", planned_date=today + timedelta(days=1))
-    ws = Workspace(tasks=[current, prior, future])
-    assert task_progress(tasks_for_day(ws, today)) == 1
-    assert overdue_tasks(ws, today) == [prior]
-    prior.status = "done"
-    assert not overdue_tasks(ws, today)
-    prior.status = "todo"
-    prior.archived = True
-    assert not overdue_tasks(ws, today)
-    current.archived = True
-    assert task_progress(tasks_for_day(ws, today)) is None
-    assert prior.planned_date == today - timedelta(days=1)
 
 
 def test_atomic_roundtrip_and_failed_save_preserves_file(tmp_path, monkeypatch):
@@ -77,16 +73,6 @@ def test_corrupt_workspace_not_overwritten(tmp_path):
     with pytest.raises(ValueError):
         store.load()
     assert store.path.read_text() == "invalid"
-
-
-def test_demo_appends_once_without_changing_existing_data():
-    ws = Workspace(notes=[Note(title="Mine", body="Private")])
-    original = ws.notes[0].model_copy(deep=True)
-    add_demo(ws)
-    snapshot = ws.model_dump()
-    add_demo(ws)
-    assert ws.model_dump() == snapshot
-    assert ws.notes[0] == original
 
 
 @pytest.mark.parametrize("palette", list(PALETTES) + ["custom"])

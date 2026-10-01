@@ -1,8 +1,12 @@
-"""Local planning data, deliberately independent of scientific evidence snapshots."""
+"""Local preferences, plus planning data kept from version 0.2.
+
+Version 0.3 no longer shows learning goals, tasks or notes. Their models stay so an
+existing state.json loads and saves without losing anything.
+"""
 
 import os
 import tempfile
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlparse
@@ -46,10 +50,6 @@ class LearningGoal(Item):
             if parsed.scheme not in {"http", "https"} or not parsed.netloc:
                 raise ValueError("Resource links must use http or https")
         return values
-
-    @property
-    def progress(self) -> float | None:
-        return sum(s.done for s in self.steps) / len(self.steps) if self.steps else None
 
 
 class DailyTask(Item):
@@ -98,20 +98,6 @@ class Workspace(StrictModel):
     demo_loaded: bool = False
 
 
-def tasks_for_day(workspace, day):
-    return [t for t in workspace.tasks if not t.archived and t.planned_date == day]
-
-
-def overdue_tasks(workspace, day):
-    return [
-        t for t in workspace.tasks if not t.archived and t.planned_date < day and t.status != "done"
-    ]
-
-
-def task_progress(tasks):
-    return sum(t.status == "done" for t in tasks) / len(tasks) if tasks else None
-
-
 class WorkspaceStore:
     def __init__(self, root):
         self.path = Path(root) / "workspace" / "state.json"
@@ -136,66 +122,3 @@ class WorkspaceStore:
         finally:
             if os.path.exists(name):
                 os.unlink(name)
-
-
-def add_demo(workspace, language="en", today=None):
-    """Append invented planning examples once, never replace the user's records."""
-    if workspace.demo_loaded:
-        return
-    today = today or date.today()
-    zh = language == "zh"
-    workspace.goals.append(
-        LearningGoal(
-            title="示例 · 学习水处理反应动力学" if zh else "Demo · Learn water-treatment kinetics",
-            description="自制演示目标，可自由修改。"
-            if zh
-            else "An invented learning plan. Make it your own.",
-            resources=["https://docs.python.org/3/tutorial/"],
-            steps=[
-                Step(title=s, done=i == 0)
-                for i, s in enumerate(
-                    ["复习一级反应", "绘制衰减曲线", "比较处理条件"]
-                    if zh
-                    else [
-                        "Review first-order reactions",
-                        "Plot a decay curve",
-                        "Compare treatment conditions",
-                    ]
-                )
-            ],
-        )
-    )
-    for i, title in enumerate(
-        ["示例 · 整理阅读计划", "示例 · 核验 Trial A 的出处", "示例 · 整理实验笔记"]
-        if zh
-        else [
-            "Demo · Outline the reading plan",
-            "Demo · Verify the source for Trial A",
-            "Demo · Organize lab notes",
-        ]
-    ):
-        workspace.tasks.append(
-            DailyTask(
-                title=title,
-                planned_date=today,
-                status=["done", "doing", "todo"][i],
-                priority="high" if i == 1 else "normal",
-            )
-        )
-    workspace.tasks.append(
-        DailyTask(
-            title="示例 · 回顾待办事项" if zh else "Demo · Review pending work",
-            planned_date=today - timedelta(days=1),
-        )
-    )
-    workspace.notes.append(
-        Note(
-            title="示例 · 阅读提醒" if zh else "Demo · A reading reminder",
-            pinned=True,
-            color="sage",
-            body="污染物去除率与 TOC 去除率应分别核验。"
-            if zh
-            else "Review pollutant removal and TOC removal separately. A located quote still needs scientific review.",
-        )
-    )
-    workspace.demo_loaded = True
