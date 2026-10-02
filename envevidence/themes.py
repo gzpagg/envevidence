@@ -8,7 +8,6 @@ PALETTES = {
     "sand": ("#A84D18", "#FAF7F2", "#342D27"),
     "graphite": ("#6D4ACF", "#F7F5FB", "#292536"),
 }
-NOTE_COLORS = {"sage": "#E4F1E8", "sky": "#E5EEFA", "sand": "#FFF0D4", "lavender": "#EFE7FA"}
 
 
 def luminance(color):
@@ -57,9 +56,6 @@ def apply_theme(preferences):
         color:{c["on_accent"]};margin-bottom:24px}}
     .ee-hero h1 {{color:inherit!important;font-size:38px;margin:4px 0 8px}}
     .ee-hero p {{color:inherit;font-size:16px;margin:0}}
-    .ee-eyebrow {{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px}}
-    .ee-note {{padding:20px;border-radius:12px;color:#202A26;white-space:pre-wrap;
-        overflow-wrap:anywhere;margin:8px 0 16px}}
     [class*="st-key-surface_"], [data-testid="stForm"], [data-testid="stExpander"],
     [data-testid="stMetric"] {{background:#fff;color:#25332F;border-radius:12px}}
     [data-testid="stMetric"] {{padding:12px;border:1px solid #DFE5E2}}

@@ -9,12 +9,12 @@ from envevidence.evidence_ui import evidence_page
 from envevidence.i18n import LANGUAGE, t
 from envevidence.storage import ProjectStore
 from envevidence.themes import apply_theme
-from envevidence.workbench_ui import home, learning, notes, settings, sidebar, tasks
+from envevidence.workbench_ui import settings, sidebar
 from envevidence.workspace import WorkspaceStore
 
 
 def main():
-    st.set_page_config(page_title="EnvEvidence · Research Workspace", page_icon="🌿", layout="wide")
+    st.set_page_config(page_title="EnvEvidence · Literature evidence", page_icon="🌿", layout="wide")
     root = os.getenv("ENVEVIDENCE_DATA_DIR") or "data"
     workspace_store = WorkspaceStore(root)
     try:
@@ -25,22 +25,15 @@ def main():
         )
         st.stop()
     LANGUAGE.set(workspace.preferences.language)
-    st.set_page_config(page_title=t("EnvEvidence · Research Workspace", "EnvEvidence · 科研工作台"))
+    st.set_page_config(page_title=t("EnvEvidence · Literature evidence", "EnvEvidence · 文献证据"))
     apply_theme(workspace.preferences)
     evidence_store = ProjectStore(root)
-    if st.session_state.get("page") in workspace.preferences.hidden:
-        st.session_state.page = "home"
-    sidebar(workspace, workspace_store, evidence_store, __version__)
-    page = st.session_state.get("page", "home")
+    sidebar(workspace, workspace_store, __version__)
     try:
-        if page == "home":
-            home(workspace, evidence_store)
-        elif page == "evidence":
-            evidence_page(evidence_store)
+        if st.session_state.get("page") == "settings":
+            settings(workspace, workspace_store)
         else:
-            {"learning": learning, "tasks": tasks, "notes": notes, "settings": settings}[page](
-                workspace, workspace_store
-            )
+            evidence_page(evidence_store)
     except OSError:
         st.error(
             t(
