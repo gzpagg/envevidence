@@ -1,5 +1,17 @@
 # Changelog
 
+## EnvBench (Android) 0.6.1 preview
+
+- Keep peak-area rows matched to their samples when a middle row is invalid or empty. The preview blocks the entire paste until all rows are valid; labelled and ordered formats cannot be mixed. Validate every sample before applying a batch.
+- Label pH, temperature and volume by their source: measured, carried forward, unmeasured, legacy source unknown or synthetic demo. Confirming a fresh measurement updates its source; corrections keep earlier values and sources.
+- Correct sampling offsets and quench delays with a reason while preserving the original button-click times. The samples CSV includes current and original times, measurement sources and correction reasons.
+- Require a reason to exclude a point from the fit. Show the fit interval, excluded points and reasons; preserve zero ratios in the table and explain their omission from the logarithmic fit.
+- Describe curvature as a diagnostic of the selected data, and centre/scale the time axis for numerical stability. Keep the chosen fit interval under the researcher's control.
+- Add an unplanned-sample action alongside the next checkpoint, including baseline samples without consuming a scheduled checkpoint.
+- Refresh the English/Chinese product guides and actual interface screenshots. Keep code, examples and validation details together in the repository.
+- Add Android WebView regression coverage for invalid/empty LC rows, successful import and restart persistence.
+- Disable automatic Claude commit/PR attribution for this project.
+
 ## EnvBench (Android) 0.6.0 preview · unreleased
 
 Bench analysis on top of 0.5.0. 0.5.0 was never published as an APK, so 0.6.0 is the first EnvBench build.
@@ -74,4 +86,3 @@ The Android app is now **EnvBench**, a bench companion for advanced-oxidation an
 - Human review and append-only correction history; atomic project snapshots and study-level resume.
 - CSV, Excel, and full JSON export; offline synthetic demo and automated regression tests.
 - Chinese interface, bilingual README, packaging, CI workflow, and issue template.
-

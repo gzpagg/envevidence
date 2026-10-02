@@ -114,7 +114,7 @@ test('curvature flags a lag phase and tailing but not clean first-order decay',(
 
 test('excluded points leave the fit, and the exclusion is kept in history',()=>{
   const lagged=[0,1,2,4,6,8,10].map(m=>Math.exp(-0.15*Math.max(0,m-2.5)));const {samples}=series([0,1,2,4,6,8,10],lagged);
-  for(const v of samples.slice(0,3))L.editSample(v,{fit_excluded:true},clock(1));
+  for(const v of samples.slice(0,3))L.editSample(v,{fit_excluded:true,fit_exclusion_reason:'Synthetic early-point exclusion'},clock(1));
   const f=L.fit(samples);a.equal(f.n,4);a.ok(Math.abs(f.k_per_min-0.15)<1e-9);a.equal(samples[0].revisions.at(-1).fit_excluded,false);
 });
 
@@ -138,7 +138,7 @@ test('pasted peak areas become C/C0 against a reference, by label or in order',(
 });
 
 test('samples CSV carries fluence, peak area and fit exclusion',()=>{
-  const {l,e,samples}=series([0,2],[1,0.5],{fluence_rate_mw_cm2:1.5});L.editSample(samples[1],{peak_area:5000,fit_excluded:true},clock());
+  const {l,e,samples}=series([0,2],[1,0.5],{fluence_rate_mw_cm2:1.5});L.editSample(samples[1],{peak_area:5000,fit_excluded:true,fit_exclusion_reason:'Sample handling deviation'},clock());
   const lines=L.samplesCsv(l,e.id).replace('﻿','').split('\r\n'),head=lines[0].split(',').map(x=>x.replaceAll('"','')),row=lines[2].split(','),col=k=>row[head.indexOf(k)];
   a.equal(col('fluence_mj_cm2'),'180');a.equal(col('peak_area'),'5000');a.equal(col('fit_excluded'),'"true"');
 });

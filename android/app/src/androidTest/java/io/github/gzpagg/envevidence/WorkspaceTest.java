@@ -75,6 +75,27 @@ public class WorkspaceTest {
             return new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         }
     }
+    @Test public void peakAreaImportKeepsSampleAlignmentOnAndroid() throws Exception {
+        android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
+        JSONObject clean=new JSONObject("{\"format\":\"envevidence-android\",\"schema_version\":1,\"workspace\":{\"schema_version\":1,\"preferences\":{\"language\":\"en\",\"palette\":\"clay\",\"accent\":\"#A65338\",\"background\":\"#F7F5F0\",\"order\":[\"evidence\",\"learning\",\"tasks\",\"notes\"],\"hidden\":[]},\"goals\":[],\"tasks\":[],\"notes\":[]},\"projects\":[]}");
+        LabStore.save(context,clean);
+        try(ActivityScenario<MainActivity> s=ActivityScenario.launch(MainActivity.class)) {
+            ready(s,"!!document.querySelector('nav') && !!state.lab");
+            js(s,"navigate('my');document.querySelector('[data-lab=labDemo]').click()");
+            ready(s,"state.lab.demo_loaded && state.lab.samples.length===5");
+            js(s,"experimentId=state.lab.experiments[0].id;navigate('experiment');areasForm(experimentId);window.beforeLC=JSON.stringify(state.lab.samples);(()=>{const f=document.querySelector('[name=areas]');f.value='10000\\nBAD\\n6400';f.dispatchEvent(new Event('input',{bubbles:true}));})()");
+            assertEquals("true",js(s,"document.querySelector('dialog [type=submit]').disabled && document.querySelector('[data-bench-preview]').textContent.includes('S-003')"));
+            js(s,"document.querySelector('dialog form').requestSubmit()");
+            ready(s,"!busy");
+            assertEquals("true",js(s,"JSON.stringify(state.lab.samples)===window.beforeLC"));
+            js(s,"(()=>{const f=document.querySelector('[name=areas]');f.value='10000\\n\\n6400';f.dispatchEvent(new Event('input',{bubbles:true}));})()");
+            assertEquals("true",js(s,"document.querySelector('dialog [type=submit]').disabled && document.querySelector('[data-bench-preview]').textContent.includes('S-003')"));
+            js(s,"(()=>{const f=document.querySelector('[name=areas]');f.value='S-001 10000\\nS-002 8000\\nS-003 6400';f.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('dialog form').requestSubmit();})()");
+            ready(s,"!document.querySelector('dialog') && !busy && state.lab.samples[1].c_over_c0===0.8 && state.lab.samples[2].c_over_c0===0.64");
+            s.recreate();ready(s,"!!document.querySelector('nav') && state.lab.samples.length===5");
+            assertEquals("true",js(s,"state.lab.samples[1].c_over_c0===0.8 && state.lab.samples[2].c_over_c0===0.64 && state.lab.samples[2].revisions.length>=2"));
+        }
+    }
     @Test public void labWorkspaceRetainsTimePhotosAndLegacyData() throws Exception {
         android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
         JSONObject old=new JSONObject("{\"format\":\"envevidence-android\",\"schema_version\":1,\"workspace\":{\"schema_version\":1,\"preferences\":{\"language\":\"en\",\"palette\":\"forest\",\"accent\":\"#147D73\",\"background\":\"#F6F8F7\",\"order\":[\"evidence\",\"learning\",\"tasks\",\"notes\"],\"hidden\":[]},\"goals\":[],\"tasks\":[],\"notes\":[{\"id\":\"legacy-note\",\"title\":\"Old note\",\"body\":\"Preserve me\",\"pinned\":true,\"archived\":false,\"color\":\"sage\"}]},\"projects\":[]}");

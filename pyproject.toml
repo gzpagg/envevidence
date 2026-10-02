@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "envevidence"
 version = "0.3.0"
-description = "Bilingual local research workspace with source-linked evidence, learning goals, tasks and notes"
+description = "Bilingual local literature evidence extraction and source review for water-treatment research"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"

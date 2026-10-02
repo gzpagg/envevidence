@@ -1,62 +1,63 @@
-# EnvBench for Android: screenshots and validation
+# EnvBench screenshots and validation
 
-## 0.6.0 preview (unreleased)
+[English guide](../android/README.md) · [中文说明](../android/README.zh-CN.md) · [Samples CSV](BENCH_CSV.md)
 
-These captures come from the **browser preview** of the bundled interface (Chromium, 390 px wide) with the invented demo run. They are not native Android screenshots. The emulator workflow regenerates native ones when it runs on a pull request.
+## Current interface · 0.6.1
 
-| View / 页面 | English | 简体中文 |
-|---|---|---|
-| Run / 反应 | <img src="images/envbench-run-en.png" alt="EnvBench run page with next-sample countdown and checkpoints" width="280"> | <img src="images/envbench-run-zh.png" alt="EnvBench 反应页：下一次取样倒计时与取样点" width="280"> |
-| Sample sheet / 取样 | <img src="images/envbench-sample-en.png" alt="Sample sheet with quench chips and pH, temperature and volume steppers" width="280"> | <img src="images/envbench-sample-zh.png" alt="取样面板：淬灭剂选择与 pH、温度、体积调节" width="280"> |
-| Paste LC areas / 粘贴峰面积 | <img src="images/envbench-paste-en.png" alt="Paste dialog converting LC peak areas to C/C0 with a preview and a rejected malformed line" width="280"> | <img src="images/envbench-paste-zh.png" alt="粘贴 LC 峰面积：预览 C/C0 并列出无法识别的行" width="280"> |
-| Samples and fit / 样品与拟合 | <img src="images/envbench-samples-en.png" alt="Pseudo-first-order fit of ln(C/C0) with k_obs, confidence interval, curvature check and fluence-based k'E" width="280"> | <img src="images/envbench-samples-zh.png" alt="准一级动力学拟合与 k_obs、置信区间、半衰期、R²" width="280"> |
-
-What was checked for 0.6.0 (which includes the unreleased 0.5.0):
-
-- **41 JavaScript tests** (`node --test android/tests/*.test.cjs`): the 25 earlier ones plus 16 for runs. The 6 added in 0.6.0 cover upgrading 0.5.0 samples, lag/tailing/linear curvature (and no verdict below 5 points), fit exclusion, fluence and dose normalisation, peak-area parsing (labels, order, header row, `9 200` rejected, duplicates, extra lines) with C/C₀ conversion and history, and the new CSV columns. The 10 from 0.5.0 cover version 1 → 2 upgrade and import, pull time vs plan, required quench, no samples after a run ends, correction history, ready/due/late transitions, the fit (exact k, half-life, CI, fewer than three points), water validation and SUVA₂₅₄, unpulled checkpoints logged as skipped when a run ends, the CSV (negative offsets, formula neutralising, per-run filtering) and orphan rejection.
-- **Browser preview flow** (Playwright, 390 px, English and Chinese): demo load, run page, sample sheet locked until a quench is chosen, steppers, C/C₀ edit and refit, rejection of an invalid C/C₀, live SUVA₂₅₄, CSV download, new run with a plan, due and late states, taking a checkpoint from the Timers tab, reload persistence; for 0.6.0 also pasting areas with a preview and listed errors, a typed reference, the Fit switch and hollow excluded points, the sample editor's area and fit fields, the lag warning, the photo button's preview notice, the new CSV columns and the Chinese paste dialog. No console errors and no horizontal overflow.
-- **Android lint, APK build and the emulator test** run in the Android workflow on the pull request; see its result there. They could not be run in the environment used to write this change, because the Android SDK could not be downloaded. The emulator test now expects the demo run's 5 samples in a single-experiment ZIP.
-- **Not checked:** a physical phone, the camera path for sample photos, and real LC exports beyond the pasted formats above.
-
-## 0.4.0
-
-[Download APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) · [English guide](../android/README.md) · [中文安装说明](../android/README.zh-CN.md)
-
-The 0.4 Android app focused on experiments, multiple timers, counters and photo observations. Settings appear only under **My space**. The desktop literature workflow remains available separately.
-
-These unedited screenshots come from the running app on an Android 15 emulator, with invented demo records and a deliberately synthetic image. They contain no private research or API keys. Interface language changes do not translate user-entered text.
-
-安卓现以实验计时、计数和拍照记录为主，设置集中在“我的”。下方是 Android 15 模拟器实际运行的原始截图；示例文字及样品图均为自制演示，不是真实科研数据。切换界面语言不会改写用户输入。
+All 16 Android screenshots show the actual bundled 0.6.1 interface running in a local Chromium browser preview. The viewport and exported PNGs are 390 × 844 pixels. An isolated synthetic UV/PDS experiment supplies the sample names, water properties and analytical values. English and Chinese views use the same product layout. The six desktop screenshots show the running EnvEvidence 0.3.0 Streamlit app at 1440 × 1080.
 
 | View / 页面 | English | 简体中文 |
 |---|---|---|
-| Experiments / 实验 | <img src="images/lab-home-en.png" alt="English experiment notebook" width="280"> | <img src="images/lab-home-zh.png" alt="中文实验首页" width="280"> |
-| Timers / 计时 | <img src="images/lab-timers-en.png" alt="English simultaneous timers and sampling reminder" width="280"> | <img src="images/lab-timers-zh.png" alt="中文多计时器与取样提醒" width="280"> |
-| Records / 记录 | <img src="images/lab-records-en.png" alt="English observation with synthetic photo" width="280"> | <img src="images/lab-records-zh.png" alt="中文现象记录与自制样品图" width="280"> |
-| My space / 我的 | <img src="images/lab-my-en.png" alt="English settings, alerts and backups in My space" width="280"> | <img src="images/lab-my-zh.png" alt="中文集中设置、提醒与备份" width="280"> |
+| Run / 反应 | <img src="images/envbench-run-en.png" alt="Reaction page, sampling schedule and water-matrix summary" width="280"> | <img src="images/envbench-run-zh.png" alt="反应页、取样计划与水体基质摘要" width="280"> |
+| Sample sheet / 取样 | <img src="images/envbench-sample-en.png" alt="Sample sheet with quench selection and measurement-source controls" width="280"> | <img src="images/envbench-sample-zh.png" alt="取样面板、淬灭剂与测量来源" width="280"> |
+| LC import / 峰面积导入 | <img src="images/envbench-paste-en.png" alt="LC peak-area import with sample assignments and validation" width="280"> | <img src="images/envbench-paste-zh.png" alt="LC 峰面积导入、样品对应与校验" width="280"> |
+| Samples and fit / 样品与拟合 | <img src="images/envbench-samples-en.png" alt="Sample table, concentration trend and fitted interval" width="280"> | <img src="images/envbench-samples-zh.png" alt="样品记录、浓度趋势与拟合范围" width="280"> |
 
-### Validation
+These are browser interface captures. Native camera, storage, notification and activity behavior have separate Android instrumentation coverage described below.
 
-- **25 JavaScript tests** cover timer anchors, wall-clock changes within a boot, reboot fallback, overtime, lap/reset history, fixed sampling targets, actual sample times, counters, revisions, archive behavior, import validation and retained literature/planning rules. A 1,200-timer domain case checks the absence of an arbitrary count cap; it is not a physical-phone performance benchmark.
-- **50 Python regression tests** pass on Windows/Linux with Python 3.11/3.13. The desktop package and CLI remain version 0.2.0.
-- Android lint and debug/release compilation pass. Android 15 emulator instrumentation checks legacy data migration, count/undo, language and activity recreation, native image display, original-photo ZIP round-trip, individual-experiment export isolation, a background countdown notification, notification routing, and retained PDF parsing.
-- Browser interface checks cover English/Chinese, four palettes, narrow and wide layouts, observation revisions, archive/restore and saved preferences. The eight native screenshots above show the default warm-white/terracotta palette.
-- The published APK is signed with the same private maintainer key as Android 0.3.0 and verified with APK signature schemes v2/v3. The release includes its SHA-256 checksum. Private signing material is excluded from Git and release assets.
+## Release checks
 
-See [Android CI](https://github.com/gzpagg/envevidence/actions/workflows/android.yml) and [desktop CI](https://github.com/gzpagg/envevidence/actions/workflows/ci.yml) for recorded runs.
+**Local checks passed:** 56/56 Android JavaScript tests, 46 desktop Python tests and Ruff. Version 0.6.1 adds regression coverage for peak-area assignment, rejected batches, measurement sources, timing revisions, exclusions and CSV audit columns. The new 0.6.1 Android lint/build/emulator CI run has not run yet; the previous verified baseline is linked separately below.
 
-### Remaining validation / 尚未验证
+The release checklist covers:
 
-The emulator test uses a generated PNG through the native photo-storage path; it does **not** validate a real camera, gallery provider or manufacturer-specific permission flow. Physical-device camera capture, long-running/reboot alarm behavior and vendor battery-management policies remain untested. Notification/alarm permissions are needed for background alerts; force-stop or muted notification channels can prevent delivery. This is a preview release, not a calibrated timing instrument or a Google Play listing.
+- Invalid and internal empty area rows retain their positions; every error blocks applying the batch. Duplicate, extra and mixed-format assignments are rejected before data changes.
+- Measured, carried-over, unmeasured and legacy-unknown sample sources survive save, import and export.
+- Timing corrections preserve original events, require a reason and update the time used by the fit.
+- Unplanned sampling leaves the scheduled checkpoint intact.
+- Fit exclusions retain their reasons. Zero ratios remain recorded and are identified as ineligible for logarithmic fitting.
+- Curvature checks use centered/scaled time and describe model deviation. The interface displays the fitted interval and exclusion count.
+- English/Chinese sample sheets, imports, corrections and exports render with the default warm-paper/terracotta appearance.
 
-已验证模拟器后台倒计时通知、图片保存与备份恢复；尚未用实体手机验证相机、相册、长时间运行、重启后的系统提醒及各厂商省电策略。请在“我的”中启用计时提醒，确认通知和闹钟权限。强行停止应用或关闭通知会影响提醒。
+## Recorded baseline · 0.6.0 / desktop 0.3.0
 
-The experiment workflow is entirely local and makes no model calls. Real API calls and scientific accuracy on real papers remain unverified for the separate literature workflow. Existing mobile evidence projects stay in full backups; the mobile primary navigation no longer offers literature extraction/review.
+The merged implementation passed [Android CI](https://github.com/gzpagg/envevidence/actions/runs/36945435012) and [desktop CI](https://github.com/gzpagg/envevidence/actions/runs/36945434951). Android CI ran lint, JavaScript checks, APK compilation and Android 15 emulator instrumentation. The desktop matrix ran on Windows/Linux with Python 3.11/3.13.
 
-### Data and upgrades / 数据与升级
+The 41 Android JavaScript tests covered timers, counters, records, legacy migration and reaction-run features: checkpoints, sample/quench records, correction history, water validation, SUVA₂₅₄, curve fitting, exclusions, area conversion and CSV exports. Version 0.6.1 extends this baseline with the cases above.
 
-Install the signed 0.4 APK over 0.3 to preserve local data. Avoid uninstalling first. Export a full ZIP backup, including original photos, before uninstalling or moving devices. Single-experiment ZIPs omit unrelated experiments, personal planning items and literature projects. Archives support up to 512 MB of uncompressed data; split larger collections by experiment. Import adds new IDs and pauses imported running timers.
+Android instrumentation checked legacy data migration, count/undo, language and activity recreation, native image display, original-photo ZIP round-trip, experiment export isolation, background countdown notifications, notification routing and retained PDF parsing. The previous suite did not cover every new reaction-run interaction. Version 0.6.1 adds sample and import instrumentation cases; their native results will be recorded after the new Android CI run.
 
-直接覆盖安装可保留旧数据。卸载前先导出含照片的完整 ZIP 备份；单个实验 ZIP 仅含所选实验及关联记录。每份备份的未压缩内容上限为 512 MB，可按实验分开导出。导入不会覆盖已有编号，导入的运行中计时会暂停。
+## Device and research coverage
 
-Photos retain their original bytes and metadata; displayed previews are smaller copies. Recorded photo times describe when the image was added, not when an imported photo was originally taken. Exports contain your research content and should be shared intentionally.
+The emulator uses generated images through the native photo-storage path. Physical-phone camera/gallery providers, long-duration runs, reboot recovery and manufacturer battery policies need separate device checks. System notification and alarm permissions govern background alerts.
+
+Bench calculations are tested with synthetic numerical examples. Real LC datasets and independent use during laboratory experiments have not been evaluated as a validation dataset. Literature extraction has its own [validation record](VALIDATION.md).
+
+## Backups and upgrades
+
+Maintainer-signed updates retain the application ID and existing data. Export a full ZIP with original photos before uninstalling or moving devices. Import adds new IDs and pauses imported running timers; conflicting photo bytes are rejected. Archives support up to 512 MB uncompressed content, so larger notebooks can be split by experiment.
+
+Version 0.6.1 keeps the lab schema at version 2 and adds CSV audit columns. Earlier nonempty measurement values have an unknown source until confirmed; empty values stay unmeasured. Existing evidence and planning data remain in full backups.
+
+## Experiment notebook views · 0.6.1
+
+The remaining eight captures show the current experiment notebook, timers, observations and My space pages in the same Chromium preview. They use isolated synthetic records and the same 390 × 844 viewport and PNG dimensions.
+
+| View / 页面 | English | 简体中文 |
+|---|---|---|
+| Experiments / 实验 | <img src="images/lab-home-en.png" alt="Current English experiment notebook" width="240"> | <img src="images/lab-home-zh.png" alt="当前中文实验手记" width="240"> |
+| Timers / 计时 | <img src="images/lab-timers-en.png" alt="Current English timers" width="240"> | <img src="images/lab-timers-zh.png" alt="当前中文计时" width="240"> |
+| Records / 记录 | <img src="images/lab-records-en.png" alt="Current observation with a synthetic photo" width="240"> | <img src="images/lab-records-zh.png" alt="当前现象记录与演示图" width="240"> |
+| My space / 我的 | <img src="images/lab-my-en.png" alt="Current settings and backup controls" width="240"> | <img src="images/lab-my-zh.png" alt="当前设置与备份" width="240"> |
+
+[Android workflow](https://github.com/gzpagg/envevidence/actions/workflows/android.yml) · [Desktop workflow](https://github.com/gzpagg/envevidence/actions/workflows/ci.yml)
