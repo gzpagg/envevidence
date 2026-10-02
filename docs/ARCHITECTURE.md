@@ -1,21 +1,35 @@
 # Architecture
 
-EnvEvidence is a single-user local Python/Streamlit app. The CLI and the existing evidence pipeline remain compatible with v0.1.
+[简体中文](ARCHITECTURE.zh-CN.md)
+
+The repository contains two local applications: **EnvEvidence**, a Python/Streamlit literature evidence app, and **EnvBench**, an Android experiment notebook. They share an open repository and export-oriented workflow, while maintaining separate runtime storage.
+
+## Desktop evidence pipeline
+
+Evidence `Project` JSON remains at schema version 1. Document parsing, model adapters, quotation location, scientific review and export are separate modules. The CLI remains compatible with the original evidence workflow.
+
+`Workspace` schema version 1 stores language and appearance preferences. It also retains version-0.2 learning goals, tasks and notes so existing files can be read and written unchanged. It lives at `workspace/state.json` under the data root, outside evidence-project discovery.
+
+Writes use a same-directory temporary file, flush/fsync and atomic replacement. Failed reads or validation preserve the original file. Use one editor process per project.
+
+`ui.py` supplies the shell, `workbench_ui.py` the sidebar and appearance page, and `evidence_ui.py` the evidence workflow. Stable IDs provide widget keys. Per-render language context changes interface strings while preserving scientific content and audit records. Themes use validated hex colors and application CSS; foregrounds are selected for contrast.
+
+The OpenAI and Anthropic adapters call their official endpoints only after the user confirms sending the text, or the CLI receives `--send-text`. Completed studies are checkpointed separately. Model values and reviewer revisions remain distinct.
+
+## Android experiment notebook
+
+Bundled HTML/CSS/JavaScript runs through WebViewAssetLoader. `lab-domain.js` contains experiment, timer, sample, water-matrix and numerical rules; `lab.js` handles the notebook controls, and `bench.js` the reaction-run presentation. Native Java bridges private storage, Android clocks, alarms, notifications, camera/file operations and ZIP archives.
+
+Lab schema version 2 stores experiments, timers, counters, observations, events and samples. Upgrades add missing sample audit fields without discarding older data. Legacy measurement values are labelled unknown rather than retrospectively classified as measured.
+
+Sample corrections retain prior values, measurement sources, timing intervals and reasons. Original button-event timestamps remain intact. Corrected elapsed time drives sample offsets, fitting and fluence calculations. CSV keeps stable machine column names and adds audit columns; full ZIP backups retain complete history and original photos.
+
+Peak-area parsing validates the complete batch before applying changes. Labelled and ordered formats are distinct; errors retain row locations. Fits use positive, included ratios. Exclusions retain reasons; curvature is a model-deviation diagnostic.
+
+Within one device boot, timers use Android monotonic time. Saved wall-clock time supports restart recovery after reboot or device transfer. Imported active timers are paused.
 
 ## Data boundaries
 
-- Evidence `Project` JSON stays at schema version 1. Parsing, providers, quote location, scientific review and export remain separate modules.
-- `Workspace` schema version 1 contains `Preferences` and, since 0.3, only retains `LearningGoal`/`Step`, `DailyTask` and `Note` from 0.2 so existing files load and save unchanged; nothing displays or edits them. It is stored in the data root's `workspace/state.json`, outside the evidence-project discovery pattern.
-- Writes use a same-directory temporary file, flush/fsync, and atomic replace. Read/validation failures preserve the original file. There is no concurrent-edit merging or cloud synchronization.
+Android experiments run locally. Photos and notebook records remain in private storage. Desktop extraction sends parsed text and field instructions to the selected model provider; keys are not stored in project JSON. Runtime data, API credentials and private signing material are excluded from Git and source packages.
 
-## Presentation
-
-`ui.py` is the application shell; `workbench_ui.py` holds the sidebar and appearance page, and `evidence_ui.py` the evidence workflow. Stable item IDs are used as widget keys. A per-render language context localizes application strings and known legacy diagnostics without rewriting saved scientific records. Widget formatters capture their render language to remain stable across reruns.
-
-Themes use validated six-digit hex colors and application CSS; no private Streamlit configuration API is used. Foreground colors are chosen for contrast. Standard input controls and cards remain neutral. Language and appearance are persisted locally.
-
-## Network boundary
-
-Evidence extraction uses fixed official endpoints only after the user grants consent in the UI or uses CLI `--send-text`. One completed study is checkpointed before proceeding. Original model fields and human revisions are retained separately. A located quote is not proof of scientific support.
-
-There is no OCR, plot digitization, automatic unit conversion, external module loading, account system or multi-user editing. Bench timing and sample records are in the separate EnvBench Android app.
+There is no direct synchronization between the Android notebook and desktop evidence projects. CSV and ZIP exports provide explicit transfer and backup paths.

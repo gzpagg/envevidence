@@ -1,57 +1,68 @@
-# EnvBench for Android · 0.6.0 preview
+# EnvBench for Android · 0.6.1
 
-[简体中文](README.zh-CN.md) · [Desktop literature tools](../README.md) · [Screenshots and validation](../docs/ANDROID.md) · [Samples CSV schema](../docs/BENCH_CSV.md)
+**Keep your reaction schedule, samples and observations together — from the first dose to the final export.**
 
-EnvBench (formerly EnvEvidence Lab) is an offline companion for reaction runs at the bench, built for advanced-oxidation and DOM work in water and wastewater. It counts down to each sampling checkpoint, will not save a sample without a quench, records the real pull time next to the planned one, keeps the water matrix with the run, and fits k_obs once C/C₀ values are in. Timers, counters, photo observations and the timeline from 0.4 remain. The main tabs are **Experiments, Timers, Records and My space**.
+[简体中文](README.zh-CN.md) · [EnvEvidence desktop](../README.md) · [Screenshots and checks](../docs/ANDROID.md) · [Samples CSV](../docs/BENCH_CSV.md)
 
-The phone app does one job: the run. Literature extraction and review live in the [EnvEvidence desktop app](../README.md). Learning goals, tasks and notes from earlier versions are no longer shown, but their data is kept and included in every full backup.
+EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Warm-paper backgrounds, terracotta accents and large sampling controls keep the interface clear during a run.
 
-## Install
+<img src="../docs/images/envbench-run-en.png" alt="Reaction run with sampling checkpoints and water-matrix details" width="300"> <img src="../docs/images/envbench-sample-en.png" alt="Sample sheet with quench selection and measurement sources" width="300">
 
-**0.6.0 has no signed release yet.** The Android workflow on each pull request builds a test APK (artifact `envbench-android-0.6.0`, file `app-debug.apk`). It is signed with a debug key, so it cannot install over a signed 0.3/0.4 app: export a full backup first, uninstall, install the test APK, then import the backup. The [signed 0.4.0 preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) remains the latest release. Android 8.0+ with an up-to-date Android System WebView. 0.6.0 keeps the same application ID, so once signed with the maintainer key it installs as an update over 0.3 and 0.4 and migrates their data. Export a backup before uninstalling; uninstalling removes app data.
+## What you can do
 
-No account, Python installation or server is needed. **My space → Load lab demo** adds an invented UV/PDS run with samples and water data, without replacing your own records. The mobile features make no API calls.
+- Run independent stopwatches, countdowns and sampling reminders, with names, colors and group controls.
+- See the next checkpoint, record planned and actual timing, and add unplanned samples without changing the plan.
+- Record quench agents, pH, temperature and volume, with measured, carried-over and unmeasured field labels.
+- Keep water-matrix properties, notes and sample photos with the reaction.
+- Paste LC peak areas, check sample assignments and review C/C₀ trends with a pseudo-first-order fit.
+- Keep correction history, with reasons for timing corrections and fit exclusions.
+- Export samples to CSV, an experiment to ZIP, or the whole notebook with original photos.
 
-## A reaction run
+**Android 8.0+ · English and Chinese · Offline · No account required**
 
-1. Tap **New reaction run** when the lamp goes on or the oxidant goes in. Saving starts the run clock at t = 0. Choose the process (UV/PDS, UV/H₂O₂, O₃, Fenton and others), target, oxidant dose, wavelength and fluence rate, and enter the sampling plan in minutes, for example `1, 2, 5, 10, 20, 30`.
-2. The run page opens with the next checkpoint as the largest thing on screen. It turns to the accent color 30 s before the checkpoint, amber when it is due, and red once it is more than 30 s late. A late sample can still be taken; its real time is kept.
-3. **Take sample** freezes the pull time and opens a sheet. Tap the quench agent you used (Na₂S₂O₃, MeOH, EtOH, catalase, ascorbic acid, none, or type another); the moment you tap it is stored as the quench time. **Save sample** stays disabled until a quench is chosen. pH, temperature and volume use large − / + steppers and start from the previous sample's values. Samples are labelled S-001, S-002 … in pull order.
-4. **Water matrix** records the matrix class, lot, 0.45 µm filtration, spiking, DOC, UV₂₅₄, alkalinity, Cl⁻, NO₃⁻-N, Br⁻, conductivity and pH. SUVA₂₅₄ is computed and labelled as computed. Unmeasured fields stay empty and count against the 8-field completeness bar.
-5. After the LC run, tap **Paste LC peak areas** and paste the export: `S-003  12345` per line (tab, comma or spaces), or just the areas in sample order. Choose the reference (by default S-001, or type a C₀ area) and check the preview; lines that cannot be read are listed, not guessed. C/C₀ can also be typed directly. The pseudo-first-order fit (least squares of ln(C/C₀) against real pull time) updates with k_obs, its 95% confidence interval, t½ and R². With 5 or more points it tests for curvature and warns about a **lag phase** or **tailing**; untick **Fit** on a row to leave that point out. When the run has a fluence rate, the fluence-based k′E (cm² mJ⁻¹) is shown; with an oxidant dose, k_obs ÷ [oxidant]₀ is shown for comparing doses. Corrections keep the earlier value in the sample's history; the pull time and quench are never edited. The camera button on a row adds a photo labelled with that sample.
-6. **Samples CSV** exports one row per sample in the [shared schema](../docs/BENCH_CSV.md), with the run and water columns on every row.
+## Install and explore
 
-Checkpoints can also be taken from the Timers tab. Ordinary experiments without a process still work as in 0.4.
+The current source version is **0.6.1**. The [latest published signed APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) is currently 0.4.0; the [Android workflow](https://github.com/gzpagg/envevidence/actions/workflows/android.yml) provides development builds. The installation link will be updated when the signed 0.6.1 package is published.
 
-## Other experiments, timers and observations
+Use the maintainer-signed APK to update an existing installation, and keep Android System WebView up to date. Export a full ZIP backup before uninstalling or moving devices: uninstalling removes private app data. Debug builds use a different signing key; replacing a maintainer-signed build requires backup, uninstall, installation and restore.
 
-1. Start an experiment with a name. Sample labels and descriptions are optional.
-2. Add stopwatches or countdowns, name/color them, and start or pause a group. There is no fixed timer-count cap; practical capacity depends on device memory and storage. Laps, finishes and resets retain their history. Expired countdowns show overtime until handled.
-3. Add a sampling plan in minutes after the experiment starts. **Take sample** opens the sample sheet described above and records the actual time separately from the planned point. Pausing a sampling reminder does not move its original target; resuming catches up to the original experiment clock.
-4. Use counters with +1, undo and separate rounds. Resetting keeps prior events.
-5. Tap **Take photo** or **Add observation** inside an experiment. Observations keep their creation time, experiment elapsed time, sample label and earlier text revisions. Photos also have their own time of addition; this is not a claim about the original camera shutter time.
-6. Review the combined timeline. Export CSV, an individual experiment ZIP, or a full backup including original photos.
+Open **My space → Load lab demo** to add an invented UV/PDS run with samples and water data. Demo loading preserves your existing notebook.
 
-## Timer alerts
+## Walk through a reaction run
 
-Open **My space → Enable timer alerts** and allow Android notifications and alarms. The UI shows when these permissions are incomplete. A system alarm handles the next due countdown; multiple due timers are grouped in one notification. Notification taps open Timers. There is no continuously running background service.
+1. **Start the reaction.** Tap **New reaction run**, select the process and target, and enter oxidant dose, wavelength, fluence rate and sampling times in minutes, for example `1, 2, 5, 10, 20, 30`. Saving starts the experiment clock at t = 0.
+2. **Follow the plan.** The run page prominently shows the next checkpoint and its approaching, due or late state. Planned and recorded sample times are saved separately.
+3. **Record a sample.** Tap **Take sample** to capture the operation time. Choose a quench agent or explicitly choose **None**, then add pH, temperature, volume and a note. Confirm measured values and identify values carried over from the previous sample. Samples are labelled S-001, S-002, ….
+4. **Add context.** Record matrix, batch, filtration, spiking, DOC, UV₂₅₄, alkalinity, chloride, nitrate-N, bromide, conductivity and pH. SUVA₂₅₄ is calculated from DOC and UV₂₅₄; unmeasured properties stay empty. Attach photos and short observations as the reaction proceeds.
+5. **Add analytical results.** Open **Paste LC peak areas**. Paste one sample label and area per line, such as `S-003  12345`, or one area per line in sample order. Select the reference and inspect the preview. Correct every import error before applying. C/C₀ can also be entered directly.
+6. **Review the trend.** See k_obs, its 95% confidence interval, half-life and R², together with the fitted time range and exclusion count. A curvature flag identifies deviation from a single first-order model. Record a reason when excluding a sample. Fluence and dose normalization appear when their required inputs are present.
+7. **Correct and export.** Edits retain previous values and sources. Timing corrections require a reason and preserve the original button-event intervals. Export **Samples CSV**, an experiment ZIP or a full backup.
 
-Within one device boot, elapsed time uses Android's monotonic clock and survives activity/process recreation. After reboot or transfer to another device, recovery falls back to saved wall-clock times. Changing the system clock across a reboot can therefore affect recovery. Imported running timers are paused to avoid unexpectedly rearming old reminders.
+<img src="../docs/images/envbench-paste-en.png" alt="LC peak-area import with sample mapping and validation" width="300"> <img src="../docs/images/envbench-samples-en.png" alt="Sample table and concentration trend" width="300">
 
-Force-stop, muted notification channels and manufacturer power-management policies can suppress alerts. Android 15 emulator checks cover a background notification; physical-device camera behavior, long-duration/reboot scenarios and vendor battery policies still need testing. This is a preview, not a calibrated timing instrument or a Google Play listing.
+The [CSV guide](../docs/BENCH_CSV.md) gives column definitions, units and calculation assumptions.
 
-## Photos, backups and compatibility
+## Timers, counters and observations
 
-- Camera and gallery use Android's own apps/picker. JPEG, PNG and WebP images up to 30 MB each are supported. Originals and their metadata are retained; smaller previews are used only for display.
-- Data and photos live in private app storage. Cloud/device backup is disabled. Photos and observations are never uploaded by these features.
-- Full ZIP backups include workspace JSON, original photos and display previews. Single-experiment ZIPs include only that experiment and its associated records; unrelated learning items and literature projects are excluded.
-- ZIP export/restore supports up to 512 MB of uncompressed content per archive. Larger notebooks can be exported as separate experiments. Existing IDs are kept when importing; conflicting photo bytes are rejected.
-- Existing 0.3.0 evidence and planning data are preserved during migration. Literature extraction/review now belongs in the desktop app; old evidence projects remain in full backups. Desktop project/workspace JSON can still be imported.
-- No OCR, photo interpretation, speech recognition, accounts, cloud sync or AI service is used by the experiment workflow.
+Use a regular experiment for work without a reaction preset. Add named stopwatches or countdowns, start or pause a group, record laps and reset timers while retaining event history. Timer count has no fixed application cap; device memory and storage determine practical capacity.
 
-## Build and checks
+Sampling checkpoints stay anchored to the experiment start. Pausing a reminder does not move its target. Finishing an experiment logs untaken checkpoints as skipped. Counters support +1, undo and separate rounds. Observations preserve creation time, experiment elapsed time, sample labels and previous text revisions. Photos retain original files and metadata; their record time describes when the image was added to the notebook.
 
-Use JDK 17+, Android SDK 36 and build-tools 35.0.0. The official Gradle 8.13 wrapper is included.
+## Alerts, settings and backup
+
+**My space** contains language, colors, permissions, imports and exports. Open **Enable timer alerts** and allow notifications and alarms for background countdown alerts. Android schedules the next due countdown and groups simultaneous alerts; tapping a notification opens Timers. System notification settings and force-stop behavior apply.
+
+Within one device boot, timing uses Android's monotonic clock. After reboot or transfer, recovery uses saved wall-clock times. Imported running timers are paused.
+
+Camera and gallery use Android's system apps and picker. JPEG, PNG and WebP files up to 30 MB each are supported. Records and originals stay in private app storage; the experiment workflow makes no API calls.
+
+Full ZIP backups include workspace data, original photos and display previews. Experiment ZIPs contain that experiment and its associated records. Archives support up to 512 MB of uncompressed content; export larger notebooks by experiment. Import retains existing IDs and rejects conflicting photo bytes. Legacy evidence and planning data remain in full backups.
+
+Literature extraction and source review are available in [EnvEvidence for desktop](../README.md).
+
+## Build and validation
+
+Use JDK 17+, Android SDK 36 and build-tools 35.0.0. The Gradle 8.13 wrapper is included.
 
 ```sh
 cd android
@@ -60,10 +71,8 @@ cd ..
 node --test android/tests/*.test.cjs
 ```
 
-On Windows use `gradlew.bat`. The [Android workflow](../.github/workflows/android.yml) builds debug/unsigned-release APKs and runs domain checks plus Android 15 emulator checks. Released APKs are signed locally with a stable private key. Keep the signing identity backed up privately; future updates require it. It is never included in Git or the APK.
+On Windows, use `gradlew.bat`. The [Android workflow](../.github/workflows/android.yml) runs JavaScript checks, Android lint, APK builds and Android 15 emulator instrumentation. Released APKs use a stable private maintainer key.
 
-The app uses bundled HTML/CSS/JavaScript through WebViewAssetLoader. Java handles private atomic storage, monotonic clocks, system alarms, notifications, camera/file access and ZIP/photo preservation. No remote webpage is loaded into the app. The localhost browser preview supports interface checks; camera and background alarms require Android.
+The interface is bundled HTML/CSS/JavaScript presented through WebViewAssetLoader. Java handles atomic private storage, clocks, alarms, notifications, camera/file access and ZIP/photo preservation. See [recorded validation](../docs/ANDROID.md) for checked flows and device coverage.
 
-See [recorded validation](../docs/ANDROID.md) for tested behavior and remaining limits. The warm-paper/terracotta presentation follows the requested visual direction, with original EnvEvidence branding and controls. Interaction references: [Time Timer](https://support.timetimer.com/hc/en-us/articles/29258432418203-Time-Timer-App-Free-vs-Paid-Premium-Features), [LabArchives entries](https://help.labarchives.com/hc/en-us/articles/11729082137364-Adding-and-Editing-Entries), and [Claude Android](https://claude.com/blog/android-app). No affiliation is implied.
-
-Code and invented fixtures: MIT. See [third-party notices](../THIRD_PARTY_NOTICES.md).
+Code and original synthetic fixtures are MIT licensed. See [third-party notices](../THIRD_PARTY_NOTICES.md) for component licenses.

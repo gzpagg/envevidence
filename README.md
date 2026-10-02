@@ -1,33 +1,52 @@
-# EnvEvidence
+# EnvBench & EnvEvidence
 
-**EnvBench, the Android app, is a bench companion for reaction runs:** [Install and use](android/README.md) · [Screenshots and validation](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md). A countdown to every sampling checkpoint, a sample sheet that requires a quench, the water matrix with SUVA₂₅₄, and a k_obs fit from pasted LC peak areas, with lag and tailing checks and fluence-normalised k′E. Version 0.6.0 is in source and built as a test APK by CI; the latest signed APK is [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1). Android 8.0+; no account or server required.
+**Two tools for water-treatment research: capture reaction runs at the bench, and build literature evidence tables at your desk.**
 
-<img src="docs/images/envbench-run-en.png" alt="EnvBench run page with the next-sample countdown and sampling checkpoints" width="320">
+[简体中文](README.zh-CN.md) · [Android app](android/README.md) · [Try the demo](docs/DEMO.md) · [Validation](docs/VALIDATION.md)
 
-The desktop app below is EnvEvidence 0.3.0. It now covers literature evidence only. The planning tools from 0.2 are gone from the interface, and their data is kept.
+| App | Where it fits | What you get |
+|---|---|---|
+| **EnvBench · Android** | Sampling, quenching and observations during water and wastewater experiments | Timers, sample records, water-matrix data, photos, concentration trends and CSV exports |
+| **EnvEvidence · Desktop** | Reading and organizing water-treatment papers | Experimental-condition tables, source quotations, page locations and reviewer corrections |
 
-## Desktop literature evidence
+Both apps have English and Chinese interfaces, saved appearance settings and local data storage.
 
-**Turn water-treatment papers into source-checked evidence tables.**
+## EnvBench: your reaction run, in one place
 
-[简体中文](README.zh-CN.md) · [Demo](docs/DEMO.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md)
+Keep the sampling plan, sampling events and analytical results together. EnvBench is designed around advanced oxidation and DOM research, with process presets including UV/PDS, UV/H₂O₂, ozone and Fenton.
 
-EnvEvidence imports text PDFs and their supplements, extracts experimental conditions with OpenAI or Anthropic, locates every quotation in the parsed pages, and keeps a reviewer's corrections next to the model's original values. It opens in English and has a complete Chinese interface. You need an API key only to extract from your own papers.
+- **Stay on the sampling schedule.** A prominent countdown shows the next checkpoint; planned and recorded times remain separate.
+- **Record each sample.** Capture the quench agent, pH, temperature, volume and a short note, then attach a photo. Field labels distinguish measured values from values carried over from another sample.
+- **Keep the water matrix with the run.** Store DOC, UV₂₅₄, alkalinity, major ions and other matrix properties; SUVA₂₅₄ is calculated from DOC and UV₂₅₄.
+- **Review concentration trends.** Paste labelled LC peak areas or enter C/C₀, inspect the import preview and see a pseudo-first-order fit with k_obs, its 95% confidence interval, t½ and R².
+- **Export your experiment.** Share tidy sample CSVs, an individual experiment ZIP or a full backup with original photos.
 
-![English literature evidence page](docs/images/workspace-en.png)
+Stopwatches, countdowns, sampling reminders and counters can run in parallel. There is no fixed cap on the number of timers. Settings, language, appearance and backup controls are grouped under **My space**.
 
-| Step | What you can do |
+<img src="docs/images/envbench-run-en.png" alt="EnvBench reaction run with the next sampling checkpoint" width="300"> <img src="docs/images/envbench-samples-en.png" alt="EnvBench sample records and concentration trend" width="300">
+
+**Android 8.0+ · Offline · No account required**
+
+The current Android source is **0.6.1**. See the [installation guide](android/README.md) for the available APK and upgrade steps. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
+
+## EnvEvidence: literature values with their sources
+
+Import a paper and its supplements, extract the experimental conditions, and review every field beside the quoted source. EnvEvidence keeps the model's original value and the reviewer's correction together, so you can revisit the decision later.
+
+| Step | Workflow |
 |---|---|
-| Import | Text PDFs and supplements, with explicit main/supplement links and page-coverage warnings. |
-| Extract | Water-treatment or custom fields, one record per experimental condition. |
-| Review | Check each value against its located quote; save corrections with reviewer, reason and time. |
-| Export | CSV, Excel and complete project JSON. |
+| **Import** | Add text PDFs and associate supplements with their main papers. Inspect parsed page coverage. |
+| **Extract** | Select the water-treatment template or define your own fields. OpenAI and Anthropic adapters use the same record structure. |
+| **Review** | Check values, units and experiment associations against the source quotation and page context. Save the reviewer, reason and time. |
+| **Export** | Download long-form CSV, Excel or the complete project JSON with source text and revision history. |
 
-Version 0.3 removes the learning goals, daily tasks and sticky notes added in 0.2. They duplicated general-purpose apps and pulled the tool away from evidence. Nothing is deleted: existing items stay in `data/workspace/state.json`, and the sidebar shows how many are kept. Timed sampling, quench records and the water matrix of your own runs belong to the [EnvBench Android app](android/README.md).
+Pollutant removal and mineralization/TOC removal have separate fields. Different experimental conditions produce separate records, and each key field carries a source location or a clear missing-value status.
 
-## Install and run
+![EnvEvidence source review in English](docs/images/review-en.png)
 
-Requires Python 3.11+. Clone this repository and enter its directory:
+### Install the desktop app
+
+Requires **Python 3.11+**. Clone the repository and create a virtual environment:
 
 ```bash
 git clone https://github.com/gzpagg/envevidence.git
@@ -49,69 +68,38 @@ macOS / Linux:
 .venv/bin/python -m envevidence serve
 ```
 
-Open <http://127.0.0.1:8501>. **Load evidence demo** on the evidence page adds a synthetic evidence project. It makes no API calls.
+Open <http://127.0.0.1:8501>. Choose **Load evidence demo** to explore a synthetic paper and supplement without an API key. The current desktop version is **0.3.0**.
 
-The sidebar **Language / 语言** selector switches English and Chinese. Your language and saved colors survive restarts. Paper text, model output and revision records are not translated or rewritten.
+### Extract from your own papers
 
-## Appearance
+1. Create a project, choose OpenAI or Anthropic and enter a model ID supported by your account.
+2. Import the main paper and supplements, then select extraction fields.
+3. Parse the files locally and check page coverage.
+4. Enter a session-only API key, or set `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` in the environment. Confirm the text to send and start extraction.
+5. Review the extracted fields and save corrections before exporting.
 
-| Palette | Accent | Background |
-|---|---|---|
-| Forest (default) | `#147D73` | `#F6F8F7` |
-| Ocean | `#1D4ED8` | `#F4F7FB` |
-| Sand | `#A84D18` | `#FAF7F2` |
-| Graphite | `#6D4ACF` | `#F7F5FB` |
+`OPENAI_MODEL` and `ANTHROPIC_MODEL` provide default model IDs. `.env` files are not loaded automatically. Custom fields use `key | label | extraction instruction | unit`; the unit segment is optional.
 
-Choose **Custom** for your own accent and background. Text colors adapt; standard inputs and cards remain neutral for readability. Changes preview immediately; **Save appearance** makes them persistent.
+Text PDFs are supported up to 30 MB and 250 pages per file. The [demo guide](docs/DEMO.md) explains the review workflow; the [validation record](docs/VALIDATION.md) describes parsing and model-evaluation coverage.
 
-![English appearance settings](docs/images/settings-en.png)
+## Language, appearance and your data
 
-## Storage and upgrading from v0.1
+Switching language changes interface labels while preserving paper text, sample names, model results and revision records. Android uses a warm-paper and terracotta palette; the desktop app offers Forest, Ocean, Sand and Graphite presets plus custom colors.
 
-Evidence projects retain their existing version-1 JSON format. Language and color preferences, and any planning items kept from 0.2, live separately at `data/workspace/state.json`. Both stores use atomic writes. `ENVEVIDENCE_DATA_DIR` changes the data root; back up the entire directory while the app is stopped. A damaged workspace file is reported and preserved, never silently reset. Avoid editing the same data from multiple browser tabs or app processes.
+EnvBench stores records and photos in private Android storage. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores projects and preferences under `data/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
 
-The app sends only the text you explicitly approve for extraction. Runtime data, virtual environments and credentials are excluded from Git and source packages. Export field keys and evidence audit history remain stable across language changes; historical/user-authored labels are preserved.
+The experiment workflow runs locally. Desktop extraction sends the parsed text and field definitions to the API service you choose; the API key stays out of project files. Runtime data and credentials are excluded from this repository.
 
-![English evidence review](docs/images/review-en.png)
-
-## Workflow and API setup
-
-1. Create a project, select OpenAI or Anthropic, and enter a model ID available to your account with structured-output support.
-2. Import main papers and associate each supplement with its paper. Select extraction fields or add custom ones.
-3. Parse locally and inspect page coverage and warnings.
-4. Provide a session-only key, or configure `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`. Model defaults can be supplied through `OPENAI_MODEL` / `ANTHROPIC_MODEL`. `.env` files are not automatically loaded.
-5. Explicitly accept sending the parsed text to the selected service. A provider error stops subsequent calls; completed papers remain saved and are skipped on resume.
-6. Review each condition and field against the original source. Save corrections with reviewer, reason, and timestamp. Export CSV, Excel, or complete project JSON.
-
-Water-treatment fields cover pollutant, matrix, initial concentration, treatment, reagent dose, pH, reaction time, pollutant removal, and mineralization/TOC removal as a separate endpoint. Each experiment has its own fields; raw model values remain unchanged after human revisions.
-
-Custom field format: `key | label | extraction instruction | unit` (omit the last segment for unitless fields).
-
-## Accuracy and privacy
-
-**A located quotation is not a scientifically verified result.** It only means the quoted text exists on the specified page. All extracted values initially require human review. Check experimental association, value, unit, and endpoint interpretation.
-
-- Text PDFs only, up to 30 MB and 250 pages per file; no OCR, plot digitization, or inferred unit conversion. Complex layouts and tables may parse incorrectly.
-- Page numbers are physical PDF page indices, starting at 1, not printed journal page numbers.
-- Missing means not found in the imported, successfully parsed material, not necessarily absent from the paper.
-- Each study is sent in one request, with a 160,000-character preflight limit. No silent truncation. Provider context/output limits may be lower.
-- Parsing and saving are local. Live extraction sends the parsed page text and field definitions to the selected API, not the original PDFs. Usage is billed to the user's provider account.
-- OpenAI requests set `store=false`; this is not a zero-retention guarantee. Provider/account data policies still apply.
-- Keys are not persisted. Project JSON contains source text, extraction results, token usage, model name, and reviewer history. `data/` is Git-ignored; configure another local location with `ENVEVIDENCE_DATA_DIR`.
-- The app binds to loopback, disables Streamlit usage telemetry through the launch command, and is designed for one user. Avoid concurrent edits of the same project in multiple tabs.
-
-Excel includes Evidence, Experiments, Revisions, Documents, and Runs sheets. The long-form CSV includes model/current values, citations, and review status; full JSON retains all parsed text and history.
-Excel cells exceeding its length limit are explicitly marked as truncated; full values remain in JSON/CSV. Unsupported XML control characters are displayed as Unicode markers.
-
-## Development
+## Development and documentation
 
 ```bash
 python -m pip install -e ".[dev]"
 python -m pytest -q
 python -m ruff check .
 python -m build
+node --test android/tests/*.test.cjs
 ```
 
-Tests use invented, redistributable examples, not real scientific findings. API contracts are tested with mocked HTTP; see [validation status](docs/VALIDATION.md) for what has and has not been verified. Report problems through the issue template without credentials, private papers, or unpublished data.
+[Android screenshots and checks](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md) · [Changelog](CHANGELOG.md)
 
-Code and original synthetic fixtures are [MIT licensed](LICENSE). Dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). OCR, cross-paper comparability analysis, and MCP integration are future work, not v0.3 features.
+Report reproducible problems through the issue templates. Code and original synthetic examples are [MIT licensed](LICENSE); dependency licenses are listed in [third-party notices](THIRD_PARTY_NOTICES.md).
