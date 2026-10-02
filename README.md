@@ -1,6 +1,6 @@
 # EnvEvidence
 
-**EnvBench, the Android app, is a bench companion for reaction runs:** [Install and use](android/README.md) · [Screenshots and validation](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md). A countdown to every sampling checkpoint, a sample sheet that requires a quench, the water matrix with SUVA₂₅₄, and a k_obs fit from C/C₀. Version 0.5.0 is in source; the latest signed APK is [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1). Android 8.0+; no account or server required.
+**EnvBench, the Android app, is a bench companion for reaction runs:** [Install and use](android/README.md) · [Screenshots and validation](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md). A countdown to every sampling checkpoint, a sample sheet that requires a quench, the water matrix with SUVA₂₅₄, and a k_obs fit from pasted LC peak areas, with lag and tailing checks and fluence-normalised k′E. Version 0.6.0 is in source and built as a test APK by CI; the latest signed APK is [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1). Android 8.0+; no account or server required.
 
 <img src="docs/images/envbench-run-en.png" alt="EnvBench run page with the next-sample countdown and sampling checkpoints" width="320">
 
