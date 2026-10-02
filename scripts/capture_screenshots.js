@@ -24,6 +24,30 @@ async page => {
       await locale.fill(zh ? '简体中文' : 'English');
       await locale.press('Enter');
       await ready();
+      await page.getByText(zh ? '◈ 实验分析' : '◈ Experiment analysis', { exact: true }).click();
+      await ready();
+      await page.getByText(zh ? '载入分析演示' : 'Load analysis demo', { exact: true }).click();
+      await ready();
+      await page.getByRole('tab', { name: zh ? '反应条件' : 'Conditions', exact: true }).click();
+      await page.locator('[data-testid="stMain"]').evaluate(el => el.scrollTo(0, 0));
+      await shot(`analysis-${language}`);
+      await page.getByRole('tab', { name: zh ? '动力学拟合' : 'Fitting', exact: true }).click();
+      await page.getByRole('button', { name: zh ? '拟合所选模型' : 'Fit selected models', exact: true }).click();
+      await ready();
+      await page.getByRole('tab', { name: zh ? '动力学拟合' : 'Fitting', exact: true }).click();
+      await page.getByText(zh ? '候选模型' : 'Candidate models', { exact: true }).scrollIntoViewIfNeeded();
+      await page.locator('[data-testid="stMain"]').evaluate(el => {
+        const label = [...el.querySelectorAll('p')].find(p => /^(Candidate models|候选模型)$/.test(p.textContent));
+        if (label) el.scrollTop += label.getBoundingClientRect().top - 100;
+      });
+      await shot(`fitting-${language}`);
+      await page.getByRole('tab', { name: zh ? '图表格式' : 'Charts', exact: true }).click();
+      await page.getByText(zh ? '格式' : 'Format', { exact: true }).scrollIntoViewIfNeeded();
+      await page.locator('[data-testid="stMain"]').evaluate(el => {
+        const label = [...el.querySelectorAll('p')].find(p => /^(Format|格式)$/.test(p.textContent));
+        if (label) el.scrollTop += label.getBoundingClientRect().top - 100;
+      });
+      await shot(`charts-${language}`);
       await page.getByText(zh ? '▤ 文献证据' : '▤ Literature evidence', { exact: true }).click();
       await ready();
       await page.getByText(zh ? '载入离线演示' : 'Load evidence demo', { exact: true }).click();
@@ -48,7 +72,7 @@ async page => {
       await page.locator('[data-testid="stMain"]').evaluate(el => el.scrollTo(0, 0));
       await shot(`settings-${language}`);
     }
-    console.log('Captured six desktop screenshots from synthetic evidence data.');
+    console.log('Captured twelve desktop screenshots from synthetic analysis and evidence data.');
     return;
   }
   throw new Error('Open the EnvEvidence desktop app before running the desktop capture script. Android screenshots use the companion capture_android_screenshots.js script.');

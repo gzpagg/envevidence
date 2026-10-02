@@ -23,11 +23,11 @@ def click(app, label):
     assert not app.exception
 
 
-def test_opens_on_evidence_without_planning_modules(app):
+def test_opens_on_analysis_without_planning_modules(app):
     assert not app.exception
-    assert app.header[0].value == "Literature evidence"
+    assert app.header[0].value == "Experiment analysis"
     keys = {b.key for b in app.button}
-    assert {"nav_evidence", "nav_settings"} <= keys
+    assert {"nav_analysis", "nav_evidence", "nav_settings"} <= keys
     assert not {"nav_home", "nav_learning", "nav_tasks", "nav_notes", "workspace_demo"} & keys
 
 

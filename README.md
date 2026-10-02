@@ -1,13 +1,13 @@
 # EnvBench & EnvEvidence
 
-**Two tools for water-treatment research: capture reaction runs at the bench, and build literature evidence tables at your desk.**
+**Record experiments at the bench. Process measurements, fit kinetics and trace literature evidence at your desk.**
 
-[简体中文](README.zh-CN.md) · [Android app](android/README.md) · [Try the demo](docs/DEMO.md) · [Validation](docs/VALIDATION.md)
+[简体中文](README.zh-CN.md) · [Android app](android/README.md) · [Analysis guide](docs/ANALYSIS.md) · [Validation](docs/VALIDATION.md)
 
 | App | Where it fits | What you get |
 |---|---|---|
 | **EnvBench · Android** | Sampling, quenching and observations during water and wastewater experiments | Timers, sample records, water-matrix data, photos, concentration trends and CSV exports |
-| **EnvEvidence · Desktop** | Reading and organizing water-treatment papers | Experimental-condition tables, source quotations, page locations and reviewer corrections |
+| **EnvEvidence 0.4.0 · Desktop** | Processing experiments and reviewing water-treatment papers | Kinetic fits, publication-size figures, reproducible SOP packages and source-linked evidence tables |
 
 Both apps have English and Chinese interfaces, saved appearance settings and local data storage.
 
@@ -29,7 +29,28 @@ Stopwatches, countdowns, sampling reminders and counters can run in parallel. Th
 
 **[Download EnvBench 0.6.1 for Android](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) · [Installation guide](android/README.md). Install the signed preview APK to start using the experiment notebook. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
 
-## EnvEvidence: literature values with their sources
+## EnvEvidence: from reaction conditions to reproducible curves
+
+Keep the conditions, measurements and analysis decisions together. Import quantified concentration, TOC, COD, adsorption or biological-rate data; choose your processing rules and kinetic models; then export the data, figures and complete procedure as one package.
+
+| Step | Workflow |
+|---|---|
+| **Conditions** | Record the treatment, water matrix, dose, pH, temperature, reactor volume and rate source for each series. |
+| **Measurements** | Paste a table, map CSV/Excel columns, or import an EnvBench CSV/ZIP and link assay results by sample ID. |
+| **Processing** | Apply explicit blank/dilution corrections, unit conversion, normalization or adsorption mass balance. Keep every original and exclusion reason. |
+| **Fitting** | Compare zero-, first-, second-order and plateau decay; adsorption PFO/PSO and diffusion; or Monod substrate–rate curves. Each independent run is fitted separately. |
+| **Charts** | Inspect original-scale errors and residuals. Set figure dimensions, labels, style, PNG/TIFF/SVG and DPI. |
+| **SOP export** | Confirm the fits, save a reusable template, and export originals, tables, figures, hashes and a replayable configuration. |
+
+Original-scale fitting is the default. Applicable linearizations have separate transformed-scale metrics. Parameters carry units and uncertainty diagnostics; the comparison table keeps model selection in the researcher's hands.
+
+![EnvEvidence experiment analysis in English](docs/images/analysis-en.png)
+
+<img src="docs/images/fitting-en.png" alt="Kinetic model comparison and parameter diagnostics" width="49%"> <img src="docs/images/charts-en.png" alt="Figure format, physical dimensions and DPI settings" width="49%">
+
+Open **Experiment analysis → Load analysis demo** to use a self-created UV/H₂O₂ concentration series. Follow the [analysis guide](docs/ANALYSIS.md) to connect phone samples, compare models and replay an exported SOP. Analysis runs locally without an API key.
+
+## Literature values with their sources
 
 Import a paper and its supplements, extract the experimental conditions, and review every field beside the quoted source. EnvEvidence keeps the model's original value and the reviewer's correction together, so you can revisit the decision later.
 
@@ -68,7 +89,7 @@ macOS / Linux:
 .venv/bin/python -m envevidence serve
 ```
 
-Open <http://127.0.0.1:8501>. Choose **Load evidence demo** to explore a synthetic paper and supplement without an API key. The current desktop version is **0.3.0**.
+Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. The desktop version is **0.4.0**.
 
 ### Extract from your own papers
 
@@ -86,7 +107,9 @@ Text PDFs are supported up to 30 MB and 250 pages per file. The [demo guide](doc
 
 Switching language changes interface labels while preserving paper text, sample names, model results and revision records. Android uses a warm-paper and terracotta palette; the desktop app offers Forest, Ocean, Sand and Graphite presets plus custom colors.
 
-EnvBench stores records and photos in private Android storage. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores projects and preferences under `data/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
+EnvBench stores records and photos in private Android storage. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores evidence projects and preferences under `data/`, with independent experiment projects under `data/analysis/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
+
+Phone CSV/ZIP exports provide a one-way transfer into desktop analysis. Uploaded files keep their bytes and SHA-256 hashes; manual entries have input snapshots and revision history. Each SOP export receives a unique filename. To replay an extracted package from the repository directory, use `.\.venv\Scripts\python.exe -m envevidence analyze --config "path/to/extracted/analysis_config.json" --output data/replayed` on Windows, or replace the Python path with `.venv/bin/python` on macOS/Linux. See the [analysis guide](docs/ANALYSIS.md) for the package contents and replay checks.
 
 The experiment workflow runs locally. Desktop extraction sends the parsed text and field definitions to the API service you choose; the API key stays out of project files. Runtime data and credentials are excluded from this repository.
 
@@ -100,6 +123,6 @@ python -m build
 node --test android/tests/*.test.cjs
 ```
 
-[Android screenshots and checks](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md) · [Changelog](CHANGELOG.md)
+[Analysis workflow and models](docs/ANALYSIS.md) · [Evidence demo](docs/DEMO.md) · [Android screenshots and checks](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md) · [Changelog](CHANGELOG.md)
 
 Report reproducible problems through the issue templates. Code and original synthetic examples are [MIT licensed](LICENSE); dependency licenses are listed in [third-party notices](THIRD_PARTY_NOTICES.md).
