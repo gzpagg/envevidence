@@ -1,8 +1,8 @@
 # EnvEvidence
 
-**安卓版 0.4 已改为实验现场助手：**[下载 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) · [安装与使用](android/README.zh-CN.md) · [截图与验证](docs/ANDROID.md)。支持多秒表/倒计时、取样时间点、计次、照片与现象记录、实验时间线；设置统一放在“我的”。Android 8.0+，无需账号或服务器。
+**安卓版 EnvBench 是反应实验的实验台助手：**[安装与使用](android/README.zh-CN.md) · [截图与验证](docs/ANDROID.md) · [样品 CSV 格式](docs/BENCH_CSV.md)。每个取样点倒计时、未淬灭不能保存的取样面板、含 SUVA₂₅₄ 的水体基质记录，以及由 C/C₀ 拟合 k_obs。0.5.0 目前为源码版本，最新签名 APK 为 [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1)。Android 8.0+，无需账号或服务器。
 
-<img src="docs/images/lab-home-zh.png" alt="暖白陶土色的中文安卓实验手记" width="320">
+<img src="docs/images/envbench-run-zh.png" alt="EnvBench 中文反应页：下一次取样倒计时与取样点" width="320">
 
 下方电脑版文献工作台仍为 0.2.0。从安卓 0.3.0 升级时，原有学习、任务、便签和证据数据均保留。
 

@@ -1,8 +1,8 @@
 # EnvEvidence
 
-**Android 0.4 is an offline lab companion:** [Download APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) · [Install and use](android/README.md) · [Screenshots and validation](docs/ANDROID.md). Multiple stopwatches/countdowns, sampling checkpoints, counters, photo observations and an experiment timeline. Settings live under My space. Android 8.0+; no account or server required.
+**EnvBench, the Android app, is a bench companion for reaction runs:** [Install and use](android/README.md) · [Screenshots and validation](docs/ANDROID.md) · [Samples CSV](docs/BENCH_CSV.md). A countdown to every sampling checkpoint, a sample sheet that requires a quench, the water matrix with SUVA₂₅₄, and a k_obs fit from C/C₀. Version 0.5.0 is in source; the latest signed APK is [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1). Android 8.0+; no account or server required.
 
-<img src="docs/images/lab-home-en.png" alt="English Android lab notebook with warm paper styling" width="320">
+<img src="docs/images/envbench-run-en.png" alt="EnvBench run page with the next-sample countdown and sampling checkpoints" width="320">
 
 The desktop literature workspace below remains version 0.2.0. Existing mobile planning/evidence data are preserved when upgrading from 0.3.0.
 
