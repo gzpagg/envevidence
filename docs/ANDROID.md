@@ -1,6 +1,6 @@
 # EnvBench for Android: screenshots and validation
 
-## 0.5.0 preview (unreleased)
+## 0.6.0 preview (unreleased)
 
 These captures come from the **browser preview** of the bundled interface (Chromium, 390 px wide) with the invented demo run. They are not native Android screenshots. The emulator workflow regenerates native ones when it runs on a pull request.
 
@@ -8,13 +8,15 @@ These captures come from the **browser preview** of the bundled interface (Chrom
 |---|---|---|
 | Run / 反应 | <img src="images/envbench-run-en.png" alt="EnvBench run page with next-sample countdown and checkpoints" width="280"> | <img src="images/envbench-run-zh.png" alt="EnvBench 反应页：下一次取样倒计时与取样点" width="280"> |
 | Sample sheet / 取样 | <img src="images/envbench-sample-en.png" alt="Sample sheet with quench chips and pH, temperature and volume steppers" width="280"> | <img src="images/envbench-sample-zh.png" alt="取样面板：淬灭剂选择与 pH、温度、体积调节" width="280"> |
-| Samples and fit / 样品与拟合 | <img src="images/envbench-samples-en.png" alt="Pseudo-first-order fit of ln(C/C0) with k_obs, confidence interval, half-life and R squared" width="280"> | <img src="images/envbench-samples-zh.png" alt="准一级动力学拟合与 k_obs、置信区间、半衰期、R²" width="280"> |
+| Paste LC areas / 粘贴峰面积 | <img src="images/envbench-paste-en.png" alt="Paste dialog converting LC peak areas to C/C0 with a preview and a rejected malformed line" width="280"> | <img src="images/envbench-paste-zh.png" alt="粘贴 LC 峰面积：预览 C/C0 并列出无法识别的行" width="280"> |
+| Samples and fit / 样品与拟合 | <img src="images/envbench-samples-en.png" alt="Pseudo-first-order fit of ln(C/C0) with k_obs, confidence interval, curvature check and fluence-based k'E" width="280"> | <img src="images/envbench-samples-zh.png" alt="准一级动力学拟合与 k_obs、置信区间、半衰期、R²" width="280"> |
 
-What was checked for 0.5.0:
+What was checked for 0.6.0 (which includes the unreleased 0.5.0):
 
-- **35 JavaScript tests** (`node --test android/tests/*.test.cjs`): the 25 earlier ones plus 10 for runs, covering version 1 → 2 upgrade and import, pull time vs plan, required quench, no samples after a run ends, correction history, ready/due/late transitions, the fit (exact k, half-life, CI, fewer than three points), water validation and SUVA₂₅₄, unpulled checkpoints logged as skipped when a run ends, the CSV (negative offsets, formula neutralising, per-run filtering) and orphan rejection.
-- **Browser preview flow** (Playwright, 390 px, English and Chinese): demo load, run page, sample sheet locked until a quench is chosen, steppers, C/C₀ edit and refit, rejection of an invalid C/C₀, live SUVA₂₅₄, CSV download, new run with a plan, due and late states, taking a checkpoint from the Timers tab, reload persistence. No console errors and no horizontal overflow.
-- **Not run for 0.5.0:** Android lint and APK build (the Android SDK could not be downloaded in the environment used), the emulator instrumentation test (updated to expect the run's 5 samples in a single-experiment ZIP), and any physical phone.
+- **41 JavaScript tests** (`node --test android/tests/*.test.cjs`): the 25 earlier ones plus 16 for runs. The 6 added in 0.6.0 cover upgrading 0.5.0 samples, lag/tailing/linear curvature (and no verdict below 5 points), fit exclusion, fluence and dose normalisation, peak-area parsing (labels, order, header row, `9 200` rejected, duplicates, extra lines) with C/C₀ conversion and history, and the new CSV columns. The 10 from 0.5.0 cover version 1 → 2 upgrade and import, pull time vs plan, required quench, no samples after a run ends, correction history, ready/due/late transitions, the fit (exact k, half-life, CI, fewer than three points), water validation and SUVA₂₅₄, unpulled checkpoints logged as skipped when a run ends, the CSV (negative offsets, formula neutralising, per-run filtering) and orphan rejection.
+- **Browser preview flow** (Playwright, 390 px, English and Chinese): demo load, run page, sample sheet locked until a quench is chosen, steppers, C/C₀ edit and refit, rejection of an invalid C/C₀, live SUVA₂₅₄, CSV download, new run with a plan, due and late states, taking a checkpoint from the Timers tab, reload persistence; for 0.6.0 also pasting areas with a preview and listed errors, a typed reference, the Fit switch and hollow excluded points, the sample editor's area and fit fields, the lag warning, the photo button's preview notice, the new CSV columns and the Chinese paste dialog. No console errors and no horizontal overflow.
+- **Android lint, APK build and the emulator test** run in the Android workflow on the pull request; see its result there. They could not be run in the environment used to write this change, because the Android SDK could not be downloaded. The emulator test now expects the demo run's 5 samples in a single-experiment ZIP.
+- **Not checked:** a physical phone, the camera path for sample photos, and real LC exports beyond the pasted formats above.
 
 ## 0.4.0
 

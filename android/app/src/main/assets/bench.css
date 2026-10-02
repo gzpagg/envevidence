@@ -52,3 +52,9 @@ input.bench-cc{width:70px;min-height:40px;padding:4px 8px;text-align:right;font:
 .stepper input{width:84px;border:0;border-radius:0;text-align:center;font:500 17px ui-monospace,monospace}
 .bench-dialog .formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media (max-width:620px){.fit-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.bf-time{font-size:46px}}
+.fit-chart .pt.out{fill:var(--card);stroke:var(--muted);stroke-width:1.5}
+.fit-norm{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;border-top:1px solid var(--line);padding-top:10px;margin:6px 0}
+.fit-norm div{display:grid;gap:1px;min-width:0}.fit-norm span{font-size:11px;color:var(--muted)}.fit-norm b{font:500 17px ui-monospace,monospace;font-variant-numeric:tabular-nums}.fit-norm small{font-size:10.5px;line-height:1.35}
+input.bench-infit{width:22px;height:22px;accent-color:var(--accent)}
+.bench-photo{gap:4px}.bench-photo svg{width:18px;height:18px}.bench-photo span{font-size:12px}
+.bench-dialog textarea{font:13px/1.5 ui-monospace,monospace;min-height:120px}

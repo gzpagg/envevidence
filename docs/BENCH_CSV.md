@@ -41,14 +41,17 @@ The file is UTF-8 with a byte-order mark and CRLF line endings. Text cells are q
 | `quench_agent` | text | Quench agent chosen at the bench, or `None`. Always present: the app does not save a sample without it. |
 | `quench_delay_s` | s | Time from pull to the quench tap. |
 | `ph`, `temp_c`, `volume_ml` | pH units, °C, mL | Readings recorded with the sample. |
-| `c_over_c0` | dimensionless | C/C₀ entered after analysis. Earlier values are kept in the app's sample history and the full backup, not in this file. |
+| `fluence_mj_cm2` | mJ/cm² | **Computed**: `fluence_rate_mw_cm2 × pulled_s`, rounded to 0.1. Empty without a fluence rate. Assumes a constant fluence rate over the run. |
+| `peak_area` | instrument units | LC peak area, when C/C₀ came from pasted areas. |
+| `c_over_c0` | dimensionless | C/C₀ entered after analysis, or `peak_area` ÷ the chosen reference area (rounded to 6 decimals). Earlier values are kept in the app's sample history and the full backup, not in this file. |
+| `fit_excluded` | `true` / `false` | The user left this point out of the in-app fit. |
 | `note` | text | Free note. |
 
 Times are measured with Android's monotonic clock within one device boot, so changing the phone's clock during a run does not move them. After a reboot the app falls back to wall-clock time.
 
 ## What the app computes and what it does not
 
-The app shows a pseudo-first-order fit: ordinary least squares of ln(C/C₀) against `pulled_s`, with k_obs, a 95% confidence interval from the t distribution, t½ and R². It needs at least three samples with C/C₀ > 0. The fit is a check at the bench. It does not detect lag phases, tailing or a second regime, and it is not exported as a value. Fit your own model from the raw columns for reporting.
+The app shows a pseudo-first-order fit: ordinary least squares of ln(C/C₀) against `pulled_s`, with k_obs, a 95% confidence interval from the t distribution, t½ and R². It needs at least three samples with C/C₀ > 0 that are not excluded. With five or more points it fits a quadratic in time and tests the squared term at 95%: a negative term (accelerating decay) is reported as a possible lag phase, a positive one (slowing decay) as possible tailing. When a fluence rate is set it also shows k′E = k_obs (s⁻¹) ÷ E₀ (mW cm⁻²) in cm² mJ⁻¹, and with an oxidant dose k_obs ÷ [oxidant]₀ for comparing doses; the latter is not a second-order rate constant. The fit is a check at the bench and is not exported as a value. Fit your own model from the raw columns for reporting.
 
 SUVA₂₅₄ bands shown in the app (below 2, 2 to 4, above 4) are the commonly used rough guide for DOM character, not a classification.
 
@@ -59,5 +62,6 @@ SUVA₂₅₄ bands shown in the app (below 2, 2 to 4, above 4) are the commonly
 - 时间列单位均为秒，以创建反应的时刻为 t = 0；`delta_s` 为实际取样时间减计划时间，负值表示提前。
 - `quench_agent` 必填，未选择淬灭剂时应用不允许保存样品；`quench_delay_s` 为从取样到点选淬灭剂的时间。
 - `suva254_l_mg_m` 为计算值（UV₂₅₄ ÷ DOC × 100），任一输入缺失时为空。
-- `c_over_c0` 为分析后填写的 C/C₀；修改前的数值保留在应用内样品历史和完整备份中，不在此文件中。
-- 应用中的准一级拟合只用于现场检查，不判断滞后或拖尾，也不导出。正式报告请根据原始列自行拟合。
+- 新增 `fluence_mj_cm2`（辐照强度 × 取样时间，计算值）、`peak_area`（粘贴的 LC 峰面积）和 `fit_excluded`（是否排除在应用内拟合之外）。
+- `c_over_c0` 为分析后填写的 C/C₀，或峰面积 ÷ 参比峰面积；修改前的数值保留在应用内样品历史和完整备份中，不在此文件中。
+- 应用中的准一级拟合只用于现场检查，不导出：5 个点以上时用二次项检验提示滞后或拖尾，设置辐照强度时显示 k′E（cm² mJ⁻¹）。正式报告请根据原始列自行拟合。

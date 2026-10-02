@@ -90,3 +90,55 @@ test('finishing a run closes unpulled checkpoints as skipped, never as samples',
   L.sample(l,e.id,{timer_id:t1.id,pulled:clock(61000),quench:quench(62000)},clock(62000));L.finishExperiment(l,e,clock(120000));
   a.equal(l.events.filter(x=>x.kind==='sample_taken').length,1);a.equal(l.events.filter(x=>x.kind==='sample_skipped').length,1);a.equal(l.samples.length,1);
 });
+
+function series(ms,values,run_={}){const {l,e}=run();if(Object.keys(run_).length)L.setRun(l,e,{process:'UV/PDS',target:'',oxidant:'PDS',...run_},clock());
+  for(const [i,m] of ms.entries()){const v=L.sample(l,e.id,{pulled:clock(m*60000),quench:quench(m*60000+1000)},clock(m*60000+1000));if(values[i]!=null)L.editSample(v,{c_over_c0:values[i]},clock());}
+  return {l,e,samples:L.runSamples(l,e.id)};}
+
+test('0.5.0 samples without peak areas or fit exclusion are upgraded',()=>{
+  const {l,e}=run(),v=L.sample(l,e.id,{pulled:clock(1000),quench:quench(2000)},clock(2000));L.editSample(v,{c_over_c0:0.5},clock(3000));
+  const old=JSON.parse(JSON.stringify(l));for(const x of [old.samples[0],...old.samples[0].revisions]){delete x.peak_area;delete x.fit_excluded;}
+  a.throws(()=>L.validate(JSON.parse(JSON.stringify(old))));
+  const s={workspace:{preferences:{palette:'clay',accent:'#A65338',background:'#F7F5F0'}},lab:old};L.migrate(s);
+  a.equal(s.lab.samples[0].peak_area,null);a.equal(s.lab.samples[0].fit_excluded,false);a.equal(s.lab.samples[0].revisions[0].peak_area,null);
+  a.equal(L.merge(L.empty(),JSON.parse(JSON.stringify(old)),clock()).lab.samples[0].fit_excluded,false);
+});
+
+test('curvature flags a lag phase and tailing but not clean first-order decay',()=>{
+  const t=[0,1,2,4,6,8,10];
+  a.equal(L.fit(series(t,t.map(m=>Math.exp(-0.15*m))).samples).curvature.shape,'linear');
+  a.equal(L.fit(series(t,t.map(m=>Math.exp(-0.15*Math.max(0,m-2.5)))).samples).curvature.shape,'lag');
+  a.equal(L.fit(series(t,t.map(m=>0.5*Math.exp(-0.6*m)+0.5*Math.exp(-0.02*m))).samples).curvature.shape,'tailing');
+  a.equal(L.fit(series([0,1,2,5],[1,0.9,0.8,0.6]).samples).curvature.shape,null,'four points are not enough');
+});
+
+test('excluded points leave the fit, and the exclusion is kept in history',()=>{
+  const lagged=[0,1,2,4,6,8,10].map(m=>Math.exp(-0.15*Math.max(0,m-2.5)));const {samples}=series([0,1,2,4,6,8,10],lagged);
+  for(const v of samples.slice(0,3))L.editSample(v,{fit_excluded:true},clock(1));
+  const f=L.fit(samples);a.equal(f.n,4);a.ok(Math.abs(f.k_per_min-0.15)<1e-9);a.equal(samples[0].revisions.at(-1).fit_excluded,false);
+});
+
+test('rate constants are normalised to fluence rate and oxidant dose',()=>{
+  const {samples}=series([0,2,4,6],[1,Math.exp(-0.6),Math.exp(-1.2),Math.exp(-1.8)]),f=L.fit(samples);
+  const n=L.normalised(f,{fluence_rate_mw_cm2:2,oxidant_mm:0.5});a.ok(Math.abs(n.k_per_s-0.005)<1e-12);a.ok(Math.abs(n.k_fluence_cm2_mj-0.0025)<1e-12);a.ok(Math.abs(n.k_per_min_per_mm-0.6)<1e-9);
+  a.deepEqual(L.normalised(f,{fluence_rate_mw_cm2:null,oxidant_mm:null}),{k_per_s:f.k_per_min/60});a.deepEqual(L.normalised(null,{}),{});
+});
+
+test('pasted peak areas become C/C0 against a reference, by label or in order',()=>{
+  const {l,samples}=series([0,1,5],[null,null,null]);
+  const byLabel=L.parseAreas('Sample\tArea\nS-002\t9 200\ns-001,10000\nS-003; 6400\n',samples);
+  a.equal(byLabel.entries.length,2,'"9 200" is rejected rather than read as 200');a.deepEqual(byLabel.errors.map(e=>e.reason),['format'],'the header row is skipped');
+  a.deepEqual(L.parseAreas('S-001 ten\nS-009 5',samples).errors.map(e=>e.reason),['number','label']);
+  const clean=L.parseAreas('S-002\t9200\ns-001,10000\nS-003; 6400',samples);a.equal(clean.errors.length,0);
+  L.applyAreas(l,clean.entries,10000,clock(5000));a.deepEqual(samples.map(v=>v.c_over_c0),[1,0.92,0.64]);a.deepEqual(samples.map(v=>v.peak_area),[10000,9200,6400]);
+  const ordered=L.parseAreas('10000\n8000\n5000\n4000',samples);a.equal(ordered.entries[2].sample.label,'S-003');a.equal(ordered.errors[0].reason,'extra');
+  a.equal(L.parseAreas('S-001 1\nS-001 2',samples).errors[0].reason,'duplicate');
+  a.throws(()=>L.applyAreas(l,clean.entries,0,clock()));a.throws(()=>L.applyAreas(l,[...clean.entries,clean.entries[0]],10000,clock()));
+  a.equal(samples[1].revisions.at(-1).c_over_c0,null);
+});
+
+test('samples CSV carries fluence, peak area and fit exclusion',()=>{
+  const {l,e,samples}=series([0,2],[1,0.5],{fluence_rate_mw_cm2:1.5});L.editSample(samples[1],{peak_area:5000,fit_excluded:true},clock());
+  const lines=L.samplesCsv(l,e.id).replace('﻿','').split('\r\n'),head=lines[0].split(',').map(x=>x.replaceAll('"','')),row=lines[2].split(','),col=k=>row[head.indexOf(k)];
+  a.equal(col('fluence_mj_cm2'),'180');a.equal(col('peak_area'),'5000');a.equal(col('fit_excluded'),'"true"');
+});

@@ -1,6 +1,18 @@
 # Changelog
 
-## EnvBench (Android) 0.5.0 preview · unreleased
+## EnvBench (Android) 0.6.0 preview · unreleased
+
+Bench analysis on top of 0.5.0. 0.5.0 was never published as an APK, so 0.6.0 is the first EnvBench build.
+
+- Paste LC peak areas, labelled (`S-003  12345`) or in sample order, and convert them to C/C₀ against a reference sample or a typed reference area. A live preview shows each line's result; malformed lines are listed rather than guessed (`9 200` is rejected, not read as 200). Areas are stored with each sample.
+- Flag lag and tailing: with 5 or more points, a quadratic term in ln(C/C₀) against time is tested at 95%. Accelerating decay suggests a lag phase, slowing decay suggests tailing.
+- Leave individual points out of the fit with a per-sample switch; excluded points are drawn hollow and the change is kept in the sample history.
+- Show k_obs normalised to the run: the fluence-based rate constant k′E (cm² mJ⁻¹, with its 95% interval) when a fluence rate is set, and k_obs ÷ [oxidant]₀ as a dose comparison.
+- Attach photos to a sample from the samples table; they are saved as observations carrying the sample label.
+- Samples CSV adds `fluence_mj_cm2`, `peak_area` and `fit_excluded`. Data written by 0.5.0 previews is upgraded on load and import.
+- The demo run now uses peak areas and a fluence rate.
+
+## EnvBench (Android) 0.5.0 preview · not released
 
 The Android app is now **EnvBench**, a bench companion for advanced-oxidation and DOM runs. The application ID is unchanged, so it updates 0.3/0.4 in place.
 

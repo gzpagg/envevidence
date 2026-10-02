@@ -1,4 +1,4 @@
-# EnvBench for Android · 0.5.0 preview
+# EnvBench for Android · 0.6.0 preview
 
 [简体中文](README.zh-CN.md) · [Desktop literature tools](../README.md) · [Screenshots and validation](../docs/ANDROID.md) · [Samples CSV schema](../docs/BENCH_CSV.md)
 
@@ -8,7 +8,7 @@ The phone app does one job: the run. Literature extraction and review live in th
 
 ## Install
 
-**0.5.0 is not yet released as a signed APK.** Build it from source (see below) or keep using the [signed 0.4.0 preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1). Open it on Android 8.0+ with an up-to-date Android System WebView. 0.5.0 keeps the same application ID, so a build signed with the maintainer key installs as an update over 0.3 and 0.4 and migrates their data. Export a backup before uninstalling; uninstalling removes app data.
+**0.6.0 has no signed release yet.** The Android workflow on each pull request builds a test APK (artifact `envbench-android-0.6.0`, file `app-debug.apk`). It is signed with a debug key, so it cannot install over a signed 0.3/0.4 app: export a full backup first, uninstall, install the test APK, then import the backup. The [signed 0.4.0 preview APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) remains the latest release. Android 8.0+ with an up-to-date Android System WebView. 0.6.0 keeps the same application ID, so once signed with the maintainer key it installs as an update over 0.3 and 0.4 and migrates their data. Export a backup before uninstalling; uninstalling removes app data.
 
 No account, Python installation or server is needed. **My space → Load lab demo** adds an invented UV/PDS run with samples and water data, without replacing your own records. The mobile features make no API calls.
 
@@ -18,7 +18,7 @@ No account, Python installation or server is needed. **My space → Load lab dem
 2. The run page opens with the next checkpoint as the largest thing on screen. It turns to the accent color 30 s before the checkpoint, amber when it is due, and red once it is more than 30 s late. A late sample can still be taken; its real time is kept.
 3. **Take sample** freezes the pull time and opens a sheet. Tap the quench agent you used (Na₂S₂O₃, MeOH, EtOH, catalase, ascorbic acid, none, or type another); the moment you tap it is stored as the quench time. **Save sample** stays disabled until a quench is chosen. pH, temperature and volume use large − / + steppers and start from the previous sample's values. Samples are labelled S-001, S-002 … in pull order.
 4. **Water matrix** records the matrix class, lot, 0.45 µm filtration, spiking, DOC, UV₂₅₄, alkalinity, Cl⁻, NO₃⁻-N, Br⁻, conductivity and pH. SUVA₂₅₄ is computed and labelled as computed. Unmeasured fields stay empty and count against the 8-field completeness bar.
-5. After the LC run, type C/C₀ into the samples table. The pseudo-first-order fit (least squares of ln(C/C₀) against real pull time) updates with k_obs, its 95% confidence interval, t½ and R². Corrections keep the earlier value in the sample's history; the pull time and quench are never edited.
+5. After the LC run, tap **Paste LC peak areas** and paste the export: `S-003  12345` per line (tab, comma or spaces), or just the areas in sample order. Choose the reference (by default S-001, or type a C₀ area) and check the preview; lines that cannot be read are listed, not guessed. C/C₀ can also be typed directly. The pseudo-first-order fit (least squares of ln(C/C₀) against real pull time) updates with k_obs, its 95% confidence interval, t½ and R². With 5 or more points it tests for curvature and warns about a **lag phase** or **tailing**; untick **Fit** on a row to leave that point out. When the run has a fluence rate, the fluence-based k′E (cm² mJ⁻¹) is shown; with an oxidant dose, k_obs ÷ [oxidant]₀ is shown for comparing doses. Corrections keep the earlier value in the sample's history; the pull time and quench are never edited. The camera button on a row adds a photo labelled with that sample.
 6. **Samples CSV** exports one row per sample in the [shared schema](../docs/BENCH_CSV.md), with the run and water columns on every row.
 
 Checkpoints can also be taken from the Timers tab. Ordinary experiments without a process still work as in 0.4.

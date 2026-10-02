@@ -1,6 +1,6 @@
 # EnvEvidence
 
-**安卓版 EnvBench 是反应实验的实验台助手：**[安装与使用](android/README.zh-CN.md) · [截图与验证](docs/ANDROID.md) · [样品 CSV 格式](docs/BENCH_CSV.md)。每个取样点倒计时、未淬灭不能保存的取样面板、含 SUVA₂₅₄ 的水体基质记录，以及由 C/C₀ 拟合 k_obs。0.5.0 目前为源码版本，最新签名 APK 为 [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1)。Android 8.0+，无需账号或服务器。
+**安卓版 EnvBench 是反应实验的实验台助手：**[安装与使用](android/README.zh-CN.md) · [截图与验证](docs/ANDROID.md) · [样品 CSV 格式](docs/BENCH_CSV.md)。每个取样点倒计时、未淬灭不能保存的取样面板、含 SUVA₂₅₄ 的水体基质记录，以及由粘贴的 LC 峰面积拟合 k_obs（含滞后/拖尾检查与按辐照剂量归一的 k′E）。0.6.0 目前为源码版本，CI 会构建测试 APK；最新签名 APK 为 [0.4.0](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1)。Android 8.0+，无需账号或服务器。
 
 <img src="docs/images/envbench-run-zh.png" alt="EnvBench 中文反应页：下一次取样倒计时与取样点" width="320">
 
