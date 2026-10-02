@@ -27,7 +27,7 @@
 
 **Android 8.0+ · 离线运行 · 无需账号**
 
-安卓当前源码版本为 **0.6.1**，可下载的 APK 与升级方式见[安装说明](android/README.zh-CN.md)。在 **我的 → 载入实验演示** 中，可体验一组自制 UV/PDS 反应、样品与水质记录。
+**[下载 EnvBench 0.6.1 安卓安装包](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) · [安装指南](android/README.zh-CN.md)。安装签名预览版即可使用实验手记。在 **我的 → 载入实验演示** 中，可体验一组自制 UV/PDS 反应、样品与水质记录。
 
 ## EnvEvidence：让文献数值带着出处
 

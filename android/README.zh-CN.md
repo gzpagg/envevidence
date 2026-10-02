@@ -22,9 +22,11 @@ EnvBench 面向水与污水高级氧化、DOM 转化等实验。**实验、计�
 
 ## 安装与体验
 
-当前源码版本为 **0.6.1**。[最新公开签名 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) 目前为 0.4.0；[安卓自动构建](https://github.com/gzpagg/envevidence/actions/workflows/android.yml)提供开发测试包。0.6.1 签名包发布后将更新下载入口。
+**[下载 EnvBench 0.6.1 APK](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [发布说明与校验文件](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)
 
-使用维护者签名的 APK 可升级现有安装，请保持 Android System WebView 更新。卸载或换机前先导出完整 ZIP，卸载会删除应用私有数据。调试包使用不同签名，替换维护者签名版时需先备份、卸载，再安装并恢复。
+在安卓手机上打开下载的 APK，按系统提示允许浏览器或文件应用安装。签名预览版沿用原应用身份与维护者签名，可直接覆盖升级现有安装。
+
+请保持 Android System WebView 更新，直接覆盖升级以保留本地记录。卸载或换机前先导出完整 ZIP；卸载会删除应用私有数据。
 
 进入 **我的 → 载入实验演示**，可添加一组自制 UV/PDS 反应、样品和水质数据，保留已有实验手记。
 

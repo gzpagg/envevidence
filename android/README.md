@@ -22,9 +22,11 @@ EnvBench is a local experiment notebook for advanced-oxidation and DOM work in w
 
 ## Install and explore
 
-The current source version is **0.6.1**. The [latest published signed APK](https://github.com/gzpagg/envevidence/releases/tag/v0.4.0-android-preview.1) is currently 0.4.0; the [Android workflow](https://github.com/gzpagg/envevidence/actions/workflows/android.yml) provides development builds. The installation link will be updated when the signed 0.6.1 package is published.
+**[Download EnvBench 0.6.1 APK](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [Release notes and checksum](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)
 
-Use the maintainer-signed APK to update an existing installation, and keep Android System WebView up to date. Export a full ZIP backup before uninstalling or moving devices: uninstalling removes private app data. Debug builds use a different signing key; replacing a maintainer-signed build requires backup, uninstall, installation and restore.
+Open the downloaded APK on your Android phone and allow installation from the browser or file app when Android asks. This signed preview uses the same application identity and maintainer signing key as the earlier app, so it can update an existing installation in place.
+
+Keep Android System WebView up to date. Install the update over your existing app to retain local records. Export a full ZIP backup before uninstalling or moving devices; uninstalling removes private app data.
 
 Open **My space → Load lab demo** to add an invented UV/PDS run with samples and water data. Demo loading preserves your existing notebook.
 

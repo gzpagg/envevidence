@@ -27,7 +27,7 @@ Stopwatches, countdowns, sampling reminders and counters can run in parallel. Th
 
 **Android 8.0+ · Offline · No account required**
 
-The current Android source is **0.6.1**. See the [installation guide](android/README.md) for the available APK and upgrade steps. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
+**[Download EnvBench 0.6.1 for Android](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) · [Installation guide](android/README.md). Install the signed preview APK to start using the experiment notebook. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
 
 ## EnvEvidence: literature values with their sources
 

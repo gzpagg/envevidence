@@ -4,7 +4,7 @@
 
 ## EnvEvidence 电脑版 · 0.3.0
 
-已合并的电脑版实现通过[自动检查](https://github.com/gzpagg/envevidence/actions/runs/36945434951)：Windows/Linux 与 Python 3.11/3.13 四个组合，运行 Ruff、pytest、离线 CLI 演示与包构建。测试共 46 项。当前本地运行也已通过全部 46 项测试与 Ruff 检查。
+电脑版通过[已发布修订的自动检查](https://github.com/gzpagg/envevidence/actions/runs/36954317903)：Windows/Linux 与 Python 3.11/3.13 四个组合，每个环境均通过 **46 项测试**、Ruff、离线 CLI 演示，以及源码包和 wheel 构建。当前本地运行也已通过全部 46 项测试与 Ruff。
 
 覆盖内容包括：
 
@@ -18,7 +18,9 @@
 
 ## EnvBench 安卓版 · 0.6.1
 
-当前版本在 0.6.0 检查基础上增加：无效／空白 LC 行对应关系、整批导入验证、样品测量来源、带历史的时间修订、有理由的拟合排除、计划内外取样与 CSV 审计列。当前本地 JavaScript 测试已通过 **56/56 项**。新增 0.6.1 原生 Android lint／构建／模拟器工作流尚未运行；当前范围与已验证的早期记录见[安卓检查](ANDROID.md)。
+[0.6.1 签名预览版](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)已发布。[安卓自动检查](https://github.com/gzpagg/envevidence/actions/runs/36954317866)通过 **56/56 项 JavaScript 测试**、Android lint、JVM 单元测试、调试／发布 APK 构建，以及 **2/2 项 Android 15 模拟器原生测试**；本地 JavaScript 测试也通过 56/56 项。
+
+新增回归覆盖无效／空白 LC 行对应、整批导入验证、样品测量来源、带历史的时间修订、有理由的拟合排除、计划内外取样与 CSV 审计列。原生导入测试检查无效／空白输入、成功应用与重启持久化；实验手记测试覆盖旧数据迁移、计数器、语言／活动重建、原图 ZIP 往返恢复和后台提醒。APK 校验值、签名与源码资源比对记录见[安卓检查](ANDROID.md)。
 
 0.6.0 基线已通过 41 项 JavaScript 测试，以及 [Android lint、APK 构建和模拟器测试](https://github.com/gzpagg/envevidence/actions/runs/36945435012)。安卓测试使用合成实验和生成图片。
 

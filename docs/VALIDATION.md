@@ -4,7 +4,7 @@
 
 ## EnvEvidence desktop · 0.3.0
 
-The desktop evidence app passed [CI on the merged implementation](https://github.com/gzpagg/envevidence/actions/runs/36945434951): Windows/Linux with Python 3.11/3.13, Ruff, pytest, the offline CLI demo and package builds. The suite contains 46 tests. The current local run also passed all 46 tests and Ruff.
+The desktop evidence app passed [CI for the published revision](https://github.com/gzpagg/envevidence/actions/runs/36954317903): Windows/Linux with Python 3.11/3.13. Each of the four environments passed **46 tests**, Ruff, the offline CLI demo and source/wheel builds. The current local run also passed all 46 tests and Ruff.
 
 Coverage includes:
 
@@ -18,7 +18,9 @@ The planning interface was removed in 0.3.0. Four planning-interface tests were 
 
 ## EnvBench Android · 0.6.1
 
-The current release extends the 0.6.0 checks with invalid/empty LC-row alignment, batch validation, sample measurement sources, audited timing corrections, reasoned exclusions, planned versus unplanned sampling and CSV audit columns. The current local JavaScript suite passed **56/56 tests**. The new 0.6.1 native Android lint/build/emulator workflow has not run yet; see [Android checks](ANDROID.md) for the current scope and the verified earlier run.
+The [signed 0.6.1 preview](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) is published. [Android CI](https://github.com/gzpagg/envevidence/actions/runs/36954317866) passed **56/56 JavaScript tests**, Android lint, JVM unit tests, debug/release APK compilation and **2/2 Android 15 emulator instrumentation tests**. The local JavaScript suite also passed 56/56 tests.
+
+New regressions cover invalid/empty LC-row alignment, whole-batch validation, sample measurement sources, audited timing corrections, reasoned exclusions, planned versus unplanned sampling and CSV audit columns. The native import test checks invalid/empty input, successful application and restart persistence. The notebook test covers legacy migration, counters, language/activity recreation, original-photo ZIP round-trips and background alerts. APK checksum, signature and source-asset checks are recorded in [Android checks](ANDROID.md).
 
 The recorded 0.6.0 baseline passed 41 JavaScript tests plus [Android lint, APK builds and emulator instrumentation](https://github.com/gzpagg/envevidence/actions/runs/36945435012). Android tests use synthetic experiments and generated images.
 

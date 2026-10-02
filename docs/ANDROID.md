@@ -15,11 +15,33 @@ All 16 Android screenshots show the actual bundled 0.6.1 interface running in a 
 
 These are browser interface captures. Native camera, storage, notification and activity behavior have separate Android instrumentation coverage described below.
 
-## Release checks
+## Signed APK · 0.6.1 preview
 
-**Local checks passed:** 56/56 Android JavaScript tests, 46 desktop Python tests and Ruff. Version 0.6.1 adds regression coverage for peak-area assignment, rejected batches, measurement sources, timing revisions, exclusions and CSV audit columns. The new 0.6.1 Android lint/build/emulator CI run has not run yet; the previous verified baseline is linked separately below.
+[Download APK](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk) · [SHA-256 file](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)
 
-The release checklist covers:
+The published APK is 10,272,894 bytes. Its package is `io.github.gzpagg.envevidence`, version 0.6.1 / code 7, minimum Android API 26 and target API 36. APK signature schemes v2/v3 passed verification; the signing certificate matches the 0.4.0 maintainer-signed app. Bundled app assets match source revision `ca4b6b545d40dde9c1e28e7bf1cdc7d7575aca4e`, merged through PR #5.
+
+APK SHA-256:
+
+```text
+e8d0d1b944cdaad78d7a1c00301779aef3372598a5e683c24e482ba00b804f52
+```
+
+Signing-certificate SHA-256:
+
+```text
+1833c322295af3aee2edee378713ba8f970671165cff9532a9165d02108de28f
+```
+
+## Release checks · 0.6.1
+
+[Android CI](https://github.com/gzpagg/envevidence/actions/runs/36954317866) completed successfully for the published source revision: **56/56 JavaScript tests**, Android lint, JVM unit tests, debug/release APK builds, and **2/2 Android 15 emulator instrumentation tests**. The new native test covers invalid/empty LC rows, successful import and restart persistence; the notebook test covers timing, image storage, backups, legacy data and background alerts.
+
+[Desktop CI](https://github.com/gzpagg/envevidence/actions/runs/36954317903) passed Windows/Linux × Python 3.11/3.13: each environment passed **46 tests**, Ruff, the offline CLI demo and source/wheel builds. Local checks also passed 56 JavaScript tests, 46 Python tests and Ruff.
+
+Version 0.6.1 adds regression coverage for peak-area assignment, rejected batches, measurement sources, timing revisions, exclusions and CSV audit columns.
+
+The automated and interface checks cover:
 
 - Invalid and internal empty area rows retain their positions; every error blocks applying the batch. Duplicate, extra and mixed-format assignments are rejected before data changes.
 - Measured, carried-over, unmeasured and legacy-unknown sample sources survive save, import and export.
@@ -35,7 +57,7 @@ The merged implementation passed [Android CI](https://github.com/gzpagg/envevide
 
 The 41 Android JavaScript tests covered timers, counters, records, legacy migration and reaction-run features: checkpoints, sample/quench records, correction history, water validation, SUVA₂₅₄, curve fitting, exclusions, area conversion and CSV exports. Version 0.6.1 extends this baseline with the cases above.
 
-Android instrumentation checked legacy data migration, count/undo, language and activity recreation, native image display, original-photo ZIP round-trip, experiment export isolation, background countdown notifications, notification routing and retained PDF parsing. The previous suite did not cover every new reaction-run interaction. Version 0.6.1 adds sample and import instrumentation cases; their native results will be recorded after the new Android CI run.
+Android instrumentation checked legacy data migration, count/undo, language and activity recreation, native image display, original-photo ZIP round-trip, experiment export isolation, background countdown notifications, notification routing and retained PDF parsing. The previous suite did not cover every new reaction-run interaction; the 0.6.1 native import regression now covers row alignment, rejected input, successful import and persistence.
 
 ## Device and research coverage
 

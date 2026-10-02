@@ -1,6 +1,10 @@
 # Changelog
 
-## EnvBench (Android) 0.6.1 preview
+## EnvBench (Android) 0.6.1 preview — 2026-10-01
+
+**Published:** [signed APK and checksum](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1). Android 8.0+, using the existing maintainer signing identity for in-place upgrades. Release checks passed 56 JavaScript tests, Android lint/build, two Android 15 instrumentation tests and the four desktop CI environments. Detailed records are in [Android validation](docs/ANDROID.md) and [desktop validation](docs/VALIDATION.md).
+
+**已发布：**[签名 APK 与校验文件](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)。支持 Android 8.0+，沿用维护者签名，可直接覆盖升级。新版导入、样品来源、时间修订和导出已完成回归检查，验证详情见上方记录。
 
 - Keep peak-area rows matched to their samples when a middle row is invalid or empty. The preview blocks the entire paste until all rows are valid; labelled and ordered formats cannot be mixed. Validate every sample before applying a batch.
 - Label pH, temperature and volume by their source: measured, carried forward, unmeasured, legacy source unknown or synthetic demo. Confirming a fresh measurement updates its source; corrections keep earlier values and sources.
@@ -12,9 +16,9 @@
 - Add Android WebView regression coverage for invalid/empty LC rows, successful import and restart persistence.
 - Disable automatic Claude commit/PR attribution for this project.
 
-## EnvBench (Android) 0.6.0 preview · unreleased
+## EnvBench (Android) 0.6.0 · archived source preview
 
-Bench analysis on top of 0.5.0. 0.5.0 was never published as an APK, so 0.6.0 is the first EnvBench build.
+Historical analysis update on top of 0.5.0. These source previews preceded the first signed EnvBench APK, 0.6.1; the revised behavior is documented in the release above.
 
 - Paste LC peak areas, labelled (`S-003  12345`) or in sample order, and convert them to C/C₀ against a reference sample or a typed reference area. A live preview shows each line's result; malformed lines are listed rather than guessed (`9 200` is rejected, not read as 200). Areas are stored with each sample.
 - Flag lag and tailing: with 5 or more points, a quadratic term in ln(C/C₀) against time is tested at 95%. Accelerating decay suggests a lag phase, slowing decay suggests tailing.
@@ -24,7 +28,7 @@ Bench analysis on top of 0.5.0. 0.5.0 was never published as an APK, so 0.6.0 is
 - Samples CSV adds `fluence_mj_cm2`, `peak_area` and `fit_excluded`. Data written by 0.5.0 previews is upgraded on load and import.
 - The demo run now uses peak areas and a fluence rate.
 
-## EnvBench (Android) 0.5.0 preview · not released
+## EnvBench (Android) 0.5.0 · archived source preview
 
 The Android app is now **EnvBench**, a bench companion for advanced-oxidation and DOM runs. The application ID is unchanged, so it updates 0.3/0.4 in place.
 
@@ -38,7 +42,7 @@ The Android app is now **EnvBench**, a bench companion for advanced-oxidation an
 - Lab data moves to version 2; version 1 notebooks and backups are upgraded on load and import.
 - Fix: finishing an experiment no longer logs its unpulled sampling checkpoints as "Sample taken"; they are logged as closed without a sample.
 - Start the interface after all scripts load, which removes a race in the first render.
-- Not yet done: a signed APK, Android lint/build and emulator runs for this version, and checks on a physical phone. Tested with Node domain tests and the browser preview.
+- Historical validation at this source-preview stage used Node tests and browser checks. Signed packaging and native lint/build/emulator verification were completed for 0.6.1, as recorded above.
 
 ## Android 0.4.0 preview — 2026-09-27
 
@@ -60,7 +64,7 @@ The Android app is now **EnvBench**, a bench companion for advanced-oxidation an
 - Add domain tests, Android lint/build and Android 15 emulator workflow. Desktop Python/CLI stays at 0.2.0.
 - This preview has not been validated against live model APIs, real research papers or physical Android devices.
 
-## 0.3.0 (desktop) · unreleased
+## 0.3.0 (desktop) · source update
 
 - Focus the desktop app on literature evidence. It opens on the evidence page; the sidebar has Literature evidence and Appearance only.
 - Remove learning goals, daily tasks, sticky notes, the module layout settings and the workspace demo from the interface. Existing items stay in `data/workspace/state.json` and are written back unchanged; the sidebar shows how many are kept.
