@@ -1,5 +1,9 @@
 # Validation status
 
+## v0.3.0 — unreleased
+
+The planning modules are removed from the interface. The suite is now 46 tests (was 50): tests for removed goal, task, note and module-layout features were dropped, and new ones check that the app opens on literature evidence without planning navigation, and that 0.2 goals, tasks and notes load, survive appearance and language saves, and are written back unchanged. The evidence, provider, export and packaging tests are unchanged and pass. Ruff passes. These were run locally on Linux with Python 3.11; the Windows/Python 3.13 CI matrix has not run on this change yet.
+
 ## v0.2.0 — 2026-09-26
 
 Local automated tests cover:

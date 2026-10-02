@@ -1,5 +1,33 @@
 # Changelog
 
+## EnvBench (Android) 0.6.0 preview · unreleased
+
+Bench analysis on top of 0.5.0. 0.5.0 was never published as an APK, so 0.6.0 is the first EnvBench build.
+
+- Paste LC peak areas, labelled (`S-003  12345`) or in sample order, and convert them to C/C₀ against a reference sample or a typed reference area. A live preview shows each line's result; malformed lines are listed rather than guessed (`9 200` is rejected, not read as 200). Areas are stored with each sample.
+- Flag lag and tailing: with 5 or more points, a quadratic term in ln(C/C₀) against time is tested at 95%. Accelerating decay suggests a lag phase, slowing decay suggests tailing.
+- Leave individual points out of the fit with a per-sample switch; excluded points are drawn hollow and the change is kept in the sample history.
+- Show k_obs normalised to the run: the fluence-based rate constant k′E (cm² mJ⁻¹, with its 95% interval) when a fluence rate is set, and k_obs ÷ [oxidant]₀ as a dose comparison.
+- Attach photos to a sample from the samples table; they are saved as observations carrying the sample label.
+- Samples CSV adds `fluence_mj_cm2`, `peak_area` and `fit_excluded`. Data written by 0.5.0 previews is upgraded on load and import.
+- The demo run now uses peak areas and a fluence rate.
+
+## EnvBench (Android) 0.5.0 preview · not released
+
+The Android app is now **EnvBench**, a bench companion for advanced-oxidation and DOM runs. The application ID is unchanged, so it updates 0.3/0.4 in place.
+
+- Add reaction runs: process (UV/PDS, UV/H₂O₂, O₃, Fenton and others), target, oxidant dose, wavelength and fluence rate. Saving starts the run clock at t = 0, with an optional sampling plan.
+- Show the next checkpoint as a large countdown that changes state 30 s before it (ready), at it (due) and 30 s after it (late), plus a checkpoint rail with each sample's offset from plan.
+- Add a sample sheet that freezes the pull time, requires a quench (the tap time is stored as the quench time), and records pH, temperature and volume with steppers prefilled from the previous sample. Samples are labelled S-001, S-002 … and corrections keep earlier values.
+- Add water matrix details per run (class, lot, filtration, spiking, DOC, UV₂₅₄, alkalinity, Cl⁻, NO₃⁻-N, Br⁻, conductivity, pH) with computed SUVA₂₅₄ and a completeness bar.
+- Add C/C₀ entry and a pseudo-first-order fit (k_obs with 95% CI, t½, R²) on real pull times.
+- Add the samples CSV, schema `envbench-samples-v1` ([spec](docs/BENCH_CSV.md)); single-experiment ZIPs now include that run's samples.
+- Retire learning goals, tasks and notes from the phone UI. Their data and literature projects stay unchanged in storage and full backups.
+- Lab data moves to version 2; version 1 notebooks and backups are upgraded on load and import.
+- Fix: finishing an experiment no longer logs its unpulled sampling checkpoints as "Sample taken"; they are logged as closed without a sample.
+- Start the interface after all scripts load, which removes a race in the first render.
+- Not yet done: a signed APK, Android lint/build and emulator runs for this version, and checks on a physical phone. Tested with Node domain tests and the browser preview.
+
 ## Android 0.4.0 preview — 2026-09-27
 
 - Refocus mobile navigation on Experiments, Timers, Records and My space. Move settings and retained learning/task/note tools into My space.
@@ -19,6 +47,13 @@
 - Import desktop project/workspace JSON and additive Android backups without overwriting existing IDs.
 - Add domain tests, Android lint/build and Android 15 emulator workflow. Desktop Python/CLI stays at 0.2.0.
 - This preview has not been validated against live model APIs, real research papers or physical Android devices.
+
+## 0.3.0 (desktop) · unreleased
+
+- Focus the desktop app on literature evidence. It opens on the evidence page; the sidebar has Literature evidence and Appearance only.
+- Remove learning goals, daily tasks, sticky notes, the module layout settings and the workspace demo from the interface. Existing items stay in `data/workspace/state.json` and are written back unchanged; the sidebar shows how many are kept.
+- Remove the planning helpers that only those screens used (`tasks_for_day`, `overdue_tasks`, `task_progress`, `add_demo`, `LearningGoal.progress`) and the note colors.
+- Replace the desktop screenshots. Evidence extraction, review, export, the project format and the CLI are unchanged.
 
 ## 0.2.0 — 2026-09-26
 
