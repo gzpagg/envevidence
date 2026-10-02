@@ -13,6 +13,12 @@ The Android APK bundles AndroidX WebKit 1.14.0 and PDFBox-Android 2.0.27.0 (Apac
 | Pydantic | Schema validation | MIT |
 | HTTPX | HTTPS API requests | BSD-3-Clause |
 | openpyxl | Excel export | MIT |
+| NumPy | Numeric arrays | BSD-3-Clause, with distribution notices |
+| SciPy | Bounded fitting and statistical calculations | BSD-3-Clause, with distribution notices |
+| Matplotlib | Physical-size scientific figures | Matplotlib license (PSF-based) |
+| Pillow | Raster image handling | MIT-CMU |
+
+The desktop distribution bundles **Noto Sans CJK SC Regular** under the SIL Open Font License 1.1. The unmodified font, upstream license and fixed-source record are in `envevidence/assets/fonts/`. Source: [Noto CJK](https://github.com/notofonts/noto-cjk), commit `f8d157532fbfaeda587e826d4cd5b21a49186f7c`. The font's SHA-256 is `2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b`. The font retains its own license; exported research figures are the user's output.
 
 Development dependencies include pytest (MIT), ReportLab (BSD-style), build (MIT), and Ruff (MIT). Consult the installed distribution metadata for the exact versions and full notices. The lock file records the tested local environment, including transitive dependencies; it is not a license grant for those dependencies.
 

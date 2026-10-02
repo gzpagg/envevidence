@@ -20,11 +20,11 @@ TOP_FILES = [
     "app.py",
 ]
 FOLDERS = ["envevidence", "tests", "scripts", "docs", ".github", ".streamlit"]
-ALLOWED_SUFFIXES = {".py", ".md", ".png", ".pdf", ".json", ".toml", ".yml"}
+ALLOWED_SUFFIXES = {".py", ".js", ".md", ".png", ".pdf", ".json", ".csv", ".toml", ".yml", ".otf", ".ttf", ".txt"}
 
 
 def main():
-    output = ROOT / "dist" / "envevidence-0.3.0-source.zip"
+    output = ROOT / "dist" / "envevidence-0.4.0-source.zip"
     output.parent.mkdir(exist_ok=True)
     files = [ROOT / name for name in TOP_FILES]
     for folder in FOLDERS:
@@ -40,7 +40,7 @@ def main():
         for file in sorted(files):
             if not file.is_file():
                 raise FileNotFoundError(file)
-            archive.write(file, Path("envevidence-0.3.0") / file.relative_to(ROOT))
+            archive.write(file, Path("envevidence-0.4.0") / file.relative_to(ROOT))
     print(f"Source ZIP: {output.name}; {len(files)} files")
 
 

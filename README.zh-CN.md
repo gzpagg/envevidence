@@ -1,13 +1,13 @@
 # EnvBench 与 EnvEvidence
 
-**为水处理研究准备的两个工具：在实验台记录反应过程，在电脑上整理文献证据。**
+**在实验台记录反应过程，在电脑上处理测量数据、拟合动力学并核验文献证据。**
 
-[English](README.md) · [安卓应用](android/README.zh-CN.md) · [体验演示](docs/DEMO.zh-CN.md) · [验证记录](docs/VALIDATION.zh-CN.md)
+[English](README.md) · [安卓应用](android/README.zh-CN.md) · [实验分析指南](docs/ANALYSIS.zh-CN.md) · [验证记录](docs/VALIDATION.zh-CN.md)
 
 | 应用 | 使用场景 | 能够获得什么 |
 |---|---|---|
 | **EnvBench · 安卓** | 水与污水实验中的取样、淬灭和现象记录 | 多计时器、样品记录、水体基质、照片、浓度变化与 CSV 导出 |
-| **EnvEvidence · 电脑** | 阅读和整理水处理文献 | 实验条件表、引用原文、页面位置与人工修订记录 |
+| **EnvEvidence 0.4.0 · 电脑** | 处理实验数据、阅读和整理水处理文献 | 动力学拟合、指定尺寸的科研图、可重跑的 SOP 成果包和文献证据表 |
 
 两个应用均提供中英文界面、可保存的外观设置和本地数据存储。
 
@@ -29,7 +29,28 @@
 
 **[下载 EnvBench 0.6.1 安卓安装包](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) · [安装指南](android/README.zh-CN.md)。安装签名预览版即可使用实验手记。在 **我的 → 载入实验演示** 中，可体验一组自制 UV/PDS 反应、样品与水质记录。
 
-## EnvEvidence：让文献数值带着出处
+## EnvEvidence：从反应条件，到可复现的动力学曲线
+
+将反应条件、测量数据和处理决定放在同一个项目中。输入已经定量的模型化合物浓度、TOC、COD、吸附量或生物反应速率，选择处理规则与动力学模型，再将原始资料、数据表、图像和完整处理流程一起导出。
+
+| 步骤 | 使用流程 |
+|---|---|
+| **反应条件** | 为各系列保存处理工艺、水体基质、剂量、pH、温度、反应体积和速率来源。 |
+| **测量数据** | 粘贴表格、映射 CSV／Excel 字段，或导入手机 CSV／ZIP，通过样品编号关联检测结果。 |
+| **数据处理** | 明确设置空白／稀释校正、单位换算、归一化或吸附质量平衡，保留原始资料与排除理由。 |
+| **动力学拟合** | 比较零级、一级、积分二级及带平台衰减，吸附拟一级／拟二级与扩散，或 Monod 底物—速率曲线；独立实验分别拟合。 |
+| **图表格式** | 检查原始尺度误差与残差，设置图像尺寸、标题、样式、PNG／TIFF／SVG 和 DPI。 |
+| **SOP 导出** | 确认采用的拟合结果、保存复用模板，导出原文件、表格、图片、校验值和可重跑配置。 |
+
+默认在原始响应尺度拟合；适用的线性化另列变换尺度指标。参数带单位与不确定性诊断，比较表为研究者提供选择依据。
+
+![EnvEvidence 中文实验分析界面](docs/images/analysis-zh.png)
+
+<img src="docs/images/fitting-zh.png" alt="动力学模型比较与参数诊断" width="49%"> <img src="docs/images/charts-zh.png" alt="科研图格式、物理尺寸与 DPI 设置" width="49%">
+
+打开 **实验分析 → 载入分析演示**，即可使用一组自制 UV/H₂O₂ 浓度数据。[实验分析指南](docs/ANALYSIS.zh-CN.md)介绍手机样品关联、模型比较及 SOP 重跑。实验分析在本地完成，无需 API 密钥。
+
+## 让文献数值带着出处
 
 导入论文与补充材料，提取实验条件，并在引用原文旁逐项核验。EnvEvidence 将模型原始值与人工修订一同保存，方便之后回查判断依据。
 
@@ -68,7 +89,7 @@ macOS / Linux：
 .venv/bin/python -m envevidence serve
 ```
 
-打开 <http://127.0.0.1:8501>，在侧栏选择“简体中文”。点击 **载入离线演示**，无需 API 密钥即可体验自制论文及补充材料。电脑版当前版本为 **0.3.0**。
+打开 <http://127.0.0.1:8501>，在侧栏选择“简体中文”。应用默认打开 **实验分析**，可点击 **载入分析演示** 体验合成测量数据；进入 **文献证据 → 载入离线演示** 可体验自制论文及补充材料。两个演示均无需 API 密钥。电脑版版本为 **0.4.0**。
 
 ### 提取自己的论文
 
@@ -86,7 +107,9 @@ macOS / Linux：
 
 切换语言会改变界面文字，保留论文原文、样品名称、模型结果和修订记录。安卓默认采用暖白与陶土色；电脑版提供森林绿、海洋蓝、暖灰橙、石墨紫及自定义配色。
 
-EnvBench 将记录与照片保存在安卓应用私有目录。卸载或换机前，先导出完整 ZIP 备份。EnvEvidence 将项目与偏好保存在 `data/`，可通过 `ENVEVIDENCE_DATA_DIR` 指定其他本地目录；关闭应用后备份整个目录。兼容升级会保留早期版本的数据。
+EnvBench 将记录与照片保存在安卓应用私有目录。卸载或换机前，先导出完整 ZIP 备份。EnvEvidence 将文献项目与偏好保存在 `data/`，独立实验项目位于 `data/analysis/`，可通过 `ENVEVIDENCE_DATA_DIR` 指定其他本地目录；关闭应用后备份整个目录。兼容升级会保留早期版本的数据。
+
+手机 CSV／ZIP 用于单向导入电脑分析。上传文件保留原始字节及 SHA-256 校验值；手动录入保留输入快照与修订历史。每次 SOP 导出使用独立文件名。解压成果包后，在仓库目录中运行 `.\.venv\Scripts\python.exe -m envevidence analyze --config "path/to/extracted/analysis_config.json" --output data/replayed` 重跑分析；macOS／Linux 将 Python 路径替换为 `.venv/bin/python`。成果内容与重跑检查见[分析指南](docs/ANALYSIS.zh-CN.md)。
 
 实验功能在本机运行。电脑版文献提取会将解析文本和字段说明发送到你选择的 API 服务，密钥不写入项目文件。运行数据与密钥已排除在仓库之外。
 
@@ -100,6 +123,6 @@ python -m build
 node --test android/tests/*.test.cjs
 ```
 
-[安卓截图与检查](docs/ANDROID.md) · [样品 CSV](docs/BENCH_CSV.md) · [技术结构](docs/ARCHITECTURE.zh-CN.md) · [验证记录](docs/VALIDATION.zh-CN.md) · [更新日志](CHANGELOG.md)
+[实验流程与模型](docs/ANALYSIS.zh-CN.md) · [文献演示](docs/DEMO.zh-CN.md) · [安卓截图与检查](docs/ANDROID.md) · [样品 CSV](docs/BENCH_CSV.md) · [技术结构](docs/ARCHITECTURE.zh-CN.md) · [验证记录](docs/VALIDATION.zh-CN.md) · [更新日志](CHANGELOG.md)
 
 可通过 Issue 模板提交可复现的问题。代码与自制合成示例采用 [MIT 许可](LICENSE)，组件许可见[第三方说明](THIRD_PARTY_NOTICES.md)。

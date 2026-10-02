@@ -2,7 +2,15 @@
 
 [简体中文](VALIDATION.zh-CN.md) · [Android checks](ANDROID.md) · [Project introduction](../README.md)
 
-## EnvEvidence desktop · 0.3.0
+## EnvEvidence desktop · 0.4.0
+
+The local Windows/Python 3.13 check passes **132 tests**, Ruff, the literature CLI demo and source/wheel builds. The [four-environment desktop workflow](https://github.com/gzpagg/envevidence/actions/workflows/ci.yml) records Windows/Linux and Python 3.11/3.13 results for each published revision.
+
+New coverage includes known-parameter decay, adsorption and Monod curves; fixed parameters, weights, transformations, weak identifiability and numerical scales; explicit corrections and units; original-byte/hash preservation; mobile CSV/ZIP and assay IDs; atomic persistence and audited revisions; compatible SOP templates; accepted-fit selection; PNG/TIFF/SVG dimensions, Chinese fonts and full legend identities; and an actual CLI replay with matching parameters. The original literature regression suite remains included.
+
+The numerical fixtures are self-created. Laboratory validation on independent real measurements is a separate evaluation activity; parameter intervals describe the recorded fitting assumptions.
+
+## EnvEvidence desktop · 0.3.0 baseline
 
 The desktop evidence app passed [CI for the published revision](https://github.com/gzpagg/envevidence/actions/runs/36954317903): Windows/Linux with Python 3.11/3.13. Each of the four environments passed **46 tests**, Ruff, the offline CLI demo and source/wheel builds. The current local run also passed all 46 tests and Ruff.
 
@@ -26,9 +34,9 @@ The recorded 0.6.0 baseline passed 41 JavaScript tests plus [Android lint, APK b
 
 ## Interface and demo material
 
-English and Chinese demos use original synthetic fixtures. The current 16 Android screenshots come from the actual bundled 0.6.1 interface in a local Chromium preview: 390 × 844 pixels for both the viewport and exported PNGs. The six desktop captures come from the running EnvEvidence 0.3.0 Streamlit interface at 1440 × 1080. Both use isolated synthetic data. The desktop demo provider checks fixture hashes and uses recorded extraction results; loading a demo makes no model call.
+English and Chinese demos use original synthetic fixtures. The current 16 Android screenshots come from the actual bundled 0.6.1 interface in a local Chromium preview: 390 × 844 pixels for both the viewport and exported PNGs. The twelve desktop captures come from the running EnvEvidence 0.4.0 Streamlit interface at 1440 × 1080, including analysis, fitting, chart controls, evidence and appearance. Both use isolated synthetic data. The desktop demo provider checks fixture hashes and uses recorded extraction results; loading a demo makes no model call.
 
-Earlier desktop acceptance checks exercised 1440 px and 390 px layouts, all four palettes and a custom dark background. Native Android 15 baseline checks covered image storage, ZIP round-trips, background notifications and activity recreation. Current screenshots and release checks are tracked in the Android record.
+The 0.4.0 browser check exercised all six analysis tabs in both languages and all four palettes at 1440 × 1080, plus both languages at 390 × 844. It found no application exceptions or page overflow. The script is saved in `scripts/check_desktop_layouts.js`. Earlier acceptance checks also covered a custom dark background. Native Android 15 baseline checks covered image storage, ZIP round-trips, background notifications and activity recreation. Current Android screenshots and release checks are tracked in the Android record.
 
 ## Research and device evaluation
 

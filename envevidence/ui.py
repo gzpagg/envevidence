@@ -5,6 +5,8 @@ import os
 import streamlit as st
 
 from envevidence import __version__
+from envevidence.analysis_data import AnalysisStore
+from envevidence.analysis_ui import analysis_page
 from envevidence.evidence_ui import evidence_page
 from envevidence.i18n import LANGUAGE, t
 from envevidence.storage import ProjectStore
@@ -14,7 +16,7 @@ from envevidence.workspace import WorkspaceStore
 
 
 def main():
-    st.set_page_config(page_title="EnvEvidence · Literature evidence", page_icon="🌿", layout="wide")
+    st.set_page_config(page_title="EnvEvidence · Experiment analysis", page_icon="🌿", layout="wide")
     root = os.getenv("ENVEVIDENCE_DATA_DIR") or "data"
     workspace_store = WorkspaceStore(root)
     try:
@@ -25,15 +27,17 @@ def main():
         )
         st.stop()
     LANGUAGE.set(workspace.preferences.language)
-    st.set_page_config(page_title=t("EnvEvidence · Literature evidence", "EnvEvidence · 文献证据"))
+    st.set_page_config(page_title=t("EnvEvidence · Research workbench", "EnvEvidence · 科研工作台"))
     apply_theme(workspace.preferences)
     evidence_store = ProjectStore(root)
     sidebar(workspace, workspace_store, __version__)
     try:
         if st.session_state.get("page") == "settings":
             settings(workspace, workspace_store)
-        else:
+        elif st.session_state.get("page") == "evidence":
             evidence_page(evidence_store)
+        else:
+            analysis_page(AnalysisStore(root))
     except OSError:
         st.error(
             t(

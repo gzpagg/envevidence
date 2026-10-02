@@ -22,6 +22,9 @@ def main():
     serve.add_argument("--port", type=int, default=8501)
     demo = commands.add_parser("demo", help="Offline synthetic end-to-end example")
     demo.add_argument("--output", type=Path, default=Path("data/demo"))
+    analyze = commands.add_parser("analyze", help="Replay a hash-verified experiment SOP configuration")
+    analyze.add_argument("--config", type=Path, required=True)
+    analyze.add_argument("--output", type=Path, required=True)
     extract = commands.add_parser("extract", help="Extract one main PDF with optional supplements")
     extract.add_argument("pdf", type=Path)
     extract.add_argument("--supplement", type=Path, action="append", default=[])
@@ -52,6 +55,28 @@ def main():
         cli.main()
         return
     try:
+        if args.command == "analyze":
+            from .analysis_data import AnalysisStore
+            from .analysis_export import export_bundle, replay_config, restore_replay_sources
+            from .analysis_fitting import run_project_fits
+
+            project, payloads = replay_config(args.config)
+            store = AnalysisStore(args.output)
+            restore_replay_sources(project, payloads, store)
+            accepted = {
+                (r.get("request_index"), r.get("run_id")): bool(r.get("accepted"))
+                for r in project.fit_results
+            }
+            run_project_fits(project)
+            for result in project.fit_results:
+                result["accepted"] = accepted.get((result.get("request_index"), result.get("run_id")), False) and result["status"] != "failed"
+            store.save(project)
+            target = export_bundle(project, store, args.output)
+            print(f"Analysis project: {store.path(project.id)}")
+            print(f"SOP package: {target}")
+            if any(r["status"] == "failed" for r in project.fit_results):
+                raise SystemExit(1)
+            return
         if args.command == "demo":
             project, provider = demo_project(), DemoProvider()
         else:

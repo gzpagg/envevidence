@@ -1,5 +1,5 @@
-name: Extraction or software issue / 问题反馈
-description: Report an incorrect field, source mapping, or application error.
+name: Analysis, extraction or software issue / 问题反馈
+description: Report measurement processing, fitting, figure, source mapping or application errors.
 body:
   - type: textarea
     attributes:
@@ -16,14 +16,18 @@ body:
   - type: input
     attributes:
       label: Environment / 环境
-      placeholder: OS, Python, EnvEvidence version, provider/model (no keys)
+      placeholder: OS, Python, app version, experiment type / fitting model or API model (no keys)
   - type: dropdown
     attributes:
       label: Issue type / 问题类型
       options:
+        - Measurement import or mobile sample association
+        - Processing or unit conversion
+        - Kinetic model or parameter uncertainty
+        - Figure size, DPI or font
+        - SOP package or replay
         - PDF parsing
         - Wrong experiment association
         - Wrong value or unit
         - Wrong source mapping
         - API or application error
-

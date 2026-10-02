@@ -5,10 +5,11 @@ from .themes import PALETTES, apply_theme, colors
 from .workspace import Preferences
 
 NAMES = {
+    "analysis": ("Experiment analysis", "实验分析"),
     "evidence": ("Literature evidence", "文献证据"),
     "settings": ("Appearance", "外观"),
 }
-ICONS = {"evidence": "▤", "settings": "⚙"}
+ICONS = {"analysis": "◈", "evidence": "▤", "settings": "⚙"}
 
 
 def name(key):
@@ -40,8 +41,8 @@ def sidebar(workspace, store, version):
         st.markdown("## 🌿 EnvEvidence")
         st.caption(
             t(
-                "Source-checked evidence from water-treatment papers.",
-                "从水处理文献中提取可核验的证据。",
+                "Experiments, curves and evidence.",
+                "实验数据、动力学曲线与文献证据。",
             )
         )
         locale = st.selectbox(
@@ -60,7 +61,7 @@ def sidebar(workspace, store, version):
                 f"{ICONS[page]}  {name(page)}",
                 key=f"nav_{page}",
                 width="stretch",
-                type="primary" if st.session_state.get("page", "evidence") == page else "secondary",
+                type="primary" if st.session_state.get("page", "analysis") == page else "secondary",
             ):
                 go(page)
         st.divider()
@@ -74,8 +75,8 @@ def sidebar(workspace, store, version):
             )
         st.caption(
             t(
-                "Only explicit evidence extraction sends text to your chosen API. Bench runs live in the EnvBench Android app.",
-                "只有主动启动文献提取才向所选 API 发送文本。实验台记录请使用 EnvBench 安卓应用。",
+                "Experiment analysis stays local. Only explicit literature extraction sends text to your chosen API.",
+                "实验分析完全在本地完成。只有主动启动文献提取才向所选 API 发送文本。",
             )
         )
         st.caption(f"v{version} · " + t("Local · Single user", "本地 · 单用户"))

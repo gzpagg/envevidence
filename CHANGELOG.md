@@ -1,5 +1,18 @@
 # Changelog
 
+## EnvEvidence (desktop) 0.4.0 — 2026-10-01
+
+- Add a local experiment-analysis workflow: conditions, measurements, explicit processing, kinetic fitting, figure settings and SOP export, alongside the existing literature-evidence workflow.
+- Import pasted CSV/TSV, mapped CSV/Excel and EnvBench CSV/ZIP. Preserve original bytes, SHA-256 hashes, phone records/photos and manual revisions; connect quantified assays by sample ID.
+- Process blank/dilution corrections, compatible unit conversion, normalization and confirmed adsorption mass balances. Keep censored/missing data, independent runs and technical-repeat provenance explicit.
+- Fit zero-, first-, integrated second-order and plateau decay, adsorption PFO/PSO/intraparticle diffusion and Monod substrate–rate curves. Add applicable linearizations, fixed C₀/qₑ, raw-scale weighting and fit intervals.
+- Show original-scale metrics, point predictions/residuals, transformed metrics and parameter diagnostics. Scale objectives for numerical stability and withhold unreliable confidence intervals.
+- Export physical-size PNG/TIFF/SVG with adjustable DPI and a licensed Chinese font. Save reusable SOP settings and unique packages with CSV/XLSX tables, figures, hashes and complete configurations.
+- Add `envevidence analyze --config … --output …` to validate and replay exported analysis snapshots into a separate output directory.
+- Add bilingual analysis guides and actual experiment/fitting/chart screenshots. Preserve evidence schema, review histories and original CLI commands. Validation coverage is recorded in [desktop validation](docs/VALIDATION.md).
+
+电脑版新增完整的本地实验分析流程，支持多模型比较、可设置尺寸／DPI 的科研图和可重跑 SOP 成果包。手机样品通过导出档案与检测结果关联，文献核验继续独立使用。安卓安装包保持 0.6.1。
+
 ## EnvBench (Android) 0.6.1 preview — 2026-10-01
 
 **Published:** [signed APK and checksum](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1). Android 8.0+, using the existing maintainer signing identity for in-place upgrades. Release checks passed 56 JavaScript tests, Android lint/build, two Android 15 instrumentation tests and the four desktop CI environments. Detailed records are in [Android validation](docs/ANDROID.md) and [desktop validation](docs/VALIDATION.md).
