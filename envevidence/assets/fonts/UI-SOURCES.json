@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "sha256": "042fe2cc0b933e328410d7acbd0aa6a1873dca5aef81875f4bc214b08825c7b9",
+      "name": "SourceSans3-Variable.ttf",
+      "source": "ofl/sourcesans3/SourceSans3%5Bwght%5D.ttf"
+    },
+    {
+      "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+      "name": "SourceSerif4-Variable.ttf",
+      "source": "ofl/sourceserif4/SourceSerif4%5Bopsz%2Cwght%5D.ttf"
+    }
+  ],
+  "repository": "https://github.com/google/fonts",
+  "commit": "9710da1eacb3be272583c3224dcb70f9da6eadbb",
+  "license": "SIL Open Font License 1.1"
+}

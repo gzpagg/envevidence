@@ -3,6 +3,8 @@
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from envevidence import __version__
+
 ROOT = Path(__file__).resolve().parents[1]
 TOP_FILES = [
     "pyproject.toml",
@@ -20,11 +22,11 @@ TOP_FILES = [
     "app.py",
 ]
 FOLDERS = ["envevidence", "tests", "scripts", "docs", ".github", ".streamlit"]
-ALLOWED_SUFFIXES = {".py", ".js", ".md", ".png", ".pdf", ".json", ".csv", ".toml", ".yml", ".otf", ".ttf", ".txt"}
+ALLOWED_SUFFIXES = {".py", ".js", ".md", ".png", ".pdf", ".json", ".csv", ".toml", ".yml", ".otf", ".ttf", ".woff2", ".txt"}
 
 
 def main():
-    output = ROOT / "dist" / "envevidence-0.4.0-source.zip"
+    output = ROOT / "dist" / f"envevidence-{__version__}-source.zip"
     output.parent.mkdir(exist_ok=True)
     files = [ROOT / name for name in TOP_FILES]
     for folder in FOLDERS:
@@ -40,7 +42,7 @@ def main():
         for file in sorted(files):
             if not file.is_file():
                 raise FileNotFoundError(file)
-            archive.write(file, Path("envevidence-0.4.0") / file.relative_to(ROOT))
+            archive.write(file, Path(f"envevidence-{__version__}") / file.relative_to(ROOT))
     print(f"Source ZIP: {output.name}; {len(files)} files")
 
 

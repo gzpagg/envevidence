@@ -23,4 +23,5 @@ android/local.properties
 signing.properties
 android/device-screenshots/
 output/playwright/
+output/
 .playwright-cli/

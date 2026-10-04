@@ -16,7 +16,7 @@ async page => {
     await page.getByRole('img', { name: 'Running...', exact: true }).waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});
     await page.waitForTimeout(700);
   };
-  if (await page.getByRole('heading', { name: '🌿 EnvEvidence' }).count()) {
+  if (await page.getByRole('heading', { name: 'EnvEvidence' }).count()) {
     await page.setViewportSize({ width: 1440, height: 1080 });
     for (const language of ['en', 'zh']) {
       const zh = language === 'zh';
@@ -24,7 +24,7 @@ async page => {
       await locale.fill(zh ? '简体中文' : 'English');
       await locale.press('Enter');
       await ready();
-      await page.getByText(zh ? '◈ 实验分析' : '◈ Experiment analysis', { exact: true }).click();
+      await page.locator('[data-testid=stSidebar]').getByText(zh ? '实验分析' : 'Experiment analysis', { exact: true }).click();
       await ready();
       await page.getByText(zh ? '载入分析演示' : 'Load analysis demo', { exact: true }).click();
       await ready();
@@ -48,7 +48,7 @@ async page => {
         if (label) el.scrollTop += label.getBoundingClientRect().top - 100;
       });
       await shot(`charts-${language}`);
-      await page.getByText(zh ? '▤ 文献证据' : '▤ Literature evidence', { exact: true }).click();
+      await page.locator('[data-testid=stSidebar]').getByText(zh ? '文献证据' : 'Literature evidence', { exact: true }).click();
       await ready();
       await page.getByText(zh ? '载入离线演示' : 'Load evidence demo', { exact: true }).click();
       await ready();
@@ -67,7 +67,7 @@ async page => {
         if (label) el.scrollTop += label.getBoundingClientRect().top - 105;
       });
       await shot(`review-${language}`);
-      await page.getByText(zh ? '⚙ 外观' : '⚙ Appearance', { exact: true }).click();
+      await page.locator('[data-testid=stSidebar]').getByText(zh ? '外观' : 'Appearance', { exact: true }).click();
       await ready();
       await page.locator('[data-testid="stMain"]').evaluate(el => el.scrollTo(0, 0));
       await shot(`settings-${language}`);

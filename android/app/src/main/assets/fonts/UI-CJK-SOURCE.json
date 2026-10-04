@@ -1,0 +1,18 @@
+{
+  "source": {
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+    "path": "Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+    "repository": "https://github.com/notofonts/noto-cjk",
+    "copyright": "© 2014-2021 Adobe (http://www.adobe.com/).",
+    "license": "SIL Open Font License 1.1",
+    "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+    "license_url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/LICENSE",
+    "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+  },
+  "derivation": "GB2312 repertoire; UI subset; renamed Env Sans CJK",
+  "tool": "fontTools 4.66.1",
+  "license": "OFL.txt",
+  "codepoints": 7445,
+  "bytes": 2447796,
+  "sha256": "e03ab5009bcfd8c95f3644cd3099a3ba06d928ec66e893d9076b3812d802c647"
+}

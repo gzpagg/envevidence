@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "name": "Env studio",
+  "colors": {
+    "paper": "#F4F7F6",
+    "surface": "#FFFFFF",
+    "ink": "#243638",
+    "muted": "#5F6F70",
+    "accent": "#186B62",
+    "line": "#D9E2DF",
+    "control_border": "#8A9B96",
+    "success": "#316247",
+    "warning": "#8D621D",
+    "error": "#A03232"
+  },
+  "fonts": {
+    "body": "Source Sans 3",
+    "heading": "Source Serif 4"
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48
+  ],
+  "radius": {
+    "control": 10,
+    "card": 16,
+    "dialog": 20
+  },
+  "type": {
+    "body": 16,
+    "caption": 12,
+    "line_height": 1.55
+  },
+  "interaction": {
+    "touch_min": 48,
+    "transition_ms": 160,
+    "reduced_motion": true
+  }
+}

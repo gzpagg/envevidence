@@ -6,12 +6,12 @@
 })(globalThis, function() {
   'use strict';
   const modules = ['evidence', 'learning', 'tasks', 'notes'];
-  const palettes = {clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
+  const palettes = {mineral:['#186B62','#F4F7F6'],clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
   const uid = () => crypto.randomUUID().replaceAll('-', '');
   const now = () => new Date().toISOString();
   const clone = x => JSON.parse(JSON.stringify(x));
   function day(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-  function defaults() { return {language:'en',palette:'forest',accent:palettes.forest[0],background:palettes.forest[1],order:[...modules],hidden:[]}; }
+  function defaults() { return {language:'en',palette:'mineral',accent:palettes.mineral[0],background:palettes.mineral[1],order:[...modules],hidden:[]}; }
   function empty() { return {format:'envevidence-android',schema_version:1,workspace:{schema_version:1,updated_at:now(),preferences:defaults(),goals:[],tasks:[],notes:[],demo_loaded:false},projects:[]}; }
   function assert(ok, code = 'invalid') { if (!ok) throw new Error(code); }
   const str = x => typeof x === 'string';

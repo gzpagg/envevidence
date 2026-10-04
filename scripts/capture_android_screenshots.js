@@ -103,7 +103,7 @@ async page => {
     await nav('My space', '我的', zh);
     await shot(`lab-my-${language}`);
     await page.getByRole('button', { name: zh ? /语言与外观/ : /Language & appearance/ }).click();
-    for (const palette of ['clay', 'forest', 'ocean', 'graphite']) {
+    for (const palette of ['mineral', 'clay', 'forest', 'ocean', 'graphite']) {
       await page.locator('#settings-form [name=palette]').selectOption(palette);
       await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
       await settle();
@@ -121,7 +121,7 @@ async page => {
       }
     }
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.locator('#settings-form [name=palette]').selectOption('clay');
+    await page.locator('#settings-form [name=palette]').selectOption('mineral');
     await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
     await nav('Timers', '计时', zh);
     await page.locator('[data-lab=newTimer]').first().click();
@@ -133,7 +133,7 @@ async page => {
     await card.locator('[data-lab=startTimer]').click();
     await card.scrollIntoViewIfNeeded();
     await shot(`lab-timers-${language}`);
-    checks.push(`${language}: four palettes at 390px and 360px, no horizontal page overflow`);
+    checks.push(`${language}: five palettes at 390px and 360px, no horizontal page overflow`);
   }
   return { screenshots: 16, checks };
 }

@@ -4,6 +4,7 @@ Version 0.3 no longer shows learning goals, tasks or notes. Their models stay so
 existing state.json loads and saves without losing anything.
 """
 
+import json
 import os
 import tempfile
 from datetime import date
@@ -66,9 +67,9 @@ class Note(Item):
 
 class Preferences(StrictModel):
     language: Literal["en", "zh"] = "en"
-    palette: Literal["forest", "ocean", "sand", "graphite", "custom"] = "forest"
-    accent: str = "#147D73"
-    background: str = "#F6F8F7"
+    palette: Literal["mineral", "clay", "forest", "ocean", "sand", "graphite", "custom"] = "mineral"
+    accent: str = "#186B62"
+    background: str = "#F4F7F6"
     order: list[str] = Field(default_factory=lambda: MODULES.copy())
     hidden: list[str] = Field(default_factory=list)
 
@@ -105,7 +106,18 @@ class WorkspaceStore:
     def load(self):
         if not self.path.exists():
             return Workspace()
-        return Workspace.model_validate_json(self.path.read_text(encoding="utf-8"))
+        # An existing file that omitted preferences used the original forest defaults.
+        # Only an absent workspace file adopts the new mineral palette.
+        raw = json.loads(self.path.read_text(encoding="utf-8"))
+        if isinstance(raw, dict):
+            if "preferences" not in raw:
+                raw["preferences"] = {}
+            if isinstance(raw["preferences"], dict):
+                for key, value in {
+                    "palette": "forest", "accent": "#147D73", "background": "#F6F8F7"
+                }.items():
+                    raw["preferences"].setdefault(key, value)
+        return Workspace.model_validate(raw)
 
     def save(self, workspace):
         # Validate before writing; malformed files are never silently reset on load.
@@ -122,3 +134,5 @@ class WorkspaceStore:
         finally:
             if os.path.exists(name):
                 os.unlink(name)
+
+
