@@ -25,9 +25,7 @@ EnvBench 面向水与污水高级氧化、DOM 转化等实验。**实验、计�
 
 ## 安装与体验
 
-**[EnvBench 0.7.0 发布与 APK](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)**
-
-0.7.0 安装包正在等待 CI 发布，正式签名 APK 和 SHA-256 校验文件将提供在该页。
+**[下载 EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 校验文件](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
 
 在安卓手机上打开下载的 APK，按系统提示允许浏览器或文件应用安装。签名预览版沿用原应用身份与维护者签名，可直接覆盖升级现有安装。
 

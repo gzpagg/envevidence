@@ -38,7 +38,7 @@ Stopwatches, countdowns, stage timers, sampling reminders and counters can run i
 
 **Android 8.0+ · Offline · No account required**
 
-**[EnvBench 0.7.0 Android release](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)** · [Installation guide](android/README.md). The 0.7.0 installer is awaiting CI publication; the release page will provide the signed APK and checksum. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
+**[Download EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1) · [Installation guide](android/README.md). Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
 
 ## EnvEvidence: from reaction conditions to reproducible curves
 
@@ -78,7 +78,9 @@ Pollutant removal and mineralization/TOC removal have separate fields. Different
 
 ### Install the desktop app
 
-Requires **Python 3.11+**. Clone the repository and create a virtual environment:
+**[Download 0.4.1 source ZIP](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-source.zip)** · [Python wheel](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-py3-none-any.whl) · [Release notes and checksums](https://github.com/gzpagg/envevidence/releases/tag/v0.4.1)
+
+Requires **Python 3.11+**. Extract the source ZIP and open its project folder, or clone the repository below. Create a virtual environment with `python -m venv .venv` before running the install commands:
 
 ```bash
 git clone https://github.com/gzpagg/envevidence.git
@@ -99,6 +101,8 @@ macOS / Linux:
 .venv/bin/python -m pip install -e .
 .venv/bin/python -m envevidence serve
 ```
+
+For the wheel, use `-m pip install "path/to/envevidence-0.4.1-py3-none-any.whl"` in place of `-m pip install -e .` with the same virtual-environment Python.
 
 Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. The desktop version is **0.4.1**.
 

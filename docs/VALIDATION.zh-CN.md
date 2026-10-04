@@ -4,7 +4,9 @@
 
 ## 当前版本：桌面 0.4.1 / 安卓 0.7.0
 
-本地 Windows/Python 3.13 已通过 **188 项测试**与 Ruff，JavaScript 已通过 **87 项测试**。新增覆盖共享字体与配色、旧偏好保留、阶段边界、模板快照、步骤历史、媒体校验与桌面导入兼容。四环境桌面及安卓构建／设备检查等待发布工作流完成。
+[桌面 CI](https://github.com/gzpagg/envevidence/actions/runs/37188040439)通过 **Windows/Linux 与 Python 3.11/3.13** 四个组合；每个环境均通过 **188 项测试**、Ruff、离线 CLI 演示，以及源码包和 wheel 构建。本地 Windows/Python 3.13 也已通过 188 项测试与 Ruff。[安卓 CI](https://github.com/gzpagg/envevidence/actions/runs/37188040448)通过 **87 项 JavaScript 测试**、**13 项 JVM 单元测试**、Android lint、debug/release APK 构建，以及 **7 项 Android 15 模拟器 instrumentation 测试**。本地 JavaScript 测试也已通过 87 项。
+
+新增覆盖共享字体与配色、旧偏好保留、阶段边界、模板快照、步骤历史、媒体校验与桌面导入兼容。原生模拟器检查涵盖录音与生命周期恢复、可定位播放、媒体 ZIP 完整性，以及浏览器较早保存状态时原生媒体的保留。
 
 实际浏览器场景使用隔离的自制数据，覆盖中英文的新实验、步骤计时与现象关联、有理由跳过、重复执行、手动循环、快捷短语和重启恢复。当前截图采用矿物青配色。
 

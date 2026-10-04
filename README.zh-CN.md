@@ -38,7 +38,7 @@
 
 **Android 8.0+ · 离线运行 · 无需账号**
 
-**[EnvBench 0.7.0 安卓发布页](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)** · [安装指南](android/README.zh-CN.md)。0.7.0 安装包正在等待 CI 发布，正式签名 APK 和校验文件将提供在该页。在 **我的 → 载入实验演示** 中，可体验一组自制 UV/PDS 反应、样品与水质记录。
+**[下载 EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 校验](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1) · [安装指南](android/README.zh-CN.md)。在 **我的 → 载入实验演示** 中，可体验一组自制 UV/PDS 反应、样品与水质记录。
 
 ## EnvEvidence：从反应条件，到可复现的动力学曲线
 
@@ -78,7 +78,9 @@
 
 ### 安装电脑版
 
-需要 **Python 3.11+**。克隆仓库并建立虚拟环境：
+**[下载 0.4.1 源码 ZIP](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-source.zip)** · [Python wheel](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-py3-none-any.whl) · [发布说明与校验文件](https://github.com/gzpagg/envevidence/releases/tag/v0.4.1)
+
+需要 **Python 3.11+**。解压源码 ZIP 并打开项目目录，或按下面的命令克隆仓库。先运行 `python -m venv .venv` 建立虚拟环境，再执行安装命令：
 
 ```bash
 git clone https://github.com/gzpagg/envevidence.git
@@ -99,6 +101,8 @@ macOS / Linux：
 .venv/bin/python -m pip install -e .
 .venv/bin/python -m envevidence serve
 ```
+
+使用 wheel 时，在同一虚拟环境的 Python 命令中，将 `-m pip install -e .` 替换为 `-m pip install "path/to/envevidence-0.4.1-py3-none-any.whl"`，文件路径填写实际下载位置。
 
 打开 <http://127.0.0.1:8501>，在侧栏选择“简体中文”。应用默认打开 **实验分析**，可点击 **载入分析演示** 体验合成测量数据；进入 **文献证据 → 载入离线演示** 可体验自制论文及补充材料。两个演示均无需 API 密钥。电脑版版本为 **0.4.1**。
 

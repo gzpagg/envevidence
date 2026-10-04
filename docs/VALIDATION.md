@@ -4,7 +4,9 @@
 
 ## Current desktop 0.4.1 / Android 0.7.0
 
-Local Windows/Python 3.13 checks pass **188 tests** and Ruff. The JavaScript suite passes **87 tests**. New coverage checks shared fonts/tokens, saved and legacy appearance, stage-timer boundaries, template snapshots, step histories, media manifests and desktop import compatibility. The four-environment desktop matrix and Android build/device results are pending the release workflow.
+[Desktop CI](https://github.com/gzpagg/envevidence/actions/runs/37188040439) passed on **Windows and Linux with Python 3.11 and 3.13**: each of the four environments passed **188 tests**, Ruff, the offline CLI demo and source/wheel builds. Local Windows/Python 3.13 also passed 188 tests and Ruff. [Android CI](https://github.com/gzpagg/envevidence/actions/runs/37188040448) passed **87 JavaScript tests**, **13 JVM unit tests**, Android lint, debug/release APK builds and **7 Android 15 emulator instrumentation tests**. The local JavaScript suite also passed 87 tests.
+
+New coverage checks shared fonts/tokens, saved and legacy appearance, stage-timer boundaries, template snapshots, step histories, media manifests and desktop import compatibility. Native emulator checks cover recording and lifecycle recovery, seekable playback, media ZIP integrity and preservation of native media after a stale browser save.
 
 Browser scenarios use actual running interfaces and isolated synthetic data. Both languages cover fresh experiments, linked timers and observations, reasoned skips, repeated steps, manual cycles, editable phrases and restart persistence. Current screenshots use Mineral teal.
 

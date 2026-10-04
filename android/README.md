@@ -25,9 +25,7 @@ EnvBench is a local experiment notebook for advanced-oxidation and DOM work in w
 
 ## Install and explore
 
-**[EnvBench 0.7.0 release and APK](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)**
-
-The 0.7.0 installer is awaiting CI publication. The release page will provide the signed APK and SHA-256 checksum.
+**[Download EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 checksum](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
 
 Open the downloaded APK on your Android phone and allow installation from the browser or file app when Android asks. This signed preview uses the same application identity and maintainer signing key as the earlier app, so it can update an existing installation in place.
 

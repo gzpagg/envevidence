@@ -25,9 +25,31 @@ These are browser interface captures. Native camera, storage, notification and a
 
 ## Release checks · 0.7.0
 
-Local checks pass **87 JavaScript tests** and **188 desktop tests**, plus Ruff. English/Chinese browser scenarios exercise new template runs, timed steps, skip/repeat history, linked observations, manual timer cycles, phrases and restart persistence. Layout checks cover five palettes and 360/390 px phone widths, plus the 768 px procedure layout. Android build and device results are pending the release workflow.
+[Android CI](https://github.com/gzpagg/envevidence/actions/runs/37188040448) passed **87 JavaScript tests**, **13 JVM unit tests**, Android lint, debug/release APK builds and **7 Android 15 emulator instrumentation tests**. [Desktop CI](https://github.com/gzpagg/envevidence/actions/runs/37188040439) passed **188 tests in each of the four Windows/Linux and Python 3.11/3.13 environments**, together with Ruff, the offline CLI demo and source/wheel builds. Local checks also passed 87 JavaScript tests and 188 desktop tests, plus Ruff.
+
+English/Chinese browser scenarios exercise new template runs, timed steps, skip/repeat history, linked observations, manual timer cycles, phrases and restart persistence. Layout checks cover five palettes and 360/390 px phone widths, plus the 768 px procedure layout.
 
 Native coverage includes recording and lifecycle recovery, seekable playback, original-media ZIP integrity and retention of native media after a stale browser save. These checks use an emulator and synthetic records. System speech recognition depends on the installed service and may send speech to that service.
+
+## Published APK · 0.7.0 preview
+
+[Download APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk) · [SHA-256 file](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
+
+The signed APK is 13,558,841 bytes. Package `io.github.gzpagg.envevidence`, version 0.7.0 / code 8, minimum API 26 and target API 36. Signature schemes v2/v3 passed verification, with the same maintainer certificate as previous releases. All 25 bundled assets match the merged Git tree byte for byte.
+
+The APK was built by [Android CI 37187667580](https://github.com/gzpagg/envevidence/actions/runs/37187667580) from source `2ab018ee515b0beae32dd72e2f76d98eb1c384ce`, merged through [PR #7](https://github.com/gzpagg/envevidence/pull/7). Its assets also match main `3b62192269f4a967a8cb6e4fe8a1bf753ed71871`. Comparing Git blobs avoids Windows checkout newline conversion.
+
+APK SHA-256:
+
+```text
+0847bc0e223fcb80ec3e5c014d473069bc8037bbb1f6e9ad513ac7e2583adf6d
+```
+
+Signing-certificate SHA-256:
+
+```text
+1833c322295af3aee2edee378713ba8f970671165cff9532a9165d02108de28f
+```
 
 ## Previously published APK · 0.6.1 preview
 
