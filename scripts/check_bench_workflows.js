@@ -26,6 +26,7 @@ async page => {
     assert(lab.timers.some(t=>t.id===lab.workflows[0].steps[1].timer_id&&t.status==='running'),'Starting a timed step must create its linked countdown');
     await shot(`envbench-steps-${language}`);
     await page.locator('.quick-bar [data-lab=newRecord]').click();
+    await sheet().locator('[name=experiment_id]').selectOption('');assert(await sheet().locator('[data-record-step]').isHidden(),'Independent observation cannot show a reactor step');await sheet().locator('[name=experiment_id]').selectOption(source.id);assert(await sheet().locator('[data-record-step]').isVisible(),'Selected experiment must show its current step');
     await sheet().locator('[name=body]').fill(zh?'自制测试：轻微起泡，未见沉淀。':'Synthetic test: slight foaming, no precipitate.');
     await shot(`envbench-observation-${language}`);await save();
     lab=(await read()).lab;assert(lab.records[0].step_id===workflow.steps[1].id,'Observation must link to the active step');

@@ -47,7 +47,12 @@ final class LabPhotos {
         if(experimentId!=null&&!experimentId.isEmpty()){
             JSONObject lab=state.getJSONObject("lab");boolean found=false;
             for(String key:new String[]{"experiments","timers","counters","records","events","samples","workflows"}){JSONArray source=lab.optJSONArray(key),chosen=new JSONArray();if(source==null)continue;for(int i=0;i<source.length();i++){JSONObject item=source.getJSONObject(i);if(experimentId.equals(item.optString(key.equals("experiments")?"id":"experiment_id"))){chosen.put(item);if(key.equals("experiments"))found=true;}}lab.put(key,chosen);}if(!found)throw new IOException("invalid");
-            // Shared experiment templates and observation phrases remain available to snapshots.
+            // A single experiment carries its own snapshots and only their referenced templates.
+            Set<String> templateIds=new HashSet<>();JSONArray flows=lab.optJSONArray("workflows");
+            if(flows!=null)for(int i=0;i<flows.length();i++){String template=flows.getJSONObject(i).optString("template_id",null);if(template!=null&&!template.isEmpty())templateIds.add(template);}
+            JSONArray library=lab.optJSONArray("experiment_templates"),linked=new JSONArray();
+            if(library!=null)for(int i=0;i<library.length();i++){JSONObject template=library.getJSONObject(i);if(templateIds.contains(template.optString("id")))linked.put(template);}
+            lab.put("experiment_templates",linked).put("observation_phrases",new JSONArray());
             state.put("projects",new JSONArray());JSONObject workspace=state.getJSONObject("workspace");for(String key:new String[]{"goals","tasks","notes"})workspace.put(key,new JSONArray());lab.put("demo_loaded",false);
         }
         Map<String,JSONObject> refs=media(state);JSONObject files=new JSONObject();long total=0;
@@ -74,6 +79,8 @@ final class LabPhotos {
                         staged.put(path,target);String hash=LabAudio.sha256(target);hashes.put(path,hash);lengths.put(path,size);
                         if(path.equals("workspace.json")){state=new JSONObject(new String(LabStore.read(new FileInputStream(target),LabStore.LIMIT),StandardCharsets.UTF_8));workspaceSha=hash;}else if(path.equals("media-manifest.json"))manifest=new JSONObject(new String(LabStore.read(new FileInputStream(target),LabStore.LIMIT),StandardCharsets.UTF_8));zip.closeEntry();
                     }
+                } catch(ZipException e) { // Android's path validator may reject traversal before our entry check.
+                    throw new IOException("invalid",e);
                 }
                 if(state==null)throw new IOException("invalid");validateBackup(state);Map<String,JSONObject> refs=media(state);
                 for(String path:staged.keySet())if(!path.equals("workspace.json")&&!path.equals("media-manifest.json")&&!refs.containsKey(path))throw new IOException("invalid");

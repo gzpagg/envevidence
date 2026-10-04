@@ -4,7 +4,7 @@
 
 ## Current desktop 0.4.1 / Android 0.7.0
 
-Local Windows/Python 3.13 checks pass **188 tests** and Ruff. The JavaScript suite passes **83 tests**. New coverage checks shared fonts/tokens, saved and legacy appearance, stage-timer boundaries, template snapshots, step histories, media manifests and desktop import compatibility. The four-environment desktop matrix and Android build/device results are pending the release workflow.
+Local Windows/Python 3.13 checks pass **188 tests** and Ruff. The JavaScript suite passes **87 tests**. New coverage checks shared fonts/tokens, saved and legacy appearance, stage-timer boundaries, template snapshots, step histories, media manifests and desktop import compatibility. The four-environment desktop matrix and Android build/device results are pending the release workflow.
 
 Browser scenarios use actual running interfaces and isolated synthetic data. Both languages cover fresh experiments, linked timers and observations, reasoned skips, repeated steps, manual cycles, editable phrases and restart persistence. Current screenshots use Mineral teal.
 

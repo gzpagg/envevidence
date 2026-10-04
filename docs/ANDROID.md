@@ -25,7 +25,7 @@ These are browser interface captures. Native camera, storage, notification and a
 
 ## Release checks · 0.7.0
 
-Local checks pass **83 JavaScript tests** and **188 desktop tests**, plus Ruff. English/Chinese browser scenarios exercise new template runs, timed steps, skip/repeat history, linked observations, manual timer cycles, phrases and restart persistence. Layout checks cover five palettes and 360/390 px phone widths, plus the 768 px procedure layout. Android build and device results are pending the release workflow.
+Local checks pass **87 JavaScript tests** and **188 desktop tests**, plus Ruff. English/Chinese browser scenarios exercise new template runs, timed steps, skip/repeat history, linked observations, manual timer cycles, phrases and restart persistence. Layout checks cover five palettes and 360/390 px phone widths, plus the 768 px procedure layout. Android build and device results are pending the release workflow.
 
 Native coverage includes recording and lifecycle recovery, seekable playback, original-media ZIP integrity and retention of native media after a stale browser save. These checks use an emulator and synthetic records. System speech recognition depends on the installed service and may send speech to that service.
 

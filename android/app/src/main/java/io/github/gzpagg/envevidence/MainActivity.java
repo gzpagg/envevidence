@@ -84,6 +84,8 @@ public class MainActivity extends ComponentActivity {
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(false);
+        // Load assets from the installed APK so an upgrade cannot reuse older UI scripts.
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);

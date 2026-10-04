@@ -83,7 +83,7 @@ test('per-run overrides become the workflow snapshot without modifying its sourc
 });
 
 test('record step links accept absent, null and matching experiment workflow steps',()=>{
-  const {l,e,w}=setup(),plain=L.record(l,e.id,'General observation','',clock(1000)),linked=L.record(l,e.id,'Step observation','',clock(2000));plain.step_id=null;linked.step_id=w.steps[1].id;L.record(l,null,'Independent observation','',clock(3000));a.equal(F.validateRecordLinks(l),l);
+  const {l,e,w}=setup(),plain=L.record(l,e.id,'General observation','',clock(1000)),linked=L.record(l,e.id,'Step observation','',clock(2000));plain.step_id=null;linked.step_id=w.steps[1].id;L.record(l,null,'Independent observation','',clock(3000));a.equal(F.validateRecordLinks(l),l);L.validate(l);F.ensure(l);const restored=clone(l);L.validate(restored);F.ensure(restored);F.validateRecordLinks(restored);
 });
 
 test('record step link final-state validation rejects cross-experiment and missing step IDs',()=>{
@@ -92,4 +92,8 @@ test('record step link final-state validation rejects cross-experiment and missi
 
 test('record links validate after both merge stages while extension validation accepts the midpoint',()=>{
   const {l:incoming,e,w}=setup(),r=L.record(incoming,e.id,'Linked observation','',clock());r.step_id=w.steps[0].id;const local=L.empty();F.ensure(local);const base=L.merge(local,incoming,clock(1000));F.validate(base.lab);a.throws(()=>F.validateRecordLinks(base.lab));const merged=F.merge(base.lab,incoming,clock(1000));F.validateRecordLinks(merged.lab);a.equal(merged.lab.records[0].step_id,merged.lab.workflows[0].steps[0].id);
+});
+
+test('single-experiment backups isolate records and shared libraries without changing the source',()=>{
+ const {l,e,t,w}=setup(),otherTemplate=F.createTemplate(l,def({title:'Unrelated private procedure'}),clock()),other=F.startExperiment(l,otherTemplate,{},clock());L.record(l,e.id,'Selected observation','',clock());L.record(l,other.experiment.id,'Private observation','',clock());F.setPhrases(l,['Private phrase'],clock());const original=JSON.stringify(l),selected=F.forExperiment(l,e.id);a.equal(JSON.stringify(l),original);a.deepEqual(selected.experiments.map(x=>x.id),[e.id]);a.deepEqual(selected.experiment_templates.map(x=>x.id),[t.id]);a.deepEqual(selected.observation_phrases,[]);a.equal(selected.records.length,1);a.deepEqual(selected.workflows[0].template_snapshot,w.template_snapshot);a.throws(()=>F.forExperiment(l,'f'.repeat(32)));l.experiment_templates=l.experiment_templates.filter(x=>x.id!==t.id);const orphan=F.forExperiment(l,e.id);a.equal(orphan.experiment_templates.length,0);a.deepEqual(orphan.workflows[0].template_snapshot,w.template_snapshot);
 });

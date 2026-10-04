@@ -125,8 +125,14 @@
     }
     validate(d);L.validate(d);return {lab:d,added};
   }
-  return {ensure,validate,validateRecordLinks,template,createTemplate,updateTemplate,fromExperiment,startExperiment,attachWorkflow,workflow,operateStep,activeStep,cancelWorkflow,finishExperiment,setPhrases,merge,STATES};
+  function forExperiment(l,experimentId){
+    const d=checkedCopy(l);assert(d.experiments.some(e=>e.id===experimentId));
+    for(const k of ['experiments','timers','counters','records','events','samples','workflows'])d[k]=d[k].filter(x=>(k==='experiments'?x.id:x.experiment_id)===experimentId);
+    const references=new Set(d.workflows.map(w=>w.template_id).filter(Boolean));
+    d.experiment_templates=d.experiment_templates.filter(x=>references.has(x.id));
+    d.observation_phrases=[];d.demo_loaded=false;L.validate(d);validate(d);validateRecordLinks(d);return d;
+  }
+  return {ensure,validate,validateRecordLinks,template,createTemplate,updateTemplate,fromExperiment,startExperiment,attachWorkflow,workflow,operateStep,activeStep,cancelWorkflow,finishExperiment,setPhrases,merge,forExperiment,STATES};
 });
-
 
 
