@@ -9,7 +9,6 @@ NAMES = {
     "evidence": ("Literature evidence", "文献证据"),
     "settings": ("Appearance", "外观"),
 }
-ICONS = {"analysis": "◈", "evidence": "▤", "settings": "⚙"}
 
 
 def name(key):
@@ -38,7 +37,7 @@ def persist(workspace, store):
 def sidebar(workspace, store, version):
     prefs = workspace.preferences
     with st.sidebar:
-        st.markdown("## 🌿 EnvEvidence")
+        st.markdown("## EnvEvidence")
         st.caption(
             t(
                 "Experiments, curves and evidence.",
@@ -58,7 +57,7 @@ def sidebar(workspace, store, version):
         st.divider()
         for page in NAMES:
             if st.button(
-                f"{ICONS[page]}  {name(page)}",
+                name(page),
                 key=f"nav_{page}",
                 width="stretch",
                 type="primary" if st.session_state.get("page", "analysis") == page else "secondary",
@@ -89,6 +88,8 @@ def settings(workspace, store):
     with left:
         st.subheader(t("Color palette", "界面配色"))
         names = {
+            "mineral": ("Mineral · teal", "矿物青 · 浅灰"),
+            "clay": ("Clay", "陶土色"),
             "forest": ("Forest", "森林绿"),
             "ocean": ("Ocean", "海洋蓝"),
             "sand": ("Sand", "暖灰橙"),
@@ -125,7 +126,10 @@ def settings(workspace, store):
             workspace.preferences = Preferences.model_validate(draft.model_dump())
             persist(workspace, store)
         if st.button(t("Restore default colors", "恢复默认配色"), key="reset_colors"):
-            prefs.palette, prefs.accent, prefs.background = ("forest", *PALETTES["forest"][:2])
+            prefs.palette, prefs.accent, prefs.background = ("mineral", *PALETTES["mineral"][:2])
             for key in ("palette_draft", "accent_draft", "background_draft"):
                 st.session_state.pop(key, None)
             persist(workspace, store)
+
+
+

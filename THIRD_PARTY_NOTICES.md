@@ -18,7 +18,20 @@ The Android APK bundles AndroidX WebKit 1.14.0 and PDFBox-Android 2.0.27.0 (Apac
 | Matplotlib | Physical-size scientific figures | Matplotlib license (PSF-based) |
 | Pillow | Raster image handling | MIT-CMU |
 
-The desktop distribution bundles **Noto Sans CJK SC Regular** under the SIL Open Font License 1.1. The unmodified font, upstream license and fixed-source record are in `envevidence/assets/fonts/`. Source: [Noto CJK](https://github.com/notofonts/noto-cjk), commit `f8d157532fbfaeda587e826d4cd5b21a49186f7c`. The font's SHA-256 is `2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b`. The font retains its own license; exported research figures are the user's output.
+## Bundled fonts
+
+Desktop and Android bundle the following interface fonts under the **SIL Open Font License 1.1**. They retain their own copyright and license; the repository's MIT license does not replace the font licenses.
+
+| Font | Use and source | Copyright and bundled license |
+| --- | --- | --- |
+| Source Sans 3 | Body text and controls. Unmodified variable TTF from [Google Fonts, `ofl/sourcesans3`](https://github.com/google/fonts/tree/9710da1eacb3be272583c3224dcb70f9da6eadbb/ofl/sourcesans3), commit `9710da1eacb3be272583c3224dcb70f9da6eadbb`. Upstream project: [Adobe Source Sans](https://github.com/adobe-fonts/source-sans). | Copyright 2023 Adobe; Reserved Font Name “Source”, as retained in the font. License: `sourcesans3-OFL.txt`. |
+| Source Serif 4 | Main titles. Unmodified variable TTF from [Google Fonts, `ofl/sourceserif4`](https://github.com/google/fonts/tree/9710da1eacb3be272583c3224dcb70f9da6eadbb/ofl/sourceserif4), at the same commit. Upstream project: [Adobe Source Serif](https://github.com/adobe-fonts/source-serif). | Copyright 2014–2021 Adobe Systems Incorporated; Reserved Font Name “Source”, as retained in the font. License: `sourceserif4-OFL.txt`. |
+| Env Sans CJK | Chinese interface fallback. A GB2312-repertoire WOFF2 subset derived from Noto Sans CJK SC Regular, with the interface family renamed “Env Sans CJK”. Source: [Noto CJK](https://github.com/notofonts/noto-cjk/tree/f8d157532fbfaeda587e826d4cd5b21a49186f7c), commit `f8d157532fbfaeda587e826d4cd5b21a49186f7c`. | Copyright 2014–2021 Adobe. The modified font remains under SIL OFL 1.1. Desktop license: `OFL.txt`; Android license: `NotoCJK-OFL.txt`. |
+
+Desktop font files, their license texts and fixed-source records are in `envevidence/assets/fonts/`; Android copies are in `android/app/src/main/assets/fonts/`. `UI-SOURCES.json` records the Source font paths and SHA-256 hashes. `UI-CJK-SOURCE.json` records the Chinese subset's original source, derivation, generation tool and SHA-256 hash. `scripts/build_ui_font.py` generates the subset with fontTools and Brotli; those tools are needed only to regenerate the font, not to run the application.
+
+The desktop distribution also bundles the **unmodified Noto Sans CJK SC Regular** for research figures, separately from the interface subset. Its original font, upstream OFL text and `SOURCE.json` are in `envevidence/assets/fonts/`. Its SHA-256 is `2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b`. The font licenses do not apply to the user's exported research figures or documents.
+
 
 Development dependencies include pytest (MIT), ReportLab (BSD-style), build (MIT), and Ruff (MIT). Consult the installed distribution metadata for the exact versions and full notices. The lock file records the tested local environment, including transitive dependencies; it is not a license grant for those dependencies.
 

@@ -42,13 +42,13 @@ def test_language_and_themes_persist_and_keep_earlier_planning_data(tmp_path, mo
     app = AppTest.from_file(ENTRY, default_timeout=30).run()
     assert any("2 learning goals, tasks and notes" in c.value for c in app.caption)
     app.button(key="nav_settings").click().run()
-    for palette in ["ocean", "sand", "graphite", "forest", "custom"]:
+    for palette in ["ocean", "sand", "graphite", "forest", "clay", "mineral", "custom"]:
         app.selectbox(key="palette_draft").select(palette).run()
         app.button(key="save_appearance").click().run()
         assert not app.exception
         assert store.load().preferences.palette == palette
     app.button(key="reset_colors").click().run()
-    assert app.selectbox(key="palette_draft").value == "forest"
+    assert app.selectbox(key="palette_draft").value == "mineral"
     app.selectbox(key="locale").select("zh").run()
     assert store.load().preferences.language == "zh"
     assert not app.exception
@@ -70,3 +70,5 @@ def test_english_evidence_review_and_locale_preserve_value(app):
     app.selectbox(key="locale").select("en").run()
     assert app.metric[3].value == "1"
     assert not app.exception
+
+

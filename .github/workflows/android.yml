@@ -31,12 +31,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: envbench-android-0.6.0
+          name: envbench-android-0.7.0
           path: |
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/apk/release/*.apk
             android/app/build/reports/lint-results-debug.html
             android/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+            android/app/build/test-results/testDebugUnitTest/
+            android/app/build/reports/tests/testDebugUnitTest/
           if-no-files-found: error
       - name: Enable KVM
         run: |

@@ -738,6 +738,96 @@ def _mobile_csv(rows: list[dict], source_id: str) -> list[Series]:
                    source_ids=[source_id]) for run, points in groups.items()]
 
 
+def _mobile_json(data: bytes) -> Any:
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("Duplicate mobile JSON property")
+            result[key] = value
+        return result
+
+    def finite_constant(_):
+        raise ValueError("Non-finite mobile JSON number")
+
+    return json.loads(data, object_pairs_hook=unique_object, parse_constant=finite_constant)
+
+
+def _validate_mobile_manifest(workspace: dict, files: dict[str, bytes]) -> None:
+    """Validate declared media without decoding images, opening audio, or running workflows."""
+    lab = workspace.get("lab", workspace)
+    records = lab.get("records", [])
+    media = {name for name in files if name.startswith(("photos/", "audio/"))}
+    has_audio = any(name.startswith("audio/") for name in media) or any(
+        isinstance(record, dict) and bool(record.get("audios"))
+        for record in (records if isinstance(records, list) else [])
+    )
+    if "media-manifest.json" not in files:
+        if has_audio:
+            raise ValueError("Mobile audio archive requires a complete media manifest")
+        # Legacy photo ZIPs may omit unavailable photo copies; keep that import behavior.
+        return
+
+    manifest = _mobile_json(files["media-manifest.json"])
+    if (not isinstance(manifest, dict)
+            or manifest.get("format") != "envevidence-media"
+            or type(manifest.get("version")) is not int or manifest["version"] != 1
+            or manifest.get("workspace_sha256") != hashlib.sha256(files["workspace.json"]).hexdigest()
+            or not isinstance(manifest.get("files"), dict)):
+        raise ValueError("Invalid mobile media manifest or workspace checksum")
+    if set(manifest["files"]) != media:
+        raise ValueError("Mobile media manifest is incomplete or contains extra members")
+    for member, check in manifest["files"].items():
+        if (not isinstance(check, dict) or type(check.get("bytes")) is not int
+                or check["bytes"] <= 0 or check["bytes"] != len(files[member])
+                or check.get("sha256") != hashlib.sha256(files[member]).hexdigest()):
+            raise ValueError(f"Mobile media checksum or byte count mismatch: {member}")
+
+    if not isinstance(records, list):
+        raise ValueError("Invalid mobile media record references")
+    refs: dict[str, dict | None] = {}
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError("Invalid mobile media record references")
+        for kind in ("photos", "audios"):
+            entries = record.get(kind, [])
+            if not isinstance(entries, list):
+                raise ValueError("Invalid mobile media record references")
+            seen = set()
+            for item in entries:
+                if not isinstance(item, dict):
+                    raise ValueError("Invalid mobile media reference")
+                identity, extension = item.get("id"), item.get("ext")
+                if (not isinstance(identity, str) or not re.fullmatch(r"[a-f0-9]{32}", identity)
+                        or identity in seen
+                        or (kind == "photos" and extension not in ("jpg", "png", "webp"))
+                        or (kind == "audios" and (extension != "m4a" or item.get("mime") != "audio/mp4"))):
+                    raise ValueError("Invalid or duplicate mobile media reference")
+                seen.add(identity)
+                prefix = "audio" if kind == "audios" else "photos"
+                member = f"{prefix}/{identity}.{extension}"
+                if (type(item.get("bytes")) is not int or item["bytes"] <= 0
+                        or not isinstance(item.get("sha256"), str)
+                        or not re.fullmatch(r"[a-f0-9]{64}", item["sha256"])):
+                    raise ValueError("Invalid mobile media reference metadata")
+                if member in refs and refs[member] is not None and (
+                    refs[member]["bytes"] != item["bytes"]
+                    or refs[member]["sha256"] != item["sha256"]
+                ):
+                    raise ValueError("Conflicting mobile media references")
+                refs[member] = item
+                if kind == "photos":
+                    refs[f"photos/{identity}.thumb.jpg"] = None
+    if set(refs) != media:
+        raise ValueError("Mobile media references are incomplete or contain unreferenced members")
+    for member, item in refs.items():
+        if item is not None and (
+            item["bytes"] != len(files[member])
+            or item["sha256"] != hashlib.sha256(files[member]).hexdigest()
+        ):
+            raise ValueError(f"Mobile media reference checksum or byte count mismatch: {member}")
+
+
 def _read_mobile_zip(data: bytes) -> tuple[dict, dict[str, bytes]]:
     files = {}
     total = 0
@@ -752,8 +842,9 @@ def _read_mobile_zip(data: bytes) -> tuple[dict, dict[str, bytes]]:
                 raise ValueError("Unsafe or duplicate mobile archive path")
             if entry.is_dir():
                 continue
-            if (entry.filename != "workspace.json"
-                    and not re.fullmatch(r"photos/[a-f0-9]{32}(\.thumb)?\.(jpg|png|webp)", entry.filename)):
+            if (entry.filename not in ("workspace.json", "media-manifest.json")
+                    and not re.fullmatch(r"photos/[a-f0-9]{32}(\.thumb)?\.(jpg|png|webp)", entry.filename)
+                    and not re.fullmatch(r"audio/[a-f0-9]{32}\.m4a", entry.filename)):
                 raise ValueError("Unexpected mobile archive member")
             total += entry.file_size
             if total > MAX_ARCHIVE_BYTES:
@@ -764,7 +855,7 @@ def _read_mobile_zip(data: bytes) -> tuple[dict, dict[str, bytes]]:
             files[entry.filename] = content
     if "workspace.json" not in files:
         raise ValueError("Mobile archive is missing workspace.json")
-    workspace = json.loads(files["workspace.json"])
+    workspace = _mobile_json(files["workspace.json"])
     if not isinstance(workspace, dict):
         raise ValueError("Unsupported mobile workspace schema")
     lab = workspace.get("lab", workspace)
@@ -778,6 +869,7 @@ def _read_mobile_zip(data: bytes) -> tuple[dict, dict[str, bytes]]:
         raise ValueError("Invalid or duplicate mobile experiment identity")
     if any(not isinstance(sample, dict) for sample in lab.get("samples", [])):
         raise ValueError("Invalid mobile sample record")
+    _validate_mobile_manifest(workspace, files)
     return workspace, files
 
 
@@ -794,7 +886,10 @@ def import_mobile(
         series = _mobile_csv(rows, "")
         source = store.add_source(project, filename, data, "mobile")
     else:
-        workspace, files = _read_mobile_zip(data)
+        try:
+            workspace, files = _read_mobile_zip(data)
+        except (zipfile.BadZipFile, RuntimeError, EOFError) as error:
+            raise ValueError("Invalid mobile ZIP archive") from error
         lab = workspace.get("lab", workspace)
         experiments = {e["id"]: e for e in lab["experiments"]}
         groups: dict[str, list[Observation]] = defaultdict(list)

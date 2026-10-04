@@ -7,6 +7,9 @@ import android.content.ClipData;
 import android.content.pm.PackageManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
+import android.Manifest;
+import java.util.ArrayList;
 import androidx.core.content.FileProvider;
 import android.database.Cursor;
 import android.net.Uri;
@@ -52,12 +55,18 @@ public class MainActivity extends ComponentActivity {
     private JSONObject pendingPayload;
     private boolean unreadable;
     private boolean openTimers;
+    private LabAudio audio;
+    private volatile boolean audioForeground;
+    private String microphoneRequest, microphoneRecord, speechRequest, speechLanguage;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
         openTimers=getIntent().getBooleanExtra("openTimers",false);
         PDFBoxResourceLoader.init(getApplicationContext());
         storage = new AtomicFile(new File(getFilesDir(), "workspace.json"));
+        audio = new LabAudio(this, (notice, state) -> runOnUiThread(() -> {
+            if(web!=null&&!isDestroyed())web.evaluateJavascript("window.labAudioStopped ? window.labAudioStopped("+notice+") : (window.labReload && window.labReload())",null);
+        }));
         if(saved!=null&&saved.containsKey("photoMethod"))try{pendingId=saved.getString("photoRequest");pendingMethod=saved.getString("photoMethod");pendingPayload=new JSONObject(saved.getString("photoPayload"));}catch(Exception ignored){pendingId=null;}
         FrameLayout root = new FrameLayout(this);
         web = new WebView(this);
@@ -75,6 +84,8 @@ public class MainActivity extends ComponentActivity {
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(false);
+        // Load assets from the installed APK so an upgrade cannot reuse older UI scripts.
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
@@ -86,10 +97,16 @@ public class MainActivity extends ComponentActivity {
             .addPathHandler("/photos/", path -> {
                 try{return new WebResourceResponse(path.endsWith(".png")?"image/png":path.endsWith(".webp")?"image/webp":"image/jpeg",null,new java.io.FileInputStream(LabPhotos.file(this,path)));}
                 catch(Exception e){return null;}
-            }).build();
+            })
+            .addPathHandler("/audio/", path -> LabAudio.response(this,path,null,"GET")).build();
         web.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView v, WebResourceRequest r) {
-                WebResourceResponse response = loader.shouldInterceptRequest(r.getUrl());
+                Uri u=r.getUrl();
+                if("https".equals(u.getScheme())&&"appassets.androidplatform.net".equals(u.getHost())&&u.getPort()==-1&&u.getPath()!=null&&u.getPath().startsWith("/audio/")){
+                    String range=null;for(java.util.Map.Entry<String,String> h:r.getRequestHeaders().entrySet())if("range".equalsIgnoreCase(h.getKey()))range=h.getValue();
+                    return LabAudio.response(MainActivity.this,u.getPath().substring(7),range,r.getMethod());
+                }
+                WebResourceResponse response = loader.shouldInterceptRequest(u);
                 return response != null ? response : new WebResourceResponse("text/plain", "UTF-8", 403, "Blocked", null, new ByteArrayInputStream(new byte[0]));
             }
             @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
@@ -133,6 +150,7 @@ public class MainActivity extends ComponentActivity {
                     switch (method) {
                         case "load":
                             recoverCamera();
+                            audio.recover();
                             if (!storage.getBaseFile().exists() && !new File(storage.getBaseFile()+".bak").exists()) { reply(id, null, null); break; }
                             try { reply(id, new JSONObject(new String(read(storage.openRead(), LIMIT), StandardCharsets.UTF_8)), null); }
                             catch (Exception e) { unreadable = true; reply(id, null, "loadFailed"); }
@@ -155,6 +173,11 @@ public class MainActivity extends ComponentActivity {
                         case "capturePhoto": case "pickPhoto": case "backupLab": case "importLab":
                         case "pickPdf": case "import": case "export":
                             runOnUiThread(() -> choose(id, method, p)); break;
+                        case "startAudio":runOnUiThread(()->startAudio(id,p));break;
+                        case "stopAudio":reply(id,audio.stop("user"),null);break;
+                        case "cancelAudio":audio.cancel();reply(id,true,null);break;
+                        case "audioStatus":audio.recover();reply(id,audio.status(),null);break;
+                        case "speechToText":runOnUiThread(()->speechToText(id,p));break;
                         case "extract": reply(id, extract(p), null); break;
                         case "openLink":
                             Uri uri = Uri.parse(p.getString("url"));
@@ -167,7 +190,7 @@ public class MainActivity extends ComponentActivity {
                     }
                 } catch (Exception e) {
                     String code = e.getMessage();
-                    if (code == null || !code.matches("(invalid|tooLarge|tooManyPages|encrypted|noText|file|saveFailed|loadFailed|network|photoConflict|missingPhoto|imageFormat|http[0-9]{3})")) code = method.equals("extract") ? "network" : "file";
+                    if (code == null || !code.matches("(invalid|tooLarge|tooManyPages|encrypted|noText|file|saveFailed|loadFailed|network|photoConflict|missingPhoto|missingAudio|audioConflict|mediaChecksum|imageFormat|micDenied|micBlocked|audioBusy|audioNotRecording|audioTooShort|audioFailed|audioSaveFailed|audioInactive|speechUnavailable|speechCancelled|speechEmpty|speechBusy|http[0-9]{3})")) code = method.equals("extract") ? "network" : "file";
                     reply(id, null, code);
                 }
             });
@@ -199,6 +222,13 @@ public class MainActivity extends ComponentActivity {
 
     @Override public void onActivityResult(int request, int result, Intent data) {
         super.onActivityResult(request, result, data);
+        if(request==42){
+            String id=speechRequest,language=speechLanguage;speechRequest=null;speechLanguage=null;if(id==null)return;
+            if(result!=RESULT_OK){reply(id,null,"speechCancelled");return;}
+            ArrayList<String> choices=data==null?null:data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if(choices==null||choices.isEmpty()||choices.get(0)==null||choices.get(0).trim().isEmpty()){reply(id,null,"speechEmpty");return;}
+            try{String text=choices.get(0).trim();if(text.length()>20000)throw new Exception("tooLarge");reply(id,new JSONObject().put("text",text).put("language",language),null);}catch(Exception e){reply(id,null,"tooLarge");}return;
+        }
         if (request != 1 || pendingId == null) return;
         String id = pendingId, method = pendingMethod; JSONObject payload = pendingPayload;
         pendingId = null; pendingPayload = null;
@@ -227,7 +257,7 @@ public class MainActivity extends ComponentActivity {
                 }
             } catch (Exception e) {
                 String message = e.getMessage();
-                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText|photoConflict|missingPhoto|imageFormat|invalid|backupLimit") ? message : "file");
+                reply(id, null, message != null && message.matches("tooLarge|tooManyPages|encrypted|noText|photoConflict|missingPhoto|missingAudio|audioConflict|mediaChecksum|imageFormat|invalid|backupLimit") ? message : "file");
             }
         });
     }
@@ -243,9 +273,31 @@ public class MainActivity extends ComponentActivity {
         if(!LabAlarms.notifications(this))startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName()));
         LabAlarms.sync(this);
     }
-    @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] grants){super.onRequestPermissionsResult(request,permissions,grants);if(request==40&&grants.length>0&&grants[0]==PackageManager.PERMISSION_GRANTED)enableAlerts();}
+    private void startAudio(String id,JSONObject p){
+        if(microphoneRequest!=null||speechRequest!=null||pendingId!=null||audio.active()){reply(id,null,"audioBusy");return;}
+        String recordId=p.optString("recordId",null);if(recordId==null||!recordId.matches("[a-f0-9]{32}")){reply(id,null,"invalid");return;}
+        if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED){
+            microphoneRequest=id;microphoneRecord=recordId;requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},41);return;
+        }
+        worker.execute(()->{try{synchronized(audio){if(!audioForeground)throw new Exception("audioInactive");audio.recover();reply(id,audio.start(recordId),null);}}catch(Exception e){reply(id,null,audioError(e));}});
+    }
+    private String audioError(Exception e){String code=e.getMessage();return code!=null&&code.matches("invalid|micDenied|audioBusy|audioNotRecording|audioTooShort|audioSaveFailed|audioConflict|audioInactive")?code:"audioFailed";}
+    private void speechToText(String id,JSONObject p){
+        if(speechRequest!=null||microphoneRequest!=null||pendingId!=null||audio.active()){reply(id,null,"speechBusy");return;}
+        String language=p.optString("language","en");if(!language.equals("en")&&!language.equals("zh")){reply(id,null,"invalid");return;}
+        Intent intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM).putExtra(RecognizerIntent.EXTRA_LANGUAGE,language.equals("zh")?"zh-CN":"en-US").putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+        if(intent.resolveActivity(getPackageManager())==null){reply(id,null,"speechUnavailable");return;}
+        speechRequest=id;speechLanguage=language;
+        try{startActivityForResult(intent,42);}catch(Exception e){speechRequest=null;speechLanguage=null;reply(id,null,"speechUnavailable");}
+    }
+    @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] grants){
+        super.onRequestPermissionsResult(request,permissions,grants);
+        if(request==40&&grants.length>0&&grants[0]==PackageManager.PERMISSION_GRANTED)enableAlerts();
+        if(request==41){String id=microphoneRequest,recordId=microphoneRecord;microphoneRequest=null;microphoneRecord=null;if(id==null)return;if(grants.length==0||grants[0]!=PackageManager.PERMISSION_GRANTED){reply(id,null,grants.length==0||shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)?"micDenied":"micBlocked");return;}try{startAudio(id,new JSONObject().put("recordId",recordId));}catch(Exception e){reply(id,null,"audioFailed");}}
+    }
     @Override public void onSaveInstanceState(Bundle out){if(pendingId!=null&&("capturePhoto".equals(pendingMethod)||"pickPhoto".equals(pendingMethod))){out.putString("photoRequest",pendingId);out.putString("photoMethod",pendingMethod);out.putString("photoPayload",pendingPayload.toString());}super.onSaveInstanceState(out);}
-    @Override protected void onResume(){super.onResume();worker.execute(()->LabAlarms.sync(this));if(web!=null){web.onResume();web.evaluateJavascript("window.labResume && window.labResume()",null);}}
+    @Override protected void onResume(){super.onResume();audioForeground=true;worker.execute(()->LabAlarms.sync(this));if(web!=null){web.onResume();web.evaluateJavascript("window.labResume && window.labResume()",null);}}
+    @Override protected void onStop(){audioForeground=false;if(audio!=null)audio.stopForBackground();super.onStop();}
     @Override protected void onPause(){if(web!=null)web.onPause();super.onPause();}
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(web!=null)web.evaluateJavascript("window.labOpenTimers && window.labOpenTimers()",null);}
 
@@ -302,6 +354,7 @@ public class MainActivity extends ComponentActivity {
     }
 
     @Override public void onDestroy() {
+        if(audio!=null)audio.stopForBackground();
         if (web != null) { web.removeJavascriptInterface("Android"); web.destroy(); }
         worker.shutdown(); super.onDestroy();
     }

@@ -6,10 +6,10 @@
 
 | App | Where it fits | What you get |
 |---|---|---|
-| **EnvBench · Android** | Sampling, quenching and observations during water and wastewater experiments | Timers, sample records, water-matrix data, photos, concentration trends and CSV exports |
-| **EnvEvidence 0.4.0 · Desktop** | Processing experiments and reviewing water-treatment papers | Kinetic fits, publication-size figures, reproducible SOP packages and source-linked evidence tables |
+| **EnvBench 0.7.0 · Android** | Sampling, quenching and observations during water and wastewater experiments | Experiment steps, reusable templates, stage timers, voice observations, samples and CSV exports |
+| **EnvEvidence 0.4.1 · Desktop** | Processing experiments and reviewing water-treatment papers | Kinetic fits, publication-size figures, reproducible SOP packages and source-linked evidence tables |
 
-Both apps have English and Chinese interfaces, saved appearance settings and local data storage.
+Both apps have English and Chinese interfaces, saved appearance settings and local data storage. Shared mineral-teal accents, light neutral surfaces, locally bundled Source Sans 3 and Source Serif 4 fonts, and consistent controls connect the bench and desktop workspaces.
 
 ## EnvBench: your reaction run, in one place
 
@@ -21,13 +21,24 @@ Keep the sampling plan, sampling events and analytical results together. EnvBenc
 - **Review concentration trends.** Paste labelled LC peak areas or enter C/C₀, inspect the import preview and see a pseudo-first-order fit with k_obs, its 95% confidence interval, t½ and R².
 - **Export your experiment.** Share tidy sample CSVs, an individual experiment ZIP or a full backup with original photos.
 
-Stopwatches, countdowns, sampling reminders and counters can run in parallel. There is no fixed cap on the number of timers. Settings, language, appearance and backup controls are grouped under **My space**.
+Four tools help you prepare, carry out and repeat a procedure:
+
+| Tool | How it helps |
+|---|---|
+| **Experiment steps** | Keep named instructions beside the reaction. Start, complete or repeat a step, or skip it with a reason; each action stays in its history. A timed step starts its own countdown. |
+| **Stage timers** | Build named stages, repeat the sequence and set a start delay. Choose automatic transitions or confirmation between stages; see the current stage, round and time remaining. |
+| **Voice observations** | Record and replay an audio note, use system speech input to draft editable text, or insert your own observation phrases. Notes follow the current step and can include photos. |
+| **Experiment templates** | Save conditions, water-matrix properties, sampling times, steps and independent timer presets. Start a fresh experiment with its own template snapshot, samples and results. |
+
+Stopwatches, countdowns, stage timers, sampling reminders and counters can run in parallel. There is no fixed cap on the number of timers. Settings, language, appearance and backup controls are grouped under **My space**.
+
+<img src="docs/images/envbench-steps-en.png" alt="Experiment steps / 实验步骤" width="300"> <img src="docs/images/envbench-stage-timers-en.png" alt="Stage timers / 阶段计时" width="300">
 
 <img src="docs/images/envbench-run-en.png" alt="EnvBench reaction run with the next sampling checkpoint" width="300"> <img src="docs/images/envbench-samples-en.png" alt="EnvBench sample records and concentration trend" width="300">
 
 **Android 8.0+ · Offline · No account required**
 
-**[Download EnvBench 0.6.1 for Android](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1) · [Installation guide](android/README.md). Install the signed preview APK to start using the experiment notebook. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
+**[EnvBench 0.7.0 Android release](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)** · [Installation guide](android/README.md). The 0.7.0 installer is awaiting CI publication; the release page will provide the signed APK and checksum. Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
 
 ## EnvEvidence: from reaction conditions to reproducible curves
 
@@ -89,7 +100,7 @@ macOS / Linux:
 .venv/bin/python -m envevidence serve
 ```
 
-Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. The desktop version is **0.4.0**.
+Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. The desktop version is **0.4.1**.
 
 ### Extract from your own papers
 
@@ -105,9 +116,9 @@ Text PDFs are supported up to 30 MB and 250 pages per file. The [demo guide](doc
 
 ## Language, appearance and your data
 
-Switching language changes interface labels while preserving paper text, sample names, model results and revision records. Android uses a warm-paper and terracotta palette; the desktop app offers Forest, Ocean, Sand and Graphite presets plus custom colors.
+Switching language changes interface labels while preserving paper text, sample names, model results and revision records. New installations use the same Mineral · teal palette on both platforms. Source Serif 4 marks the main title; Source Sans 3 and a bundled Chinese sans-serif subset handle controls and body text. Desktop appearance offers Mineral · teal, Clay, Forest, Ocean, Sand, Graphite and custom colors. Saved palettes and custom colors continue across updates.
 
-EnvBench stores records and photos in private Android storage. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores evidence projects and preferences under `data/`, with independent experiment projects under `data/analysis/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
+EnvBench stores records, original photos and audio clips in private Android storage; templates, step histories and observation phrases travel with ZIP backups. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores evidence projects and preferences under `data/`, with independent experiment projects under `data/analysis/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
 
 Phone CSV/ZIP exports provide a one-way transfer into desktop analysis. Uploaded files keep their bytes and SHA-256 hashes; manual entries have input snapshots and revision history. Each SOP export receives a unique filename. To replay an extracted package from the repository directory, use `.\.venv\Scripts\python.exe -m envevidence analyze --config "path/to/extracted/analysis_config.json" --output data/replayed` on Windows, or replace the Python path with `.venv/bin/python` on macOS/Linux. See the [analysis guide](docs/ANALYSIS.md) for the package contents and replay checks.
 

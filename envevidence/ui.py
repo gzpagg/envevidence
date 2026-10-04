@@ -16,7 +16,7 @@ from envevidence.workspace import WorkspaceStore
 
 
 def main():
-    st.set_page_config(page_title="EnvEvidence · Experiment analysis", page_icon="🌿", layout="wide")
+    st.set_page_config(page_title="EnvEvidence · Experiment analysis", page_icon="🧪", layout="wide")
     root = os.getenv("ENVEVIDENCE_DATA_DIR") or "data"
     workspace_store = WorkspaceStore(root)
     try:

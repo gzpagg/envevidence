@@ -4,6 +4,9 @@
  * All screenshots use synthetic records entered through the running UI.
  */
 async page => {
+  const browserProtocol=await page.context().newCDPSession(page);
+  await browserProtocol.send('Network.enable');
+  await browserProtocol.send('Network.setCacheDisabled',{cacheDisabled:true});
   const assert = (ok, message) => { if (!ok) throw new Error(message); };
   const read = () => page.evaluate(() => JSON.parse(localStorage.getItem('envevidence-preview')));
   const dialog = () => page.locator('dialog[open]');
@@ -103,7 +106,7 @@ async page => {
     await nav('My space', '我的', zh);
     await shot(`lab-my-${language}`);
     await page.getByRole('button', { name: zh ? /语言与外观/ : /Language & appearance/ }).click();
-    for (const palette of ['clay', 'forest', 'ocean', 'graphite']) {
+    for (const palette of ['mineral', 'clay', 'forest', 'ocean', 'graphite']) {
       await page.locator('#settings-form [name=palette]').selectOption(palette);
       await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
       await settle();
@@ -121,7 +124,7 @@ async page => {
       }
     }
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.locator('#settings-form [name=palette]').selectOption('clay');
+    await page.locator('#settings-form [name=palette]').selectOption('mineral');
     await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
     await nav('Timers', '计时', zh);
     await page.locator('[data-lab=newTimer]').first().click();
@@ -133,7 +136,7 @@ async page => {
     await card.locator('[data-lab=startTimer]').click();
     await card.scrollIntoViewIfNeeded();
     await shot(`lab-timers-${language}`);
-    checks.push(`${language}: four palettes at 390px and 360px, no horizontal page overflow`);
+    checks.push(`${language}: five palettes at 390px and 360px, no horizontal page overflow`);
   }
   return { screenshots: 16, checks };
 }

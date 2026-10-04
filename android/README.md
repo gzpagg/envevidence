@@ -1,16 +1,19 @@
-# EnvBench for Android · 0.6.1
+# EnvBench for Android · 0.7.0
 
 **Keep your reaction schedule, samples and observations together — from the first dose to the final export.**
 
 [简体中文](README.zh-CN.md) · [EnvEvidence desktop](../README.md) · [Screenshots and checks](../docs/ANDROID.md) · [Samples CSV](../docs/BENCH_CSV.md)
 
-EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Warm-paper backgrounds, terracotta accents and large sampling controls keep the interface clear during a run.
+EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Mineral · teal accents, light neutral surfaces and generous controls keep the interface clear during a run. EnvBench and the desktop app share design tokens, local Source Sans 3 body text with a Chinese sans-serif subset, and Source Serif 4 main titles.
 
 <img src="../docs/images/envbench-run-en.png" alt="Reaction run with sampling checkpoints and water-matrix details" width="300"> <img src="../docs/images/envbench-sample-en.png" alt="Sample sheet with quench selection and measurement sources" width="300">
 
 ## What you can do
 
-- Run independent stopwatches, countdowns and sampling reminders, with names, colors and group controls.
+- Follow named experiment steps, with independent countdowns and a history of completions, repeats and reasoned skips.
+- Save reusable experiment templates containing conditions, water-matrix data, sampling plans, steps and timer presets.
+- Run independent stopwatches, countdowns and multi-stage timers, with repeats, a start delay and automatic or manual transitions.
+- Record and replay audio observations, draft editable text through Android speech input, and insert personal observation phrases.
 - See the next checkpoint, record planned and actual timing, and add unplanned samples without changing the plan.
 - Record quench agents, pH, temperature and volume, with measured, carried-over and unmeasured field labels.
 - Keep water-matrix properties, notes and sample photos with the reaction.
@@ -22,7 +25,9 @@ EnvBench is a local experiment notebook for advanced-oxidation and DOM work in w
 
 ## Install and explore
 
-**[Download EnvBench 0.6.1 APK](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk)** · [Release notes and checksum](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)
+**[EnvBench 0.7.0 release and APK](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)**
+
+The 0.7.0 installer is awaiting CI publication. The release page will provide the signed APK and SHA-256 checksum.
 
 Open the downloaded APK on your Android phone and allow installation from the browser or file app when Android asks. This signed preview uses the same application identity and maintainer signing key as the earlier app, so it can update an existing installation in place.
 
@@ -44,21 +49,35 @@ Open **My space → Load lab demo** to add an invented UV/PDS run with samples a
 
 The [CSV guide](../docs/BENCH_CSV.md) gives column definitions, units and calculation assumptions.
 
+## Steps and reusable experiments
+
+Open an experiment and choose **Add steps** to write the procedure in order. Each step has a name, instructions and an optional countdown. Start the current step, complete it, or choose **Skip with reason**. **Repeat step** creates a fresh attempt while preserving earlier actions. Finishing the experiment retains completed work and records unfinished steps as cancelled.
+
+Choose **Save as template** from an experiment, or open **Experiments → Experiment templates** to create and edit a template. Templates include reaction and water conditions, sampling times, steps and independent timer presets. Starting from a template lets you adjust the new run's name and conditions, then saves that starting configuration as an independent version snapshot. The new run gets fresh sample identifiers and its own observations and results.
+
+Step countdowns start when the step starts. The reaction's t = 0 and its sampling plan remain anchored to the experiment start.
+
+<img src="../docs/images/envbench-steps-en.png" alt="Current experiment step, countdown and procedure history" width="300"> <img src="../docs/images/envbench-templates-en.png" alt="Reusable experiment templates with steps and timer presets" width="300">
+
 ## Timers, counters and observations
 
-Use a regular experiment for work without a reaction preset. Add named stopwatches or countdowns, start or pause a group, record laps and reset timers while retaining event history. Timer count has no fixed application cap; device memory and storage determine practical capacity.
+Use a regular experiment for work without a reaction preset. Add named stopwatches, countdowns or **Multi-stage timers**. A stage sequence can repeat and begin after a delay. Automatic mode advances through the sequence; manual mode waits for your confirmation before continuing, so confirmation time stays separate from active timer time. Start or pause a group, record laps and reset timers while retaining event history. Timer count has no fixed application cap; device memory and storage determine practical capacity.
 
 Sampling checkpoints stay anchored to the experiment start. Pausing a reminder does not move its target. Finishing an experiment logs untaken checkpoints as skipped. Counters support +1, undo and separate rounds. Observations preserve creation time, experiment elapsed time, sample labels and previous text revisions. Photos retain original files and metadata; their record time describes when the image was added to the notebook.
 
+In an observation, choose **Record audio**, then **Stop & save audio** to retain the clip. Recordings play directly beside the note and are included in experiment and full ZIP exports. Leaving the foreground saves the active clip. Each recording can last up to 30 minutes or 30 MB. **Speech to text** uses the installed Android speech service to draft text that you can edit; network use depends on that service. **Records → Manage observation phrases** lets you keep frequently used descriptions ready to insert. An observation made during a step retains that step association.
+
+<img src="../docs/images/envbench-stage-setup-en.png" alt="Stage timer setup with repetition and transition mode" width="300"> <img src="../docs/images/envbench-observation-en.png" alt="Observation with recording, speech input and reusable phrases" width="300">
+
 ## Alerts, settings and backup
 
-**My space** contains language, colors, permissions, imports and exports. Open **Enable timer alerts** and allow notifications and alarms for background countdown alerts. Android schedules the next due countdown and groups simultaneous alerts; tapping a notification opens Timers. System notification settings and force-stop behavior apply.
+**My space** contains language, colors, permissions, imports and exports. Open **Enable timer alerts** and allow notifications and alarms for background countdown alerts. Android schedules the next countdown or stage boundary and groups simultaneous alerts; tapping a notification opens Timers. System notification settings and force-stop behavior apply.
 
 Within one device boot, timing uses Android's monotonic clock. After reboot or transfer, recovery uses saved wall-clock times. Imported running timers are paused.
 
 Camera and gallery use Android's system apps and picker. JPEG, PNG and WebP files up to 30 MB each are supported. Records and originals stay in private app storage; the experiment workflow makes no API calls.
 
-Full ZIP backups include workspace data, original photos and display previews. Experiment ZIPs contain that experiment and its associated records. Archives support up to 512 MB of uncompressed content; export larger notebooks by experiment. Import retains existing IDs and rejects conflicting photo bytes. Legacy evidence and planning data remain in full backups.
+Full ZIP backups include workspace data, original photos, recordings and display previews. Experiment ZIPs contain the selected experiment, its associated records and media, plus shared templates and observation phrases. Archives support up to 512 MB of uncompressed content; export larger notebooks by experiment. Import retains existing IDs and checks media hashes, missing attachments and photo or audio conflicts. Legacy evidence and planning data remain in full backups.
 
 Literature extraction and source review are available in [EnvEvidence for desktop](../README.md).
 
@@ -78,3 +97,4 @@ On Windows, use `gradlew.bat`. The [Android workflow](../.github/workflows/andro
 The interface is bundled HTML/CSS/JavaScript presented through WebViewAssetLoader. Java handles atomic private storage, clocks, alarms, notifications, camera/file access and ZIP/photo preservation. See [recorded validation](../docs/ANDROID.md) for checked flows and device coverage.
 
 Code and original synthetic fixtures are MIT licensed. See [third-party notices](../THIRD_PARTY_NOTICES.md) for component licenses.
+
