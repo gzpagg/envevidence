@@ -4,7 +4,7 @@
 
 [简体中文](README.zh-CN.md) · [EnvEvidence desktop](../README.md) · [Screenshots and checks](../docs/ANDROID.md) · [Samples CSV](../docs/BENCH_CSV.md)
 
-EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Warm-paper backgrounds, clay accents and generous controls keep the interface clear during a run. EnvBench and the desktop app share design tokens, local Source Sans 3 body text and Source Serif 4 main titles.
+EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Mineral · teal accents, light neutral surfaces and generous controls keep the interface clear during a run. EnvBench and the desktop app share design tokens, local Source Sans 3 body text with a Chinese sans-serif subset, and Source Serif 4 main titles.
 
 <img src="../docs/images/envbench-run-en.png" alt="Reaction run with sampling checkpoints and water-matrix details" width="300"> <img src="../docs/images/envbench-sample-en.png" alt="Sample sheet with quench selection and measurement sources" width="300">
 

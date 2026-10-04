@@ -39,7 +39,7 @@
   function waterFrom(x){if(x===null)return null;assert(x&&typeof x==='object');const w={matrix:x.matrix,lot:x.lot??'',filtered:x.filtered??null,spiked:x.spiked??null};assert(L.MATRICES.includes(w.matrix)&&txt(w.lot,100));for(const k of ['filtered','spiked'])assert(w[k]===null||typeof w[k]==='boolean');for(const k of L.WATER_NUMBERS){w[k]=x[k]??null;assert(w[k]===null||(num(w[k])&&(k!=='ph'||w[k]<=14)));}w.lot=w.lot.trim();return w;}
   function minutesFrom(x){assert(Array.isArray(x)&&x.every(n=>Number.isFinite(n)&&n>0&&n<=525600));return [...new Set(x)].sort((a,b)=>a-b);}
   function presetFrom(x){
-    assert(x&&typeof x==='object');const options={title:x.title,kind:x.kind??'stopwatch',duration_ms:x.duration_ms??0,color:x.color??'#A65338',purpose:'timer'};
+    assert(x&&typeof x==='object');const options={title:x.title,kind:x.kind??'stopwatch',duration_ms:x.duration_ms??0,color:x.color??'#186B62',purpose:'timer'};
     for(const k of ['stages','repeat_count','delay_ms','transition_mode'])if(k in x)options[k]=clone(x[k]);
     const l=defaults(L.empty()),c={wall:0,mono:0,boot:'template'};if(options.kind==='staged')options.experiment_id=L.experiment(l,'Template validation','','',c).id;const t=L.timer(l,options,c);L.validate(l);
     const p={title:t.title,kind:t.kind,duration_ms:t.duration_ms,color:t.color};for(const k of ['stages','repeat_count','delay_ms','transition_mode'])if(k in t)p[k]=clone(t[k]);return p;

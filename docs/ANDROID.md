@@ -2,9 +2,17 @@
 
 [English guide](../android/README.md) · [中文说明](../android/README.zh-CN.md) · [Samples CSV](BENCH_CSV.md)
 
-## Current interface · 0.6.1
+## Current interface · 0.7.0
 
-All 16 Android screenshots show the actual bundled 0.6.1 interface running in a local Chromium browser preview. The viewport and exported PNGs are 390 × 844 pixels. An isolated synthetic UV/PDS experiment supplies the sample names, water properties and analytical values. English and Chinese views use the same product layout. The six desktop screenshots show the running EnvEvidence 0.3.0 Streamlit app at 1440 × 1080.
+All 26 Android screenshots show the actual bundled 0.7.0 interface running in a local Chromium browser preview at 390 × 844 pixels. Isolated synthetic UV/PDS experiments supply the procedures, samples and analytical values. Both languages use the Mineral teal design. The twelve desktop screenshots show the running EnvEvidence 0.4.1 app at 1440 × 1080.
+
+| New tool / 新功能 | English | 简体中文 |
+|---|---|---|
+| Experiment steps / 实验步骤 | <img src="images/envbench-steps-en.png" alt="Current step and linked countdown" width="240"> | <img src="images/envbench-steps-zh.png" alt="当前步骤与关联倒计时" width="240"> |
+| Templates / 模板 | <img src="images/envbench-templates-en.png" alt="Reusable template" width="240"> | <img src="images/envbench-templates-zh.png" alt="可复用实验模板" width="240"> |
+| Stage setup / 阶段配置 | <img src="images/envbench-stage-setup-en.png" alt="Stages, cycles and delay" width="240"> | <img src="images/envbench-stage-setup-zh.png" alt="阶段、循环与延迟" width="240"> |
+| Stage timers / 阶段计时 | <img src="images/envbench-stage-timers-en.png" alt="Stage confirmation controls" width="240"> | <img src="images/envbench-stage-timers-zh.png" alt="阶段计时与确认" width="240"> |
+| Observations / 现象 | <img src="images/envbench-observation-en.png" alt="Observation with audio and speech actions" width="240"> | <img src="images/envbench-observation-zh.png" alt="现象、录音与语音操作" width="240"> |
 
 | View / 页面 | English | 简体中文 |
 |---|---|---|
@@ -15,7 +23,13 @@ All 16 Android screenshots show the actual bundled 0.6.1 interface running in a 
 
 These are browser interface captures. Native camera, storage, notification and activity behavior have separate Android instrumentation coverage described below.
 
-## Signed APK · 0.6.1 preview
+## Release checks · 0.7.0
+
+Local checks pass **83 JavaScript tests** and **188 desktop tests**, plus Ruff. English/Chinese browser scenarios exercise new template runs, timed steps, skip/repeat history, linked observations, manual timer cycles, phrases and restart persistence. Layout checks cover five palettes and 360/390 px phone widths, plus the 768 px procedure layout. Android build and device results are pending the release workflow.
+
+Native coverage includes recording and lifecycle recovery, seekable playback, original-media ZIP integrity and retention of native media after a stale browser save. These checks use an emulator and synthetic records. System speech recognition depends on the installed service and may send speech to that service.
+
+## Previously published APK · 0.6.1 preview
 
 [Download APK](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk) · [SHA-256 file](https://github.com/gzpagg/envevidence/releases/download/v0.6.1-android-preview.1/envbench-0.6.1-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.6.1-android-preview.1)
 
@@ -71,7 +85,7 @@ Maintainer-signed updates retain the application ID and existing data. Export a 
 
 Version 0.6.1 keeps the lab schema at version 2 and adds CSV audit columns. Earlier nonempty measurement values have an unknown source until confirmed; empty values stay unmeasured. Existing evidence and planning data remain in full backups.
 
-## Experiment notebook views · 0.6.1
+## Experiment notebook views · 0.7.0
 
 The remaining eight captures show the current experiment notebook, timers, observations and My space pages in the same Chromium preview. They use isolated synthetic records and the same 390 × 844 viewport and PNG dimensions.
 

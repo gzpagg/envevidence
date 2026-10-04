@@ -4,7 +4,7 @@
 
 [English](README.md) · [EnvEvidence 电脑版](../README.zh-CN.md) · [截图与检查](../docs/ANDROID.md) · [样品 CSV](../docs/BENCH_CSV.md)
 
-EnvBench 面向水与污水高级氧化、DOM 转化等实验。**实验、计时、记录、我的** 四个入口组织现场操作；暖白背景、陶土色和宽裕的控件，让反应进行时的界面保持清楚。安卓与电脑版共用设计令牌，正文使用本地 Source Sans 3，主标题使用 Source Serif 4。
+EnvBench 面向水与污水高级氧化、DOM 转化等实验。**实验、计时、记录、我的** 四个入口组织现场操作；“矿物青 · 浅灰”配色和宽裕的控件，让反应进行时的界面保持清楚。安卓与电脑版共用设计令牌，正文使用本地 Source Sans 3 与中文无衬线字体子集，主标题使用 Source Serif 4。
 
 <img src="../docs/images/envbench-run-zh.png" alt="反应实验、取样点与水体基质" width="300"> <img src="../docs/images/envbench-sample-zh.png" alt="取样面板、淬灭剂与测量来源" width="300">
 

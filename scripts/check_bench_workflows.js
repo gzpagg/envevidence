@@ -1,5 +1,8 @@
 /* Playwright CLI run-code; isolated localhost preview, synthetic UI input only. */
 async page => {
+  const browserProtocol=await page.context().newCDPSession(page);
+  await browserProtocol.send('Network.enable');
+  await browserProtocol.send('Network.setCacheDisabled',{cacheDisabled:true});
   const assert=(value,message)=>{if(!value)throw new Error(message);};
   const read=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('envevidence-preview')));
   const sheet=()=>page.locator('dialog[open]');

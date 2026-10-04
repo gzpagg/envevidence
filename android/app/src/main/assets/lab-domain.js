@@ -28,7 +28,7 @@
       }
     }
     return l;}
-  function migrate(s){if(!s.lab){s.lab=empty();const p=s.workspace.preferences;if(p.palette==='forest'&&p.accent.toUpperCase()==='#147D73'&&p.background.toUpperCase()==='#F6F8F7'){p.palette='mineral';[p.accent,p.background]=palettes.mineral;}}else upgrade(s.lab);validate(s.lab);return s;}
+  function migrate(s){if(!s.lab)s.lab=empty();else upgrade(s.lab);validate(s.lab);return s;}
   function validate(l){assert(l&&l.version===2);for(const k of ['experiments','timers','counters','records','events','samples']){assert(list(l[k]));for(const x of l[k])assert(typeof x.id==='string'&&/^[a-f0-9]{32}$/.test(x.id));}
     const parent=x=>x.experiment_id===null||l.experiments.some(e=>e.id===x.experiment_id);
     for(const e of l.experiments)assert(name(e.title)&&txt(e.description)&&txt(e.sample,300)&&stamp(e.started)&&(e.ended===null||stamp(e.ended))&&typeof e.archived==='boolean'&&(e.run===null||validRun(e.run))&&(e.water===null||validWater(e.water)));

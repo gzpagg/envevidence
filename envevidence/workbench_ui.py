@@ -88,7 +88,7 @@ def settings(workspace, store):
     with left:
         st.subheader(t("Color palette", "界面配色"))
         names = {
-            "mineral": ("Mineral", "矿物青"),
+            "mineral": ("Mineral · teal", "矿物青 · 浅灰"),
             "clay": ("Clay", "陶土色"),
             "forest": ("Forest", "森林绿"),
             "ocean": ("Ocean", "海洋蓝"),

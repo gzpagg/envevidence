@@ -1,5 +1,17 @@
 # Changelog
 
+## EnvBench (Android) 0.7.0 / EnvEvidence (desktop) 0.4.1 — 2026-10-04
+
+- Run named experiment steps with linked countdowns, completion, reasoned skips and repeat history. Keep the reaction start and sampling times independent of step actions.
+- Save reusable templates with conditions, water properties, sampling schedules, procedures and timer presets. Each run gets an immutable snapshot and fresh identifiers.
+- Add automatic or confirmed multi-stage timers, repeat cycles and delayed starts; reconcile background events from clock anchors.
+- Record and replay private audio notes. Export original media with SHA-256 manifests; add editable system speech input and custom observation phrases linked to the current step.
+- Share a Mineral teal design, white cards, local English/Chinese fonts, visible focus and reduced-motion behavior between Android and desktop. Retain saved palettes and scientific data.
+- Import phone ZIPs containing audio, photos, samples and histories into desktop analysis. Verify media hashes and archive paths; keep photo-only archives compatible.
+- Refresh bilingual product guides and actual synthetic screenshots. Checks are recorded in [Android validation](docs/ANDROID.md) and [desktop validation](docs/VALIDATION.md).
+
+安卓新增实验步骤、可复用模板、分阶段循环计时与语音现象。桌面与安卓采用矿物青统一界面；电脑版可导入带录音和照片的手机档案，原有动力学分析、图表与文献核验保持兼容。
+
 ## EnvEvidence (desktop) 0.4.0 — 2026-10-01
 
 - Add a local experiment-analysis workflow: conditions, measurements, explicit processing, kinetic fitting, figure settings and SOP export, alongside the existing literature-evidence workflow.

@@ -4,6 +4,9 @@
  * All screenshots use synthetic records entered through the running UI.
  */
 async page => {
+  const browserProtocol=await page.context().newCDPSession(page);
+  await browserProtocol.send('Network.enable');
+  await browserProtocol.send('Network.setCacheDisabled',{cacheDisabled:true});
   const assert = (ok, message) => { if (!ok) throw new Error(message); };
   const read = () => page.evaluate(() => JSON.parse(localStorage.getItem('envevidence-preview')));
   const dialog = () => page.locator('dialog[open]');

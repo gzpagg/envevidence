@@ -1,4 +1,4 @@
-"""Build the licensed UI subset; keep the original full font for research figures."""
+"""Build the licensed UI subset with fonttools[woff]; retain the full plotting font."""
 
 import hashlib
 import json
@@ -30,6 +30,12 @@ def main():
         if entry.nameID in (1, 4, 6, 16):
             name = "EnvSansCJK-Regular" if entry.nameID == 6 else "Env Sans CJK"
             entry.string = name.encode(entry.getEncoding())
+        elif entry.nameID == 3:
+            entry.string = "EnvSansCJK-UI-Regular-1.0".encode(entry.getEncoding())
+    cff = font["CFF "].cff
+    cff.fontNames = ["EnvSansCJK-Regular"]
+    cff.topDictIndex[0].FamilyName = "Env Sans CJK"
+    cff.topDictIndex[0].FullName = "Env Sans CJK Regular"
     font.flavor = "woff2"
     output = FONTS / "EnvSansCJK-UI.woff2"
     font.save(output)

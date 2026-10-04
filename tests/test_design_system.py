@@ -57,6 +57,8 @@ def test_theme_fonts_are_embedded_from_bundled_files_without_remote_requests():
     assert urls[2].startswith("data:font/woff2;base64,")
     chinese = base64.b64decode(urls[2].split(",", 1)[1])
     assert chinese == (ASSETS / "fonts/EnvSansCJK-UI.woff2").read_bytes()
+    chinese_source = json.loads((ASSETS / "fonts/UI-CJK-SOURCE.json").read_text(encoding="utf-8"))
+    assert hashlib.sha256(chinese).hexdigest() == chinese_source["sha256"]
     assert "'Source Sans 3','Env Sans CJK'" in css
     assert "font-display:swap" in css
     assert ':focus-visible' in css and "outline:3px solid" in css
