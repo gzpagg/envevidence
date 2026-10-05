@@ -2,11 +2,11 @@
 
 [English guide](../android/README.md) · [中文说明](../android/README.zh-CN.md) · [Samples CSV](BENCH_CSV.md)
 
-## Current interface · 0.7.0
+## Current interface · 0.8.0
 
-All 26 Android screenshots show the actual bundled 0.7.0 interface running in a local Chromium browser preview at 390 × 844 pixels. Isolated synthetic UV/PDS experiments supply the procedures, samples and analytical values. Both languages use the Mineral teal design. The twelve desktop screenshots show the running EnvEvidence 0.4.1 app at 1440 × 1080.
+All 26 Android screenshots show the actual bundled 0.8.0 interface running in a local Chromium browser preview at 390 × 844 pixels. Isolated synthetic UV/PDS experiments supply the procedures, samples and analytical values. Both languages use the Glacier blue/cyan design, with glass navigation and solid data panels. The twelve desktop screenshots show the running EnvEvidence 0.5.0 app at 1440 × 1080.
 
-| New tool / 新功能 | English | 简体中文 |
+| Workflow / 工作流程 | English | 简体中文 |
 |---|---|---|
 | Experiment steps / 实验步骤 | <img src="images/envbench-steps-en.png" alt="Current step and linked countdown" width="240"> | <img src="images/envbench-steps-zh.png" alt="当前步骤与关联倒计时" width="240"> |
 | Templates / 模板 | <img src="images/envbench-templates-en.png" alt="Reusable template" width="240"> | <img src="images/envbench-templates-zh.png" alt="可复用实验模板" width="240"> |
@@ -23,7 +23,17 @@ All 26 Android screenshots show the actual bundled 0.7.0 interface running in a 
 
 These are browser interface captures. Native camera, storage, notification and activity behavior have separate Android instrumentation coverage described below.
 
-## Release checks · 0.7.0
+## Current checks · 0.8.0 / desktop 0.5.0
+
+Local checks passed **94 JavaScript tests**, **199 Python tests and Ruff**. [Desktop CI 37310677562](https://github.com/gzpagg/envevidence/actions/runs/37310677562) passed **199 tests in each Windows/Linux and Python 3.11/3.13 environment**, Ruff, the offline CLI demo and source/wheel builds. [Android CI 37310677615](https://github.com/gzpagg/envevidence/actions/runs/37310677615) passed **94 JavaScript tests, 13 JVM unit tests and 8 Android 15 emulator instrumentation tests**, Android lint and debug/release APK builds. Signed APK verification is recorded below. Historical workflow and APK records below remain attached to their original versions.
+
+The new native appearance test checks old-default migration, material persistence after activity restart, legacy-note preservation and an explicit return to Mineral. Existing recording/recovery, seekable playback, media-backup integrity, LC import and background-alert instrumentation also passed.
+
+The dedicated `scripts/check_glacier_ui.js` browser run passed both languages with **20 concurrent timers**, focus switching, pause/resume, manual-stage boundaries and a live home sampling countdown. Layout checks cover empty and populated views, long experiment names, multiple experiments, dated photo/audio/text records, **360/390/768 px** widths and dialogs at **460 px** viewport height. All three combinations of glass/solid/reduced-transparency controls persisted after reload; system reduced-motion and reduced-transparency preferences also applied correctly. Media thumbnails in this isolated browser check were test fixtures.
+
+Existing capture and workflow checks passed all seven palettes, sample import/edit/export interactions, reusable templates, linked observations, skip/repeat history and manual timer cycles. Actual screenshots use the current Glacier interface with glass rendering enabled; opaque fallback behavior is checked separately. The desktop browser matrix also passed both languages, seven palettes, six analysis tabs and 1440/360/390/768 px widths, including saved material settings and responsive evidence columns. These browser runs complement the Android instrumentation workflow rather than substituting for it.
+
+## Historical release checks · 0.7.0
 
 [Android CI](https://github.com/gzpagg/envevidence/actions/runs/37188040448) passed **87 JavaScript tests**, **13 JVM unit tests**, Android lint, debug/release APK builds and **7 Android 15 emulator instrumentation tests**. [Desktop CI](https://github.com/gzpagg/envevidence/actions/runs/37188040439) passed **188 tests in each of the four Windows/Linux and Python 3.11/3.13 environments**, together with Ruff, the offline CLI demo and source/wheel builds. Local checks also passed 87 JavaScript tests and 188 desktop tests, plus Ruff.
 
@@ -31,7 +41,27 @@ English/Chinese browser scenarios exercise new template runs, timed steps, skip/
 
 Native coverage includes recording and lifecycle recovery, seekable playback, original-media ZIP integrity and retention of native media after a stale browser save. These checks use an emulator and synthetic records. System speech recognition depends on the installed service and may send speech to that service.
 
-## Published APK · 0.7.0 preview
+## Published APK · 0.8.0 preview
+
+[Download APK](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk) · [SHA-256 file](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.8.0-android-preview.1)
+
+The signed APK is **13,567,033 bytes**. Package `io.github.gzpagg.envevidence`, version **0.8.0 / code 9**, minimum API 26 and target API 36. Signature schemes **v2/v3** passed verification with the same maintainer certificate as earlier releases. All **25 bundled assets** match both the tested source and merged Git tree byte for byte.
+
+The APK was built by [Android CI 37310677615](https://github.com/gzpagg/envevidence/actions/runs/37310677615) from source `318cd81026f9d59039c502c337e92221c84cd59a`, merged through [PR #8](https://github.com/gzpagg/envevidence/pull/8). Its assets also match merged revision `05e134ddaf28f0f23aa4d7b3658f0d249651ad0d`. Git-blob comparison avoids Windows checkout newline conversion.
+
+APK SHA-256:
+
+```text
+201c3dcb0bd978a219bdf950d25b800b3c8d154e830f9e6a0d716d21306fbf25
+```
+
+Signing-certificate SHA-256:
+
+```text
+1833c322295af3aee2edee378713ba8f970671165cff9532a9165d02108de28f
+```
+
+## Previously published APK · 0.7.0 preview
 
 [Download APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk) · [SHA-256 file](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
 
@@ -103,11 +133,11 @@ Bench calculations are tested with synthetic numerical examples. Real LC dataset
 
 ## Backups and upgrades
 
-Maintainer-signed updates retain the application ID and existing data. Export a full ZIP with original photos before uninstalling or moving devices. Import adds new IDs and pauses imported running timers; conflicting photo bytes are rejected. Archives support up to 512 MB uncompressed content, so larger notebooks can be split by experiment.
+Maintainer-signed updates retain the application ID and existing data. Version 0.8.0 adds appearance preferences separately from experimental records: exact untouched Mineral defaults migrate once to Glacier, while other presets and custom colors remain selected. Choosing Mineral again after upgrading is preserved. Glass/solid and reduced-transparency preferences are included in full backups; importing a backup continues to keep the receiving workspace’s existing preferences. Export a full ZIP with original photos before uninstalling or moving devices. Import adds new IDs and pauses imported running timers; conflicting photo bytes are rejected. Archives support up to 512 MB uncompressed content, so larger notebooks can be split by experiment.
 
 Version 0.6.1 keeps the lab schema at version 2 and adds CSV audit columns. Earlier nonempty measurement values have an unknown source until confirmed; empty values stay unmeasured. Existing evidence and planning data remain in full backups.
 
-## Experiment notebook views · 0.7.0
+## Experiment notebook views · 0.8.0
 
 The remaining eight captures show the current experiment notebook, timers, observations and My space pages in the same Chromium preview. They use isolated synthetic records and the same 390 × 844 viewport and PNG dimensions.
 

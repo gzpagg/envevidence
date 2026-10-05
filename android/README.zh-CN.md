@@ -27,9 +27,7 @@ EnvBench 面向水与污水高级氧化、DOM 转化等实验。**实验、计�
 
 ## 安装与体验
 
-当前已发布安装包为 0.7.0；本分支的 0.8.0 冰川界面正在准备发布。
-
-**[下载 EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 校验文件](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
+**[下载 EnvBench 0.8.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk)** · [SHA-256 校验文件](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk.sha256) · [发布说明](https://github.com/gzpagg/envevidence/releases/tag/v0.8.0-android-preview.1)
 
 在安卓手机上打开下载的 APK，按系统提示允许浏览器或文件应用安装。签名预览版沿用原应用身份与维护者签名，可直接覆盖升级现有安装。
 
@@ -101,6 +99,5 @@ Windows 使用 `gradlew.bat`。[安卓自动检查](../.github/workflows/android
 界面采用内置 HTML/CSS/JavaScript，通过 WebViewAssetLoader 显示。Java 负责私有目录原子保存、时钟、闹钟、通知、相机、文件访问和照片 ZIP。[验证记录](../docs/ANDROID.md)说明检查流程与设备覆盖情况。
 
 代码与自制合成示例采用 MIT 许可，组件许可见[第三方说明](../THIRD_PARTY_NOTICES.md)。
-
 
 完整 ZIP 包含语言与外观配置；导入采用合并方式，保留当前设备的语言与外观，避免导入实验时改变已选设置。

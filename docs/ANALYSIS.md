@@ -1,4 +1,4 @@
-# Experiment analysis · desktop 0.4.0
+# Experiment analysis · desktop 0.5.0
 
 [简体中文](ANALYSIS.zh-CN.md) · [Installation](../README.md#install-the-desktop-app) · [Validation](VALIDATION.md)
 

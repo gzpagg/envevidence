@@ -27,9 +27,7 @@ The experiment home highlights the current run, its current step and the next sa
 
 ## Install and explore
 
-The published installer is 0.7.0; this branch prepares the 0.8.0 Glacier release.
-
-**[Download EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 checksum](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
+**[Download EnvBench 0.8.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk)** · [SHA-256 checksum](https://github.com/gzpagg/envevidence/releases/download/v0.8.0-android-preview.1/envbench-0.8.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.8.0-android-preview.1)
 
 Open the downloaded APK on your Android phone and allow installation from the browser or file app when Android asks. This signed preview uses the same application identity and maintainer signing key as the earlier app, so it can update an existing installation in place.
 
@@ -101,6 +99,5 @@ On Windows, use `gradlew.bat`. The [Android workflow](../.github/workflows/andro
 The interface is bundled HTML/CSS/JavaScript presented through WebViewAssetLoader. Java handles atomic private storage, clocks, alarms, notifications, camera/file access and ZIP/photo preservation. See [recorded validation](../docs/ANDROID.md) for checked flows and device coverage.
 
 Code and original synthetic fixtures are MIT licensed. See [third-party notices](../THIRD_PARTY_NOTICES.md) for component licenses.
-
 
 Full ZIP backups include language and appearance preferences. Import merges records while retaining the current device’s language and appearance, so importing an experiment does not change its selected settings.

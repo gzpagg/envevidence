@@ -1,6 +1,6 @@
 /* Run with playwright-cli run-code --filename scripts/capture_screenshots.js.
  * Open the Android assets or Streamlit UI in an isolated browser session first.
- * Desktop: ENVEVIDENCE_DATA_DIR=data/screenshots-demo streamlit run app.py.
+ * Desktop: ENVEVIDENCE_DATA_DIR=data/screenshots-v050 streamlit run app.py.
  * The script uses only the bundled synthetic demo. Never point it at a personal
  * browser profile or a data directory containing research records.
  * Images show the running source interface; native camera and alarm behavior
@@ -8,21 +8,43 @@
  */
 async page => {
   const shot = async (name) => {
+    await ready();
     await page.mouse.move(2, 2);
     await page.waitForTimeout(500);
     await page.screenshot({ path: `docs/images/${name}.png`, animations: 'disabled' });
   };
   const ready = async () => {
     await page.getByRole('img', { name: 'Running...', exact: true }).waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(900);
+    await page.locator('[data-testid=stStatusWidget]').waitFor({ state: 'hidden', timeout: 60000 });
+    await page.waitForTimeout(250);
+    if (await page.locator('[data-testid=stException]').count()) throw new Error('Application exception during capture');
+    await page.evaluate(() => document.fonts.ready);
   };
-  if (await page.getByRole('heading', { name: 'EnvEvidence' }).count()) {
+  if (await page.locator('.ee-brand').filter({ hasText: 'EnvEvidence' }).count()) {
     await page.setViewportSize({ width: 1440, height: 1080 });
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Network.enable');
+    await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+    await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-transparency', value: 'no-preference' }] });
+    const locale = page.getByRole('combobox', { name: 'Language / 语言', exact: true });
+    await locale.click();
+    await locale.fill('English');
+    await page.getByRole('option', { name: 'English', exact: true }).click();
+    await ready();
+    await page.locator('[data-testid=stSidebar]').getByText('Appearance', { exact: true }).click();
+    await ready();
+    await page.getByRole('button', { name: 'Restore default appearance', exact: true }).click();
+    await ready();
+    const capturedMaterial = await page.locator('.st-key-glass_navigation').evaluate(el => getComputedStyle(el).backdropFilter);
+    if (!capturedMaterial.includes('blur(16px)')) throw new Error(`Screenshots require glass navigation: ${capturedMaterial}`);
+
     for (const language of ['en', 'zh']) {
       const zh = language === 'zh';
       const locale = page.getByRole('combobox', { name: 'Language / 语言', exact: true });
+      await locale.click();
       await locale.fill(zh ? '简体中文' : 'English');
-      await locale.press('Enter');
+      await page.getByRole('option', { name: zh ? '简体中文' : 'English', exact: true }).click();
       await ready();
       await page.locator('[data-testid=stSidebar]').getByText(zh ? '实验分析' : 'Experiment analysis', { exact: true }).click();
       await ready();
@@ -57,8 +79,9 @@ async page => {
       await shot(`workspace-${language}`);
       await page.getByRole('tab', { name: zh ? '证据核验' : 'Evidence review', exact: true }).click();
       const field = page.getByRole('combobox', { name: zh ? '选择字段' : 'Select field', exact: true });
+      await field.click();
       await field.fill(zh ? '污染物去除率' : 'Pollutant removal');
-      await field.press('Enter');
+      await page.getByRole('option', { name: zh ? '污染物去除率' : 'Pollutant removal', exact: true }).click();
       await ready();
       const select = page.getByRole('combobox', { name: zh ? '选择实验条件' : 'Select experimental condition', exact: true });
       await select.scrollIntoViewIfNeeded();
@@ -72,8 +95,7 @@ async page => {
       await page.locator('[data-testid="stMain"]').evaluate(el => el.scrollTo(0, 0));
       await shot(`settings-${language}`);
     }
-    console.log('Captured twelve desktop screenshots from synthetic analysis and evidence data.');
-    return;
+    return { result: 'passed', screenshots: 12, languages: ['en', 'zh'], size: '1440x1080', material: capturedMaterial, data: 'synthetic only' };
   }
   throw new Error('Open the EnvEvidence desktop app before running the desktop capture script. Android screenshots use the companion capture_android_screenshots.js script.');
 }
