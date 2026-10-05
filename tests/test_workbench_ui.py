@@ -42,13 +42,13 @@ def test_language_and_themes_persist_and_keep_earlier_planning_data(tmp_path, mo
     app = AppTest.from_file(ENTRY, default_timeout=30).run()
     assert any("2 learning goals, tasks and notes" in c.value for c in app.caption)
     app.button(key="nav_settings").click().run()
-    for palette in ["ocean", "sand", "graphite", "forest", "clay", "mineral", "custom"]:
+    for palette in ["glacier", "ocean", "sand", "graphite", "forest", "clay", "mineral", "custom"]:
         app.selectbox(key="palette_draft").select(palette).run()
         app.button(key="save_appearance").click().run()
         assert not app.exception
         assert store.load().preferences.palette == palette
     app.button(key="reset_colors").click().run()
-    assert app.selectbox(key="palette_draft").value == "mineral"
+    assert app.selectbox(key="palette_draft").value == "glacier"
     app.selectbox(key="locale").select("zh").run()
     assert store.load().preferences.language == "zh"
     assert not app.exception
@@ -72,3 +72,24 @@ def test_english_evidence_review_and_locale_preserve_value(app):
     assert not app.exception
 
 
+
+
+def test_material_preferences_persist_across_restart_and_reset(app, tmp_path):
+    app.button(key="nav_settings").click().run()
+    app.radio(key="visual_style_draft").set_value("solid")
+    app.checkbox(key="reduce_transparency_draft").check().run()
+    app.button(key="save_appearance").click().run()
+    assert not app.exception
+    prefs = WorkspaceStore(tmp_path).load().preferences
+    assert prefs.visual_style == "solid" and prefs.reduce_transparency
+    restarted = AppTest.from_file(ENTRY, default_timeout=30).run()
+    restarted.button(key="nav_settings").click().run()
+    assert restarted.radio(key="visual_style_draft").value == "solid"
+    assert restarted.checkbox(key="reduce_transparency_draft").value
+    restarted.button(key="reset_colors").click().run()
+    restored = WorkspaceStore(tmp_path).load().preferences
+    assert restored.palette == "glacier" and restored.visual_style == "glass"
+    assert not restored.reduce_transparency
+    assert restarted.selectbox(key="palette_draft").value == "glacier"
+    assert restarted.radio(key="visual_style_draft").value == "glass"
+    assert not restarted.checkbox(key="reduce_transparency_draft").value

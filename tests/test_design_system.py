@@ -20,12 +20,12 @@ def test_shared_design_tokens_and_new_workspace_defaults_match_android(tmp_path)
     tokens = design_tokens()
     assert tokens == mobile
     workspace = WorkspaceStore(tmp_path).load()
-    assert workspace.preferences.palette == "mineral"
-    assert (workspace.preferences.accent, workspace.preferences.background) == PALETTES["mineral"][:2]
+    assert workspace.preferences.palette == "glacier"
+    assert (workspace.preferences.accent, workspace.preferences.background) == PALETTES["glacier"][:2]
     assert tokens["type"]["body"] == 16
     assert tokens["type"]["line_height"] >= 1.5
     assert tokens["interaction"]["touch_min"] == 48
-    assert tokens["radius"]["control"] == 10 and tokens["radius"]["card"] == 16
+    assert tokens["radius"]["control"] == 12 and tokens["radius"]["card"] == 20
 
 
 @pytest.mark.parametrize("palette", list(PALETTES) + ["custom"])
@@ -63,6 +63,8 @@ def test_theme_fonts_are_embedded_from_bundled_files_without_remote_requests():
     assert "font-display:swap" in css
     assert ':focus-visible' in css and "outline:3px solid" in css
     assert "prefers-reduced-motion:reduce" in css
+    assert "prefers-reduced-transparency:reduce" in css
+    assert "backdrop-filter:none!important;-webkit-backdrop-filter:none!important" in css
 
 
 @pytest.mark.parametrize("palette", ["clay", "forest", "ocean", "sand", "graphite", "custom"])
@@ -107,3 +109,49 @@ def test_explicit_invalid_preferences_are_rejected_without_rewriting(tmp_path):
         store.load()
     assert store.path.read_bytes() == before
 
+
+
+def test_exact_old_default_migrates_once_without_touching_saved_data(tmp_path):
+    store = WorkspaceStore(tmp_path)
+    store.path.parent.mkdir(parents=True)
+    raw = {
+        "preferences": {"language": "zh", "palette": "mineral", "accent": "#186B62", "background": "#F4F7F6"},
+        "notes": [{"id": "old", "title": "原记录", "body": "C/C0 = 0.8"}],
+    }
+    store.path.write_text(json.dumps(raw), encoding="utf-8")
+    original = store.path.read_bytes()
+    loaded = store.load()
+    assert store.path.read_bytes() == original
+    assert loaded.preferences.palette == "glacier"
+    assert loaded.preferences.appearance_version == 2
+    assert loaded.notes[0].body == "C/C0 = 0.8"
+    loaded.preferences.palette = "mineral"
+    loaded.preferences.accent, loaded.preferences.background = PALETTES["mineral"][:2]
+    store.save(loaded)
+    restored = store.load()
+    assert restored.preferences.palette == "mineral"
+    assert restored.notes == loaded.notes
+
+
+@pytest.mark.parametrize("change", [{"accent": "#186B63"}, {"background": "#F4F7F7"}, {"palette": "custom"}])
+def test_migration_preserves_customized_old_mineral_preferences(change):
+    raw = {"palette": "mineral", "accent": "#186B62", "background": "#F4F7F6", **change}
+    saved = Preferences.model_validate(raw)
+    assert all(getattr(saved, key) == value for key, value in raw.items())
+
+
+@pytest.mark.parametrize("visual_style,reduce_transparency", [("solid", False), ("glass", True)])
+def test_reduced_transparency_and_solid_material_use_opaque_scoped_navigation(visual_style, reduce_transparency):
+    css = theme_css(Preferences(visual_style=visual_style, reduce_transparency=reduce_transparency))
+    assert "--ee-glass:#FFFFFF;--ee-glass-filter:none" in css
+    assert '@supports ((backdrop-filter:blur(1px))' in css
+    assert '[class*="st-key-glass_"]' in css
+    assert "font-family:'Source Sans 3'" in css
+
+
+def test_glass_uses_shared_material_tokens_and_sans_heading():
+    css = theme_css(Preferences())
+    assert "--ee-glass:rgba(255,255,255,0.75)" in css
+    assert "--ee-glass-filter:blur(16px) saturate(1.15)" in css
+    assert "--ee-font-heading:'Source Sans 3','Env Sans CJK'" in css
+    assert css.count("font-family:'Source Sans 3';font-style") == 1

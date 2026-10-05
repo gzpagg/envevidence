@@ -1,5 +1,17 @@
 # Changelog
 
+## EnvBench (Android) 0.8.0 / EnvEvidence (desktop) 0.5.0 — 2026-10-05
+
+- Introduce Glacier: blue actions, soft blue-to-teal gradients, floating frosted navigation and solid scientific data panels. Use local sans-serif headings and shared interface tokens on both platforms.
+- Put the current experiment, active step and next sampling checkpoint on the Android home screen. Keep photo, observation and counter actions together while a procedure runs; group other experiments by status.
+- Give the focused timer a prominent display, with compact companion timers and explicit state labels. Present observations as a dated timeline and templates with process, step count and planned duration.
+- Bring desktop analysis into view with compact project controls, parameter/result layouts and larger charts. Place literature evidence, source context and review actions together.
+- Add a saved Reduce transparency preference, solid-surface fallbacks and reduced-motion support. New installations and unchanged default Mineral palettes use Glacier; other saved palettes and custom colors remain intact.
+- Preserve experiments, timing anchors, media, scientific calculations, source files, review history and CLI workflows. Keep appearance preferences separate from research records.
+- Update bilingual product and design documentation. Release verification is recorded in [Android validation](docs/ANDROID.md) and [desktop validation](docs/VALIDATION.md).
+
+两端采用冰川蓝青渐变与明亮磨砂导航。安卓突出当前实验、计时与现场记录；电脑压缩介绍区域，为分析图表和文献核验腾出空间。新增减少透明效果设置，保留旧配色选择与科研数据。
+
 ## EnvBench (Android) 0.7.0 / EnvEvidence (desktop) 0.4.1 — 2026-10-04
 
 - Run named experiment steps with linked countdowns, completion, reasoned skips and repeat history. Keep the reaction start and sampling times independent of step actions.

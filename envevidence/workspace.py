@@ -67,11 +67,28 @@ class Note(Item):
 
 class Preferences(StrictModel):
     language: Literal["en", "zh"] = "en"
-    palette: Literal["mineral", "clay", "forest", "ocean", "sand", "graphite", "custom"] = "mineral"
-    accent: str = "#186B62"
-    background: str = "#F4F7F6"
+    palette: Literal["glacier", "mineral", "clay", "forest", "ocean", "sand", "graphite", "custom"] = "glacier"
+    accent: str = "#176BDA"
+    background: str = "#F5F8FC"
+    visual_style: Literal["glass", "solid"] = "glass"
+    reduce_transparency: bool = False
+    appearance_version: Literal[2] = 2
     order: list[str] = Field(default_factory=lambda: MODULES.copy())
     hidden: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_default_appearance(cls, values):
+        if isinstance(values, dict) and "appearance_version" not in values:
+            values = values.copy()
+            # Only the complete, uncustomized v0.4.1 default adopts Glacier.
+            # The marker lets users explicitly choose Mineral after migration.
+            if (values.get("palette"), values.get("accent"), values.get("background")) == (
+                "mineral", "#186B62", "#F4F7F6"
+            ):
+                values.update(palette="glacier", accent="#176BDA", background="#F5F8FC")
+            values["appearance_version"] = 2
+        return values
 
     @field_validator("accent", "background")
     @classmethod
@@ -107,7 +124,7 @@ class WorkspaceStore:
         if not self.path.exists():
             return Workspace()
         # An existing file that omitted preferences used the original forest defaults.
-        # Only an absent workspace file adopts the new mineral palette.
+        # Only an absent workspace file adopts the new Glacier palette.
         raw = json.loads(self.path.read_text(encoding="utf-8"))
         if isinstance(raw, dict):
             if "preferences" not in raw:

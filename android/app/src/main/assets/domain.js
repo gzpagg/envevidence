@@ -6,12 +6,20 @@
 })(globalThis, function() {
   'use strict';
   const modules = ['evidence', 'learning', 'tasks', 'notes'];
-  const palettes = {mineral:['#186B62','#F4F7F6'],clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
+  const palettes = {glacier:['#176BDA','#F5F8FC'],mineral:['#186B62','#F4F7F6'],clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
   const uid = () => crypto.randomUUID().replaceAll('-', '');
   const now = () => new Date().toISOString();
   const clone = x => JSON.parse(JSON.stringify(x));
   function day(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-  function defaults() { return {language:'en',palette:'mineral',accent:palettes.mineral[0],background:palettes.mineral[1],order:[...modules],hidden:[]}; }
+  function defaults() { return {language:'en',palette:'glacier',accent:palettes.glacier[0],background:palettes.glacier[1],visual_style:'glass',reduce_transparency:false,appearance_version:2,order:[...modules],hidden:[]}; }
+  function normalizePreferences(input) {
+    const p={...input};
+    if (p.appearance_version===undefined && p.palette==='mineral' && p.accent?.toUpperCase()==='#186B62' && p.background?.toUpperCase()==='#F4F7F6') Object.assign(p,{palette:'glacier',accent:palettes.glacier[0],background:palettes.glacier[1]});
+    if(p.visual_style===undefined)p.visual_style='glass';
+    if(p.reduce_transparency===undefined)p.reduce_transparency=false;
+    p.appearance_version=2;
+    return p;
+  }
   function empty() { return {format:'envevidence-android',schema_version:1,workspace:{schema_version:1,updated_at:now(),preferences:defaults(),goals:[],tasks:[],notes:[],demo_loaded:false},projects:[]}; }
   function assert(ok, code = 'invalid') { if (!ok) throw new Error(code); }
   const str = x => typeof x === 'string';
@@ -23,6 +31,9 @@
   function validPrefs(p) {
     assert(p && ['en','zh'].includes(p.language) && [...Object.keys(palettes),'custom'].includes(p.palette));
     assert(/^#[a-f\d]{6}$/i.test(p.accent) && /^#[a-f\d]{6}$/i.test(p.background));
+    assert(p.visual_style===undefined || ['glass','solid'].includes(p.visual_style));
+    assert(p.reduce_transparency===undefined || typeof p.reduce_transparency==='boolean');
+    assert(p.appearance_version===undefined || p.appearance_version===2);
     assert(array(p.order,4) && p.order.length === 4 && unique(p.order) && p.order.every(x=>modules.includes(x)));
     assert(array(p.hidden,4) && unique(p.hidden) && p.hidden.every(x=>modules.includes(x)));
   }
@@ -118,7 +129,7 @@
     for (const k of ['goals','tasks','notes']) for (const item of input[k]) if (!out.workspace[k].some(x=>x.id===item.id)) {out.workspace[k].push(clone(item));added++;}
     out.workspace.updated_at=now(); return {state:recover(validateState(out)),added};
   }
-  function recover(state) { for(const p of state.projects) for(const r of p.runs) if(r.status==='running'){r.status='failed';r.error='Interrupted. Completed studies are preserved.';r.finished_at=now();} return state; }
+  function recover(state) { state.workspace.preferences=normalizePreferences(state.workspace.preferences); for(const p of state.projects) for(const r of p.runs) if(r.status==='running'){r.status='failed';r.error='Interrupted. Completed studies are preserved.';r.finished_at=now();} return state; }
   function textColor(hex) { const c=hex.slice(1).match(/../g).map(h=>parseInt(h,16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]>.179?'#000000':'#FFFFFF'; }
   function csv(p) {
     const headers=['project_id','study_id','experiment_id','experiment','field','original_value','original_unit','value','unit','extraction_status','review_status','sources','revision_count'];
@@ -145,5 +156,5 @@
     assert(chunks.length,'response');const usage={};for(const k of ['input_tokens','output_tokens'])if(Number.isInteger(data.usage?.[k]))usage[k]=data.usage[k];
     return {raw:JSON.parse(chunks.join('')),usage};
   }
-  return {modules,palettes,uid,now,clone,day,defaults,empty,assert,validateState,validateProject,validWorkspace,progress,tasksFor,overdue,current,locate,extract,revise,merge,recover,textColor,csv,schema,request,response};
+  return {modules,palettes,uid,now,clone,day,defaults,normalizePreferences,empty,assert,validateState,validateProject,validWorkspace,progress,tasksFor,overdue,current,locate,extract,revise,merge,recover,textColor,csv,schema,request,response};
 });

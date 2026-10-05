@@ -1,21 +1,21 @@
 {
-  "version": 1,
-  "name": "Env studio",
+  "version": 2,
+  "name": "Env studio · Glacier",
   "colors": {
-    "paper": "#F4F7F6",
+    "paper": "#F5F8FC",
     "surface": "#FFFFFF",
-    "ink": "#243638",
-    "muted": "#5F6F70",
-    "accent": "#186B62",
-    "line": "#D9E2DF",
-    "control_border": "#7F918C",
+    "ink": "#142C43",
+    "muted": "#536A7F",
+    "accent": "#176BDA",
+    "line": "#D6E2EE",
+    "control_border": "#7B8FA5",
     "success": "#316247",
     "warning": "#8D621D",
     "error": "#A03232"
   },
   "fonts": {
     "body": "Source Sans 3",
-    "heading": "Source Serif 4"
+    "heading": "Source Sans 3"
   },
   "spacing": [
     4,
@@ -27,18 +27,44 @@
     48
   ],
   "radius": {
-    "control": 10,
-    "card": 16,
-    "dialog": 20
+    "control": 12,
+    "card": 20,
+    "dialog": 24,
+    "navigation": 28
   },
   "type": {
     "body": 16,
     "caption": 12,
-    "line_height": 1.55
+    "line_height": 1.5,
+    "heading_mobile": 28,
+    "heading_desktop": 30
   },
   "interaction": {
     "touch_min": 48,
-    "transition_ms": 160,
+    "transition_ms": 200,
     "reduced_motion": true
+  },
+  "materials": {
+    "glass": {
+      "fill": "rgba(255,255,255,0.75)",
+      "opacity": 0.75,
+      "blur_px": 16,
+      "saturation": 1.15,
+      "border": "rgba(255,255,255,0.8)"
+    },
+    "solid": {
+      "fill": "#FFFFFF"
+    }
+  },
+  "gradients": {
+    "focus": {
+      "from": "#E8F3FF",
+      "to": "#E4F6F2",
+      "angle": 135
+    }
+  },
+  "elevation": {
+    "card": "0 4px 18px rgba(38,70,100,0.05)",
+    "floating": "0 8px 32px rgba(38,70,100,0.12)"
   }
 }

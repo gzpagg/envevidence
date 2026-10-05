@@ -7,6 +7,7 @@ async page => {
   const browserProtocol=await page.context().newCDPSession(page);
   await browserProtocol.send('Network.enable');
   await browserProtocol.send('Network.setCacheDisabled',{cacheDisabled:true});
+  await browserProtocol.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'no-preference'}]});
   const assert = (ok, message) => { if (!ok) throw new Error(message); };
   const read = () => page.evaluate(() => JSON.parse(localStorage.getItem('envevidence-preview')));
   const dialog = () => page.locator('dialog[open]');
@@ -47,7 +48,7 @@ async page => {
     assert((await read()).lab.samples.length === 5, `${language}: synthetic demo did not load`);
     await nav('Experiments', '实验', zh);
     await shot(`lab-home-${language}`);
-    await page.getByRole('button', { name: zh ? '进入实验' : 'Open experiment', exact: true }).click();
+    await page.locator('[data-lab=openExperiment]').first().click();
     await shot(`envbench-run-${language}`);
     await page.locator('.bench-focus [data-bench=takeSample]').first().click();
     assert(await dialog().locator('[name=ph_source]').inputValue() === 'carried', 'Inherited pH must be marked carried');
@@ -106,16 +107,16 @@ async page => {
     await nav('My space', '我的', zh);
     await shot(`lab-my-${language}`);
     await page.getByRole('button', { name: zh ? /语言与外观/ : /Language & appearance/ }).click();
-    for (const palette of ['mineral', 'clay', 'forest', 'ocean', 'graphite']) {
+    for (const palette of ['glacier', 'mineral', 'clay', 'forest', 'ocean', 'sand', 'graphite']) {
       await page.locator('#settings-form [name=palette]').selectOption(palette);
       await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
       await settle();
-      for (const width of [390, 360]) {
+      for (const width of [390, 360, 768]) {
         await page.setViewportSize({ width, height: 844 });
         await noOverflow(`${language}/${palette}/${width}/appearance`);
         await nav('Experiments', '实验', zh);
         await noOverflow(`${language}/${palette}/${width}/home`);
-        await page.getByRole('button', { name: zh ? '进入实验' : 'Open experiment', exact: true }).click();
+        await page.locator('[data-lab=openExperiment]').first().click();
         await noOverflow(`${language}/${palette}/${width}/run`);
         await nav('Records', '记录', zh);
         await noOverflow(`${language}/${palette}/${width}/records`);
@@ -124,7 +125,7 @@ async page => {
       }
     }
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.locator('#settings-form [name=palette]').selectOption('mineral');
+    await page.locator('#settings-form [name=palette]').selectOption('glacier');
     await page.locator('#settings-form').getByRole('button', { name: zh ? '保存' : 'Save', exact: true }).click();
     await nav('Timers', '计时', zh);
     await page.locator('[data-lab=newTimer]').first().click();
@@ -134,9 +135,9 @@ async page => {
     await dialog().waitFor({ state: 'hidden' });
     const card = page.locator('.timer-card').filter({ hasText: zh ? '搅拌 · 自制演示' : 'Mixing · synthetic demo' });
     await card.locator('[data-lab=startTimer]').click();
-    await card.scrollIntoViewIfNeeded();
+    await page.evaluate(()=>window.scrollTo(0,0));
     await shot(`lab-timers-${language}`);
-    checks.push(`${language}: five palettes at 390px and 360px, no horizontal page overflow`);
+    checks.push(`${language}: seven palettes at 390px, 360px and 768px, no horizontal page overflow`);
   }
   return { screenshots: 16, checks };
 }

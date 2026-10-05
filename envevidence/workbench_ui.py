@@ -37,7 +37,13 @@ def persist(workspace, store):
 def sidebar(workspace, store, version):
     prefs = workspace.preferences
     with st.sidebar:
-        st.markdown("## EnvEvidence")
+        st.markdown(
+            '<div class="ee-brand"><svg viewBox="0 0 32 32" aria-hidden="true" fill="none">'
+            '<rect x="1" y="1" width="30" height="30" rx="10" fill="#176BDA"/>'
+            '<path d="M11 8h10M14 8v8l-5 7a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-7V8M12 21h8" '
+            'stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+            '</svg><span>EnvEvidence</span></div>', unsafe_allow_html=True,
+        )
         st.caption(
             t(
                 "Experiments, curves and evidence.",
@@ -54,15 +60,15 @@ def sidebar(workspace, store, version):
         if locale != prefs.language:
             prefs.language = locale
             persist(workspace, store)
-        st.divider()
-        for page in NAMES:
-            if st.button(
-                name(page),
-                key=f"nav_{page}",
-                width="stretch",
-                type="primary" if st.session_state.get("page", "analysis") == page else "secondary",
-            ):
-                go(page)
+        with st.container(key="glass_navigation"):
+            icons = {"analysis": ":material/experiment:", "evidence": ":material/menu_book:",
+                     "settings": ":material/palette:"}
+            for page in NAMES:
+                if st.button(
+                    name(page), key=f"nav_{page}", icon=icons[page], width="stretch",
+                    type="primary" if st.session_state.get("page", "analysis") == page else "secondary",
+                ):
+                    go(page)
         st.divider()
         kept = len(workspace.goals) + len(workspace.tasks) + len(workspace.notes)
         if kept:
@@ -81,27 +87,43 @@ def sidebar(workspace, store, version):
         st.caption(f"v{version} · " + t("Local · Single user", "本地 · 单用户"))
 
 
+def reset_appearance(workspace, store):
+    # A button callback updates widget state before the next script run. Popping
+    # a rendered widget's key can leave its old browser selection on the screen.
+    prefs = workspace.preferences
+    prefs.palette, prefs.accent, prefs.background = ("glacier", *PALETTES["glacier"][:2])
+    prefs.visual_style, prefs.reduce_transparency, prefs.appearance_version = "glass", False, 2
+    st.session_state.palette_draft = "glacier"
+    st.session_state.visual_style_draft = "glass"
+    st.session_state.reduce_transparency_draft = False
+    for key in ("accent_draft", "background_draft"):
+        st.session_state.pop(key, None)
+    try:
+        store.save(workspace)
+    except OSError:
+        st.error(t("Could not save. Check folder permissions and free disk space.",
+                   "无法保存，请检查目录权限与磁盘空间。"))
+        st.stop()
+
+
 def settings(workspace, store):
     st.header(name("settings"))
+    st.caption(t("Shape your research workspace.", "让科研工作台更合你的习惯。"))
     prefs = workspace.preferences
-    left, _ = st.columns([1, 1.15], gap="large")
-    with left:
-        st.subheader(t("Color palette", "界面配色"))
+    with st.container(key="split_appearance"):
+        left, right = st.columns([1, 1.1], gap="large")
+    with left, st.container(key="surface_appearance_controls"):
+        st.subheader(t("Color and material", "配色与材质"))
         names = {
+            "glacier": ("Glacier · blue & cyan", "冰川 · 蓝青"),
             "mineral": ("Mineral · teal", "矿物青 · 浅灰"),
-            "clay": ("Clay", "陶土色"),
-            "forest": ("Forest", "森林绿"),
-            "ocean": ("Ocean", "海洋蓝"),
-            "sand": ("Sand", "暖灰橙"),
-            "graphite": ("Graphite", "石墨紫"),
-            "custom": ("Custom", "自定义"),
+            "clay": ("Clay", "陶土色"), "forest": ("Forest", "森林绿"),
+            "ocean": ("Ocean", "海洋蓝"), "sand": ("Sand", "暖灰橙"),
+            "graphite": ("Graphite", "石墨紫"), "custom": ("Custom", "自定义"),
         }
         palette = st.selectbox(
-            t("Palette", "配色方案"),
-            list(names),
-            index=list(names).index(prefs.palette),
-            format_func=fixed_format(lambda x: t(*names[x])),
-            key="palette_draft",
+            t("Palette", "配色方案"), list(names), index=list(names).index(prefs.palette),
+            format_func=fixed_format(lambda x: t(*names[x])), key="palette_draft",
         )
         draft = prefs.model_copy(deep=True)
         draft.palette = palette
@@ -115,21 +137,36 @@ def settings(workspace, store):
             )
         else:
             draft.accent, draft.background, _ = PALETTES[palette]
-        apply_theme(draft)
-        c = colors(draft)
-        st.markdown(
-            f"""<div class="ee-hero"><h3 style="color:inherit">{t("Every value, traced to its source.", "每个数值，都能追溯到原文。")}</h3><p>{t("Live preview · Save to keep this palette", "即时预览 · 保存后下次启动仍生效")}</p></div>""",
-            unsafe_allow_html=True,
+        draft.visual_style = st.radio(
+            t("Navigation material", "导航材质"), ["glass", "solid"],
+            index=["glass", "solid"].index(prefs.visual_style), horizontal=True,
+            format_func=fixed_format(lambda x: t("Frosted glass", "磨砂玻璃") if x == "glass" else t("Solid", "实色")),
+            key="visual_style_draft",
         )
-        st.caption(f"{c['accent']} · {c['background']}")
-        if st.button(t("Save appearance", "保存外观"), type="primary", key="save_appearance"):
+        draft.reduce_transparency = st.checkbox(
+            t("Reduce transparency", "减少透明效果"), value=prefs.reduce_transparency,
+            help=t("Use opaque navigation and panels while keeping your colors.", "保留配色，让导航与面板使用不透明背景。"),
+            key="reduce_transparency_draft",
+        )
+        draft.appearance_version = 2
+        apply_theme(draft)
+        if st.button(t("Save appearance", "保存外观"), type="primary", key="save_appearance", width="stretch"):
             workspace.preferences = Preferences.model_validate(draft.model_dump())
             persist(workspace, store)
-        if st.button(t("Restore default colors", "恢复默认配色"), key="reset_colors"):
-            prefs.palette, prefs.accent, prefs.background = ("mineral", *PALETTES["mineral"][:2])
-            for key in ("palette_draft", "accent_draft", "background_draft"):
-                st.session_state.pop(key, None)
-            persist(workspace, store)
-
-
-
+        st.button(t("Restore default appearance", "恢复默认外观"), key="reset_colors", width="stretch",
+                  on_click=reset_appearance, args=(workspace, store))
+    with right:
+        c = colors(draft)
+        st.markdown(
+            f'<div class="ee-hero"><h3>{t("A clearer view of your experiments.", "让每次实验，清晰呈现。")}</h3>'
+            f'<p>{t("Live preview · Save to keep this appearance", "即时预览 · 保存后下次启动仍生效")}</p></div>',
+            unsafe_allow_html=True,
+        )
+        with st.container(key="glass_appearance_preview"):
+            st.markdown("**" + t("Your workspace", "你的工作台") + "**")
+            st.caption(t("Navigation floats above a quiet background. Measurements and figures stay on solid surfaces.",
+                         "导航悬浮于浅色背景之上，测量数据与图表呈现在清晰的实色面板中。"))
+        with st.container(key="surface_appearance_preview"):
+            st.markdown("**" + t("Measurements · Treatment A", "测量数据 · 处理 A") + "**")
+            st.progress(0.7, text=t("7 of 10 samples recorded", "已记录 7 / 10 个样品"))
+            st.caption(f"{c['accent']} · {c['background']}")

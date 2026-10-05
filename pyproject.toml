@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "envevidence"
-version = "0.4.1"
+version = "0.5.0"
 description = "Local environmental experiment analysis, reproducible kinetics and literature evidence review"
 readme = "README.md"
 requires-python = ">=3.11"
