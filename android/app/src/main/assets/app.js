@@ -112,7 +112,7 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
     if(a==='review'){review(el.dataset.exp,el.dataset.field);return;}if(a==='newProject'){newProject();return;}
     if(a==='view'){archiveView=el.dataset.value==='archived';render();return;}if(a==='today'){taskDate=D.day();taskView='date';render();return;}if(a==='overdue'){taskView='overdue';render();return;}
     if(a==='project'){projectId=id;page='evidence';render();window.scrollTo(0,0);return;}if(a==='papers'){projectId=null;render();return;}
-    if(a==='resetTheme'){await commit(s=>{const d=D.defaults();Object.assign(s.workspace.preferences,{palette:d.palette,accent:d.accent,background:d.background});});}
+    if(a==='resetTheme'){await commit(s=>{const d=D.defaults();Object.assign(s.workspace.preferences,{palette:d.palette,accent:d.accent,background:d.background,visual_style:d.visual_style,reduce_transparency:d.reduce_transparency,appearance_version:2});});}
     if(a==='resetLayout')await commit(s=>{s.workspace.preferences.order=[...D.modules];s.workspace.preferences.hidden=[];});
     if(a==='move')await commit(s=>{const arr=s.workspace.preferences.order,i=arr.indexOf(el.dataset.module),j=i+Number(el.dataset.direction);if(j>=0&&j<arr.length)[arr[i],arr[j]]=[arr[j],arr[i]];});
     if(a==='archive')await commit(s=>{const item=s.workspace[k].find(x=>x.id===id);item.archived=!item.archived;});
@@ -128,12 +128,12 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
 });
 document.addEventListener('change',async event=>{const el=event.target;if(busy||fatal)return;try{
   if(el.id==='task-date'){taskDate=el.value;taskView='date';render();return;}
-  if(el.closest('#settings-form')){const f=el.form;if(el.name==='palette'&&D.palettes[el.value]){[f.elements.accent.value,f.elements.background.value]=D.palettes[el.value];}else if(['accent','background'].includes(el.name))f.elements.palette.value='custom';theme({accent:f.elements.accent.value,background:f.elements.background.value});return;}
+  if(el.closest('#settings-form')){const f=el.form;if(el.name==='palette'&&D.palettes[el.value]){[f.elements.accent.value,f.elements.background.value]=D.palettes[el.value];}else if(['accent','background'].includes(el.name))f.elements.palette.value='custom';theme({...state.workspace.preferences,accent:f.elements.accent.value,background:f.elements.background.value,palette:f.elements.palette.value,visual_style:f.elements.visual_style?.value||state.workspace.preferences.visual_style,reduce_transparency:f.elements.reduce_transparency?.checked??state.workspace.preferences.reduce_transparency});return;}
   if(el.dataset.action==='step')await commit(s=>s.workspace.goals.find(g=>g.id===el.dataset.id).steps.find(x=>x.id===el.dataset.step).done=el.checked);
   if(el.dataset.action==='taskStatus')await commit(s=>s.workspace.tasks.find(t=>t.id===el.dataset.id).status=el.value);
   if(el.dataset.action==='visibility')await commit(s=>{const p=s.workspace.preferences;p.hidden=el.checked?p.hidden.filter(k=>k!==el.dataset.module):[...p.hidden,el.dataset.module];});
   if(el.dataset.action)render();
 }catch(e){render();notice(errorText(e),true);}});
 async function withBusy(fn){busy=true;const b=document.createElement('div');b.className='busy';b.innerHTML=`<p role="status">${t('loading')}</p>`;document.body.append(b);try{return await fn();}finally{busy=false;b.remove();}}
-document.addEventListener('submit',async event=>{if(!['settings-form','extract-form'].includes(event.target.id))return;event.preventDefault();if(busy||fatal)return;try{if(event.target.id==='settings-form'){const data=new FormData(event.target);await commit(s=>{for(const k of ['language','palette','accent','background'])s.workspace.preferences[k]=data.get(k);});render();notice(t('saved'));}else await withBusy(()=>runExtraction(event.target));}catch(e){render();notice(errorText(e),true);}});
+document.addEventListener('submit',async event=>{if(!['settings-form','extract-form'].includes(event.target.id))return;event.preventDefault();if(busy||fatal)return;try{if(event.target.id==='settings-form'){const data=new FormData(event.target);await commit(s=>{for(const k of ['language','palette','accent','background'])s.workspace.preferences[k]=data.get(k);if(data.has('visual_style'))s.workspace.preferences.visual_style=data.get('visual_style');if(event.target.elements.reduce_transparency)s.workspace.preferences.reduce_transparency=data.has('reduce_transparency');s.workspace.preferences.appearance_version=2;});render();notice(t('saved'));}else await withBusy(()=>runExtraction(event.target));}catch(e){render();notice(errorText(e),true);}});
 // The lab entry point owns startup and migration. Legacy editors remain auxiliary tools.

@@ -1,5 +1,7 @@
 """Local experiment workflow; display translations never alter research inputs."""
 
+from html import escape
+
 import streamlit as st
 
 from .analysis_data import (
@@ -420,6 +422,17 @@ def processing_page(project, series, store):
 
 
 def fitting_page(project, series, store):
+    with st.container(key="split_fitting"):
+        left, right = st.columns([1, 1.8], gap="large")
+    with left, st.container(key="surface_fitting_controls"):
+        st.subheader(t("Models and parameters", "模型与参数"))
+        fitting_controls(project, series, store)
+    with right, st.container(key="surface_fitting_results"):
+        st.subheader(t("Curves and diagnostics", "曲线与诊断"))
+        fitting_results(project, series)
+
+
+def fitting_controls(project, series, store):
     choices = MODEL_KINDS[series.kind]
     prior = [r for r in project.fit_requests if r.series_id == series.id]
     previous = [r.model for r in prior]
@@ -474,9 +487,20 @@ def fitting_page(project, series, store):
                 save(project, store)
         except ValueError as exc:
             error(exc)
+
+
+def fitting_results(project, series):
     results = [r for r in project.fit_results if r.get("series_id") == series.id]
     if not results:
+        st.markdown('<div class="ee-empty">' + t("Choose models and fit this series to compare curves, residuals and parameters.", "选择模型并拟合当前系列，在此比较曲线、残差和参数。") + '</div>', unsafe_allow_html=True)
         return
+    kind = st.radio(t("Fit preview", "拟合预览"), ["curve", "residual"], horizontal=True,
+                    format_func=fixed_format(lambda k: t("Curves", "拟合曲线") if k == "curve" else t("Residuals", "残差")),
+                    key=f"fit_preview_{series.id}")
+    try:
+        st.image(render_plot(project, kind=kind, output_format="png", series_ids=[series.id]), width="stretch")
+    except ValueError as exc:
+        error(exc)
     comparison = []
     for result in results:
         comparison.append({"run": result.get("run_id"), "model": t(*MODELS.get(result.get("model"), ("", ""))),
@@ -510,31 +534,44 @@ def fitting_page(project, series, store):
 
 
 def charts_page(project, store):
+    with st.container(key="split_charts"):
+        left, right = st.columns([1, 1.8], gap="large")
+    with left:
+        st.subheader(t("Figure settings", "图表设置"))
+        chart_controls(project, store)
+    with right, st.container(key="surface_chart_preview"):
+        st.subheader(t("Figure preview", "图表预览"))
+        chart_preview(project)
+
+
+def chart_controls(project, store):
     p = project.plot
     with st.form("plot_config"):
-        cols = st.columns(4)
+        cols = st.columns(2)
         fmt = cols[0].selectbox(t("Format", "格式"), ["png", "tiff", "svg"], index=["png", "tiff", "svg"].index(p.format))
         width = cols[1].number_input(t("Width (mm)", "宽度（mm）"), min_value=10.0, value=float(p.width_mm))
-        height = cols[2].number_input(t("Height (mm)", "高度（mm）"), min_value=10.0, value=float(p.height_mm))
-        dpi = cols[3].number_input("DPI", min_value=72, max_value=9600, value=int(p.dpi), step=100,
+        cols = st.columns(2)
+        height = cols[0].number_input(t("Height (mm)", "高度（mm）"), min_value=10.0, value=float(p.height_mm))
+        dpi = cols[1].number_input("DPI", min_value=72, max_value=9600, value=int(p.dpi), step=100,
                                    help=t("Typical presets: 300 / 600 / 1200", "常用值：300／600／1200"))
         with st.expander(t("Advanced plot style", "高级绘图格式")):
             cols = st.columns(2)
             xlabel = cols[0].text_input(t("X axis label (empty = automatic)", "X 轴标题（空白则自动）"), p.x_label)
             ylabel = cols[1].text_input(t("Y axis label (empty = automatic)", "Y 轴标题（空白则自动）"), p.y_label)
-            cols = st.columns(4)
+            cols = st.columns(2)
             font_size = cols[0].number_input(t("Font size (pt)", "字号（pt）"), min_value=4.0, value=float(p.font_size))
             line_width = cols[1].number_input(t("Line width (pt)", "线宽（pt）"), min_value=0.1, value=float(p.line_width))
-            marker = cols[2].selectbox(t("Marker", "点形"), ["o", "s", "^", "D", "x", "+"], index=["o", "s", "^", "D", "x", "+"].index(p.marker))
-            marker_size = cols[3].number_input(t("Marker size (pt)", "点大小（pt）"), min_value=1.0, value=float(p.marker_size))
+            cols = st.columns(2)
+            marker = cols[0].selectbox(t("Marker", "点形"), ["o", "s", "^", "D", "x", "+"], index=["o", "s", "^", "D", "x", "+"].index(p.marker))
+            marker_size = cols[1].number_input(t("Marker size (pt)", "点大小（pt）"), min_value=1.0, value=float(p.marker_size))
             font = st.selectbox(t("Font", "字体"), ["Noto Sans CJK SC", "DejaVu Sans"], index=0 if p.font == "Noto Sans CJK SC" else 1)
             palette = st.text_input(t("Curve colors (comma-separated hex)", "曲线颜色（逗号分隔十六进制）"), ",".join(p.colors))
             cols = st.columns(2)
             legend = cols[0].checkbox(t("Show legend", "显示图例"), p.legend)
             bars = cols[1].checkbox(t("Show measurement error bars", "显示测量误差条"), p.error_bars)
             limits = st.checkbox(t("Set axis ranges", "设置坐标轴范围"), value=any(v is not None for v in [p.x_min, p.x_max, p.y_min, p.y_max]))
-            cols = st.columns(4)
-            bounds = [cols[i].number_input(label, value=float(value or 0)) for i, (label, value) in enumerate([
+            cols = st.columns(2)
+            bounds = [cols[i % 2].number_input(label, value=float(value or 0)) for i, (label, value) in enumerate([
                 (t("X minimum", "X 最小值"), p.x_min), (t("X maximum", "X 最大值"), p.x_max),
                 (t("Y minimum", "Y 最小值"), p.y_min), (t("Y maximum", "Y 最大值"), p.y_max)])]
         if st.form_submit_button(t("Save plot style", "保存绘图格式"), type="primary"):
@@ -547,6 +584,10 @@ def charts_page(project, store):
                 save(project, store)
             except ValueError as exc:
                 error(exc)
+
+
+def chart_preview(project):
+    p = project.plot
     if project.fit_results:
         kind = st.selectbox(t("Plot", "图像类型"), ["curve", "residual", "transformed"],
                             format_func=fixed_format(lambda k: t(*{"curve": ("Measurements and curves", "数据点与拟合曲线"),
@@ -556,13 +597,15 @@ def charts_page(project, store):
                                        format_func=fixed_format(lambda sid: next(s.name for s in project.series if s.id == sid)), key="plot_series")
         try:
             preview = render_plot(project, kind=kind, output_format="png", series_ids=selected_ids)
-            st.image(preview, width=650)
+            st.image(preview, width="stretch")
             with st.expander(t("Full legend identities", "完整图例对应记录")):
                 st.dataframe(legend_mapping(project, series_ids=selected_ids), hide_index=True, width="stretch")
             data = render_plot(project, kind=kind, series_ids=selected_ids)
             st.download_button(t("Download this plot", "下载当前图像"), data, f"{kind}.{p.format}", key="analysis_plot_download")
         except ValueError as exc:
             error(exc)
+    else:
+        st.markdown('<div class="ee-empty">' + t("Fit a measurement series to preview and export its figures.", "先拟合测量数据系列，再预览与导出图表。") + '</div>', unsafe_allow_html=True)
 
 
 def sop_page(project, store):
@@ -639,23 +682,25 @@ def sop_page(project, store):
 
 def analysis_page(store):
     st.header(t("Experiment analysis", "实验分析"))
-    st.markdown("<div class='ee-hero'><h3 style='color:inherit'>" + t("From reaction conditions to reproducible curves.", "从反应条件，到可复现的动力学曲线。") + "</h3><p>" + t("Import · Process · Fit · Review · Export", "导入 · 处理 · 拟合 · 检查 · 导出") + "</p></div>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 2])
-    if cols[0].button(t("New analysis project", "新建分析项目"), key="analysis_new"):
-        st.session_state.pop("analysis_project_id", None)
-        st.session_state.pop("analysis_export_path", None)
-    if cols[1].button(t("Load analysis demo", "载入分析演示"), key="analysis_demo"):
-        project = demo_project(store)
-        store.save(project)
-        st.session_state.analysis_project_id = project.id
-        st.session_state.pop("analysis_export_path", None)
-        st.rerun()
     projects = store.list_projects()
-    if projects:
-        selected = cols[2].selectbox(t("Saved analysis projects", "已保存的分析项目"), projects,
-                                    format_func=fixed_format(lambda p: p["name"]), key="analysis_project_select")
-        if cols[2].button(t("Open analysis project", "打开分析项目"), key="analysis_open"):
-            st.session_state.analysis_project_id = selected["id"]
+    with st.container(key="analysis_toolbar"):
+        picker, opener, new, demo = st.columns([2, 1.5, 1.6, 1.6], gap="small", vertical_alignment="bottom")
+        if projects:
+            selected = picker.selectbox(t("Saved analysis projects", "已保存的分析项目"), projects,
+                                        format_func=fixed_format(lambda p: p["name"]), key="analysis_project_select")
+            if opener.button(t("Open analysis project", "打开分析项目"), key="analysis_open", width="stretch"):
+                st.session_state.analysis_project_id = selected["id"]
+                st.session_state.pop("analysis_export_path", None)
+                st.rerun()
+        else:
+            picker.caption(t("Your local experiment workspace", "你的本地实验工作台"))
+        if new.button(t("New analysis project", "新建分析项目"), key="analysis_new", icon=":material/add:", width="stretch"):
+            st.session_state.pop("analysis_project_id", None)
+            st.session_state.pop("analysis_export_path", None)
+        if demo.button(t("Load analysis demo", "载入分析演示"), key="analysis_demo", width="stretch"):
+            project = demo_project(store)
+            store.save(project)
+            st.session_state.analysis_project_id = project.id
             st.session_state.pop("analysis_export_path", None)
             st.rerun()
     if not st.session_state.get("analysis_project_id"):
@@ -673,25 +718,31 @@ def analysis_page(store):
     except (ValueError, OSError) as exc:
         error(exc)
         return
-    st.subheader(project.name)
-    cols = st.columns(3)
-    cols[0].metric(t("Series", "数据系列"), len(project.series))
-    cols[1].metric(t("Measurements", "测量记录"), sum(len(s.observations) for s in project.series))
-    cols[2].metric(t("Model fits", "拟合结果"), len(project.fit_results))
-    with st.expander(t("Import / add data", "导入／添加数据"), expanded=not project.series):
-        imports(project, store)
-    if not project.series:
-        return
+
     def series_label(sid):
         current = next(s for s in project.series if s.id == sid)
         indicator = OBSERVABLES[current.kind].get(current.observable, (current.observable, current.observable))
         return f"{current.name} · {t(*indicator)}"
 
-    series_id = st.selectbox(t("Current series", "当前数据系列"), [s.id for s in project.series],
-                          format_func=fixed_format(series_label), key="analysis_series")
+    with st.container(key="surface_analysis_context"):
+        title, selection = st.columns([1.2, 1], vertical_alignment="center")
+        with title:
+            summary = t(
+                f"{len(project.series)} series · {sum(len(s.observations) for s in project.series)} measurements · {len(project.fit_results)} fits",
+                f"{len(project.series)} 个系列 · {sum(len(s.observations) for s in project.series)} 条测量 · {len(project.fit_results)} 个拟合结果",
+            )
+            st.markdown(f'<p class="ee-context-title">{escape(project.name)}</p><p class="ee-context-summary">{summary}</p>', unsafe_allow_html=True)
+        if project.series:
+            series_id = selection.selectbox(t("Current series", "当前数据系列"), [s.id for s in project.series],
+                                            format_func=fixed_format(series_label), key="analysis_series")
+    with st.expander(t("Import / add data", "导入／添加数据"), expanded=not project.series):
+        imports(project, store)
+    if not project.series:
+        return
     series = next(s for s in project.series if s.id == series_id)
-    tabs = st.tabs([t("Conditions", "反应条件"), t("Measurements", "测量数据"), t("Processing", "数据处理"),
-                    t("Fitting", "动力学拟合"), t("Charts", "图表格式"), t("SOP export", "SOP 导出")])
+    with st.container(key="workflow_analysis"):
+        tabs = st.tabs([t("Conditions", "反应条件"), t("Measurements", "测量数据"), t("Processing", "数据处理"),
+                        t("Fitting", "动力学拟合"), t("Charts", "图表格式"), t("SOP export", "SOP 导出")])
     functions = [conditions_page, data_page, processing_page, fitting_page]
     for tab, function in zip(tabs[:4], functions):
         with tab:

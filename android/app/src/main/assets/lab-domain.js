@@ -9,7 +9,7 @@
   const number=x=>Number.isFinite(x)&&x>=0;
   const stamp=x=>x&&number(x.wall)&&number(x.mono)&&txt(x.boot,100);
   const list=x=>Array.isArray(x)&&new Set(x.map(v=>v.id)).size===x.length;
-  const palettes={mineral:['#186B62','#F4F7F6'],clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],graphite:['#6D4ACF','#F7F5FB']};
+  const palettes={glacier:['#176BDA','#F5F8FC'],mineral:['#186B62','#F4F7F6'],clay:['#A65338','#F7F5F0'],forest:['#147D73','#F6F8F7'],ocean:['#1D4ED8','#F4F7FB'],sand:['#A84D18','#FAF7F2'],graphite:['#6D4ACF','#F7F5FB']};
   function empty(){return {version:2,experiments:[],timers:[],counters:[],records:[],events:[],samples:[],demo_loaded:false};}
   // Version 2 adds bench runs: process and water details on experiments, and pulled samples.
   function upgrade(l){if(l&&l.version===1){l.version=2;l.samples=[];for(const e of l.experiments||[]){e.run=null;e.water=null;}}

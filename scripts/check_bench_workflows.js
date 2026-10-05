@@ -3,6 +3,7 @@ async page => {
   const browserProtocol=await page.context().newCDPSession(page);
   await browserProtocol.send('Network.enable');
   await browserProtocol.send('Network.setCacheDisabled',{cacheDisabled:true});
+  await browserProtocol.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'no-preference'}]});
   const assert=(value,message)=>{if(!value)throw new Error(message);};
   const read=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('envevidence-preview')));
   const sheet=()=>page.locator('dialog[open]');
@@ -18,7 +19,7 @@ async page => {
     await nav('My space');await page.locator('[data-lab=nav][data-to=appearance]').click();
     await page.locator('#settings-form [name=language]').selectOption(language);await page.locator('#settings-form [type=submit]').click();await settle();
     await nav(zh?'我的':'My space');await page.locator('[data-lab=labDemo]').click();await settle();
-    await nav(zh?'实验':'Experiments');await page.locator('[data-lab=openExperiment]').click();await settle();
+    await nav(zh?'实验':'Experiments');await page.locator('[data-lab=openExperiment]').first().click();await settle();
     let before=(await read()).lab;const source=before.experiments[0],origin=JSON.stringify(source.started),workflow=before.workflows[0];
     await page.locator('.workflow-current [data-flow=complete]').click();await settle();
     await page.locator('.workflow-current [data-flow=start]').click();await settle();
@@ -42,12 +43,12 @@ async page => {
     lab=(await read()).lab;const newRun=lab.experiments.find(e=>e.title===(zh?'流程重复实验 B':'Procedure repeat B')),newFlow=lab.workflows.find(w=>w.experiment_id===newRun.id);
     assert(newRun.id!==source.id&&newFlow.steps.every(s=>s.status==='pending'),'Template run must have new IDs and ready steps');
     assert(lab.records.filter(r=>r.experiment_id===newRun.id).length===0&&sourceRecordIds.every(id=>lab.records.some(r=>r.id===id)),'Repeat run must not copy results or erase source records');
-    await page.locator('[data-lab=newTimer][data-experiment]').click();await sheet().locator('[name=title]').fill(zh?'自制循环计时':'Synthetic cycle timer');
+    await page.locator('.experiment-details>summary').click();await page.locator('[data-lab=newTimer][data-experiment]').click();await sheet().locator('[name=title]').fill(zh?'自制循环计时':'Synthetic cycle timer');
     await sheet().locator('[name=kind]').selectOption('staged');
     await sheet().locator('[name=stage_title]').nth(0).fill(zh?'混合':'Mix');await sheet().locator('[name=stage_title]').nth(1).fill(zh?'静置':'Rest');
     for(const el of await sheet().locator('[name=stage_minutes]').all())await el.fill('0');for(const el of await sheet().locator('[name=stage_seconds]').all())await el.fill('1');
     await sheet().locator('.timer-plan-options>summary').click();await sheet().locator('[name=repeat_count]').fill('2');await sheet().locator('[name=delay_seconds]').fill('1');await sheet().locator('[name=transition_mode]').selectOption('manual');
-    await shot(`envbench-stage-setup-${language}`);await save();
+    await sheet().evaluate(el=>{el.scrollTop=0;document.activeElement?.blur();});await shot(`envbench-stage-setup-${language}`);await save();
     lab=(await read()).lab;const timer=lab.timers.find(t=>t.title===(zh?'自制循环计时':'Synthetic cycle timer'));
     await page.locator(`[data-lab=startTimer][data-id="${timer.id}"]`).click();await page.waitForTimeout(3300);
     lab=(await read()).lab;const waiting=lab.timers.find(t=>t.id===timer.id);assert(waiting.status==='waiting'&&waiting.completed_steps===0,'Manual deadline must wait without advancing');

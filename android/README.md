@@ -1,10 +1,12 @@
-# EnvBench for Android · 0.7.0
+# EnvBench for Android · 0.8.0
 
 **Keep your reaction schedule, samples and observations together — from the first dose to the final export.**
 
 [简体中文](README.zh-CN.md) · [EnvEvidence desktop](../README.md) · [Screenshots and checks](../docs/ANDROID.md) · [Samples CSV](../docs/BENCH_CSV.md)
 
-EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. Mineral · teal accents, light neutral surfaces and generous controls keep the interface clear during a run. EnvBench and the desktop app share design tokens, local Source Sans 3 body text with a Chinese sans-serif subset, and Source Serif 4 main titles.
+EnvBench is a local experiment notebook for advanced-oxidation and DOM work in water and wastewater. The four main tabs — **Experiments, Timers, Records and My space** — bring bench controls within reach. **Glacier** combines blue actions, soft blue-to-teal gradients and a floating frosted navigation bar. Crisp white panels keep measurements easy to read. EnvBench and the desktop app share locally bundled Source Sans 3 and Chinese sans-serif fonts, spacing and control styles.
+
+The experiment home highlights the current run, its current step and the next sample. Open the run to follow its procedure, then use the floating action bar to add a photo, observation or count. Focus a timer for a larger display, browse dated observation cards, or choose a template by process, step count and planned duration.
 
 <img src="../docs/images/envbench-run-en.png" alt="Reaction run with sampling checkpoints and water-matrix details" width="300"> <img src="../docs/images/envbench-sample-en.png" alt="Sample sheet with quench selection and measurement sources" width="300">
 
@@ -24,6 +26,8 @@ EnvBench is a local experiment notebook for advanced-oxidation and DOM work in w
 **Android 8.0+ · English and Chinese · Offline · No account required**
 
 ## Install and explore
+
+The published installer is 0.7.0; this branch prepares the 0.8.0 Glacier release.
 
 **[Download EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256 checksum](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1)
 
@@ -69,13 +73,15 @@ In an observation, choose **Record audio**, then **Stop & save audio** to retain
 
 ## Alerts, settings and backup
 
-**My space** contains language, colors, permissions, imports and exports. Open **Enable timer alerts** and allow notifications and alarms for background countdown alerts. Android schedules the next countdown or stage boundary and groups simultaneous alerts; tapping a notification opens Timers. System notification settings and force-stop behavior apply.
+**My space** contains language, appearance, permissions, imports and exports. In appearance, choose Glacier or another saved palette and enable **Reduce transparency** for solid navigation and action bars. Fresh installations use Glacier; upgrades migrate an unchanged default Mineral palette while retaining other presets and custom colors. The interface respects reduced-motion settings and falls back to solid surfaces where background blur is unavailable.
+
+Open **Enable timer alerts** and allow notifications and alarms for background countdown alerts. Android schedules the next countdown or stage boundary and groups simultaneous alerts; tapping a notification opens Timers. System notification settings and force-stop behavior apply.
 
 Within one device boot, timing uses Android's monotonic clock. After reboot or transfer, recovery uses saved wall-clock times. Imported running timers are paused.
 
 Camera and gallery use Android's system apps and picker. JPEG, PNG and WebP files up to 30 MB each are supported. Records and originals stay in private app storage; the experiment workflow makes no API calls.
 
-Full ZIP backups include workspace data, original photos, recordings and display previews. Experiment ZIPs contain the selected experiment, its associated records and media, plus shared templates and observation phrases. Archives support up to 512 MB of uncompressed content; export larger notebooks by experiment. Import retains existing IDs and checks media hashes, missing attachments and photo or audio conflicts. Legacy evidence and planning data remain in full backups.
+Full ZIP backups include workspace data, original photos, recordings and display previews. Experiment ZIPs contain the selected experiment, its associated records and media, its workflow snapshot and referenced templates; full backups also retain all templates and observation phrases. Archives support up to 512 MB of uncompressed content; export larger notebooks by experiment. Import retains existing IDs and checks media hashes, missing attachments and photo or audio conflicts. Legacy evidence and planning data remain in full backups.
 
 Literature extraction and source review are available in [EnvEvidence for desktop](../README.md).
 
@@ -96,3 +102,5 @@ The interface is bundled HTML/CSS/JavaScript presented through WebViewAssetLoade
 
 Code and original synthetic fixtures are MIT licensed. See [third-party notices](../THIRD_PARTY_NOTICES.md) for component licenses.
 
+
+Full ZIP backups include language and appearance preferences. Import merges records while retaining the current device’s language and appearance, so importing an experiment does not change its selected settings.

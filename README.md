@@ -6,10 +6,12 @@
 
 | App | Where it fits | What you get |
 |---|---|---|
-| **EnvBench 0.7.0 · Android** | Sampling, quenching and observations during water and wastewater experiments | Experiment steps, reusable templates, stage timers, voice observations, samples and CSV exports |
-| **EnvEvidence 0.4.1 · Desktop** | Processing experiments and reviewing water-treatment papers | Kinetic fits, publication-size figures, reproducible SOP packages and source-linked evidence tables |
+| **EnvBench 0.8.0 · Android** | Sampling, quenching and observations during water and wastewater experiments | Experiment steps, reusable templates, stage timers, voice observations, samples and CSV exports |
+| **EnvEvidence 0.5.0 · Desktop** | Processing experiments and reviewing water-treatment papers | Kinetic fits, publication-size figures, reproducible SOP packages and source-linked evidence tables |
 
-Both apps have English and Chinese interfaces, saved appearance settings and local data storage. Shared mineral-teal accents, light neutral surfaces, locally bundled Source Sans 3 and Source Serif 4 fonts, and consistent controls connect the bench and desktop workspaces.
+Both apps have English and Chinese interfaces, saved appearance settings and local data storage. The shared **Glacier** design combines blue actions, soft blue-to-teal gradients, frosted navigation and crisp white data panels. Locally bundled sans-serif fonts and consistent controls connect the bench and desktop workspaces.
+
+The phone opens on the current experiment, with its next step and sampling checkpoint ready to act on. At the desk, compact project controls lead straight into the analysis workspace; figures, fit diagnostics and source quotations have room to read.
 
 ## EnvBench: your reaction run, in one place
 
@@ -30,13 +32,15 @@ Four tools help you prepare, carry out and repeat a procedure:
 | **Voice observations** | Record and replay an audio note, use system speech input to draft editable text, or insert your own observation phrases. Notes follow the current step and can include photos. |
 | **Experiment templates** | Save conditions, water-matrix properties, sampling times, steps and independent timer presets. Start a fresh experiment with its own template snapshot, samples and results. |
 
-Stopwatches, countdowns, stage timers, sampling reminders and counters can run in parallel. There is no fixed cap on the number of timers. Settings, language, appearance and backup controls are grouped under **My space**.
+Stopwatches, countdowns, stage timers, sampling reminders and counters can run in parallel. The focused timer gets a prominent display; other timers remain in a compact list. Photo, observation and counter actions stay within reach while a procedure runs, and records form a dated timeline with experiment and step context. There is no fixed cap on the number of timers. Settings, language, appearance and backup controls are grouped under **My space**.
 
 <img src="docs/images/envbench-steps-en.png" alt="Experiment steps / 实验步骤" width="300"> <img src="docs/images/envbench-stage-timers-en.png" alt="Stage timers / 阶段计时" width="300">
 
 <img src="docs/images/envbench-run-en.png" alt="EnvBench reaction run with the next sampling checkpoint" width="300"> <img src="docs/images/envbench-samples-en.png" alt="EnvBench sample records and concentration trend" width="300">
 
 **Android 8.0+ · Offline · No account required**
+
+The published installer is 0.7.0; this branch prepares the 0.8.0 Glacier release.
 
 **[Download EnvBench 0.7.0 APK](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk)** · [SHA-256](https://github.com/gzpagg/envevidence/releases/download/v0.7.0-android-preview.1/envbench-0.7.0-android.apk.sha256) · [Release notes](https://github.com/gzpagg/envevidence/releases/tag/v0.7.0-android-preview.1) · [Installation guide](android/README.md). Open **My space → Load lab demo** to explore an invented UV/PDS run with samples and water-matrix data.
 
@@ -53,7 +57,7 @@ Keep the conditions, measurements and analysis decisions together. Import quanti
 | **Charts** | Inspect original-scale errors and residuals. Set figure dimensions, labels, style, PNG/TIFF/SVG and DPI. |
 | **SOP export** | Confirm the fits, save a reusable template, and export originals, tables, figures, hashes and a replayable configuration. |
 
-Original-scale fitting is the default. Applicable linearizations have separate transformed-scale metrics. Parameters carry units and uncertainty diagnostics; the comparison table keeps model selection in the researcher's hands.
+Original-scale fitting is the default. Applicable linearizations have separate transformed-scale metrics. Parameters carry units and uncertainty diagnostics; the comparison table keeps model selection in the researcher's hands. Wide screens place settings beside results and give plots a larger canvas; narrow screens stack the same controls in workflow order.
 
 ![EnvEvidence experiment analysis in English](docs/images/analysis-en.png)
 
@@ -77,6 +81,8 @@ Pollutant removal and mineralization/TOC removal have separate fields. Different
 ![EnvEvidence source review in English](docs/images/review-en.png)
 
 ### Install the desktop app
+
+The published package is 0.4.1; the repository install commands below install version 0.5.0 from this source tree.
 
 **[Download 0.4.1 source ZIP](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-source.zip)** · [Python wheel](https://github.com/gzpagg/envevidence/releases/download/v0.4.1/envevidence-0.4.1-py3-none-any.whl) · [Release notes and checksums](https://github.com/gzpagg/envevidence/releases/tag/v0.4.1)
 
@@ -104,7 +110,7 @@ macOS / Linux:
 
 For the wheel, use `-m pip install "path/to/envevidence-0.4.1-py3-none-any.whl"` in place of `-m pip install -e .` with the same virtual-environment Python.
 
-Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. The desktop version is **0.4.1**.
+Open <http://127.0.0.1:8501>. The app starts on **Experiment analysis**; choose **Load analysis demo** to explore synthetic measurements, or **Literature evidence → Load evidence demo** for a synthetic paper and supplement. Both demos run without an API key. This source tree contains desktop version **0.5.0**.
 
 ### Extract from your own papers
 
@@ -120,7 +126,9 @@ Text PDFs are supported up to 30 MB and 250 pages per file. The [demo guide](doc
 
 ## Language, appearance and your data
 
-Switching language changes interface labels while preserving paper text, sample names, model results and revision records. New installations use the same Mineral · teal palette on both platforms. Source Serif 4 marks the main title; Source Sans 3 and a bundled Chinese sans-serif subset handle controls and body text. Desktop appearance offers Mineral · teal, Clay, Forest, Ocean, Sand, Graphite and custom colors. Saved palettes and custom colors continue across updates.
+Switching language changes interface labels while preserving paper text, sample names, model results and revision records. New installations use **Glacier** with frosted navigation and floating action bars. Source Sans 3 and the bundled Env Sans CJK subset serve both headings and body text; timer digits have a steady, tabular width.
+
+Choose **Reduce transparency** in appearance settings for solid navigation and action bars. The interface also respects reduced-motion preferences and uses solid surfaces when background blur is unavailable. Upgrades move an unchanged default Mineral palette to Glacier; other saved presets and custom colors stay as configured. Mineral remains available alongside Clay, Forest, Ocean, Sand, Graphite and custom colors.
 
 EnvBench stores records, original photos and audio clips in private Android storage; templates, step histories and observation phrases travel with ZIP backups. Use a full ZIP backup before uninstalling or moving devices. EnvEvidence stores evidence projects and preferences under `data/`, with independent experiment projects under `data/analysis/`; `ENVEVIDENCE_DATA_DIR` selects another local directory. Back up that directory while the desktop app is stopped. Data from earlier versions is retained during compatible upgrades.
 

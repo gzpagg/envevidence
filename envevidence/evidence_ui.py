@@ -50,22 +50,23 @@ def evidence_page(store):
         return
     st.subheader(project.name)
     fields = [f for exp in project.experiments for f in exp.fields]
-    for column, label, value in zip(
-        st.columns(4),
-        [
-            t("Studies", "研究"),
-            t("Experiments", "实验条件"),
-            t("Fields", "证据字段"),
-            t("Reviewed", "人工确认"),
-        ],
-        [
-            len(project.studies),
-            len(project.experiments),
-            len(fields),
-            sum((f.review_status == "verified" for f in fields)),
-        ],
-    ):
-        column.metric(label, value)
+    with st.container(key="surface_evidence_metrics"):
+        for column, label, value in zip(
+            st.columns(4),
+            [
+                t("Studies", "研究"),
+                t("Experiments", "实验条件"),
+                t("Fields", "证据字段"),
+                t("Reviewed", "人工确认"),
+            ],
+            [
+                len(project.studies),
+                len(project.experiments),
+                len(fields),
+                sum((f.review_status == "verified" for f in fields)),
+            ],
+        ):
+            column.metric(label, value)
     if project.provider == "demo":
         st.caption(
             t(
@@ -75,7 +76,8 @@ def evidence_page(store):
         )
     if project.runs and project.runs[-1].status == "failed":
         st.error(tr(project.runs[-1].error))
-    tabs = st.tabs([tr("资料与提取"), tr("证据核验"), tr("导出与记录")])
+    with st.container(key="workflow_evidence"):
+        tabs = st.tabs([tr("资料与提取"), tr("证据核验"), tr("导出与记录")])
     with tabs[0]:
         extract_panel(project, store)
     with tabs[1]:
@@ -308,26 +310,28 @@ def review_panel(project, store):
     if not project.experiments:
         st.info(tr("尚无实验记录。先完成提取；已完成但没有记录的论文可在运行记录中查看。"))
         return
-    rows = evidence_rows(project)
-    st.dataframe(
-        [
-            {
-                tr("实验"): r["experiment"],
-                tr("字段"): field_label(r["field"], r["label"]),
-                tr("当前值"): r["value"],
-                tr("单位"): r["unit"],
-                tr("出处"): tr("已定位") if r["source_located"] else tr("未定位 / 未找到"),
-                tr("人工核验"): state_label(r["human_review"]),
-            }
-            for r in rows
-        ],
-        hide_index=True,
-        width="stretch",
-        height=260,
-    )
+    with st.expander(t("All evidence fields", "全部证据字段")):
+        rows = evidence_rows(project)
+        st.dataframe(
+            [
+                {
+                    tr("实验"): r["experiment"],
+                    tr("字段"): field_label(r["field"], r["label"]),
+                    tr("当前值"): r["value"],
+                    tr("单位"): r["unit"],
+                    tr("出处"): tr("已定位") if r["source_located"] else tr("未定位 / 未找到"),
+                    tr("人工核验"): state_label(r["human_review"]),
+                }
+                for r in rows
+            ],
+            hide_index=True,
+            width="stretch",
+            height=260,
+        )
     study_names = {s.id: s.name for s in project.studies}
     experiments_by_id = {e.id: e for e in project.experiments}
-    experiment_id = st.selectbox(
+    pick_experiment, pick_field = st.columns([1.3, 1], gap="large")
+    experiment_id = pick_experiment.selectbox(
         tr("选择实验条件"),
         list(experiments_by_id),
         format_func=fixed_format(
@@ -339,7 +343,7 @@ def review_panel(project, store):
     )
     experiment = experiments_by_id[experiment_id]
     fields_by_id = {f.id: f for f in experiment.fields}
-    field_id = st.selectbox(
+    field_id = pick_field.selectbox(
         tr("选择字段"),
         list(fields_by_id),
         format_func=fixed_format(
@@ -349,8 +353,9 @@ def review_panel(project, store):
     )
     field = fields_by_id[field_id]
     study = next((s for s in project.studies if s.id == experiment.study_id))
-    left, right = st.columns([1.1, 1], gap="large")
-    with left:
+    with st.container(key="split_evidence_review"):
+        left, right = st.columns([1.3, 1], gap="large")
+    with left, st.container(key="surface_source_context"):
         st.markdown(tr("**原文证据**"))
         if not field.current_sources:
             st.info(tr("在已导入且成功解析的资料中未找到对应出处。"))
@@ -377,7 +382,7 @@ def review_panel(project, store):
             )
             for issue in field.issues:
                 st.warning(tr(issue))
-    with right:
+    with right, st.container(key="surface_evidence_revision"):
         st.markdown(tr("**人工核验与修订**"))
         with st.form(f"revise_{field.id}_{len(field.revisions)}"):
             value = st.text_input(tr("当前值"), value=field.value or "")
