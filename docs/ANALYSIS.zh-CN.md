@@ -1,4 +1,4 @@
-# 实验数据分析 · 电脑版 0.4.0
+# 实验数据分析 · 电脑版 0.5.0
 
 [English](ANALYSIS.md) · [安装方法](../README.zh-CN.md#安装电脑版) · [验证记录](VALIDATION.zh-CN.md)
 
